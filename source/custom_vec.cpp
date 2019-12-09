@@ -23,6 +23,18 @@ int data_plane_vec_c::indiv_nbr() const
     return Sum_indiv_per_locus;
 }
 
+feature_c const &data_plane_vec_c::get_feature(int indiv)
+{
+    return Indiv_feat[indiv];
+}
+
+int data_plane_vec_c::get_indiv(int gene_index) const
+{
+    int place_in_locus = gene_index % (Sum_indiv_per_locus * Ploidy);
+
+    return place_in_locus / Ploidy;
+}
+
 std::vector<int> const &data_plane_vec_c::cumul_indiv_nbr_per_pop()
 {
     return Cumul_indiv_per_pop;
@@ -40,6 +52,7 @@ int data_plane_vec_c::operator[](int i) const
 
 std::vector<int>::const_iterator data_plane_vec_c::begin() const
 {
+    //cbegin => const_iter
     return Plane_vec.cbegin();
 }
 std::vector<int>::const_iterator data_plane_vec_c::end() const
@@ -49,7 +62,7 @@ std::vector<int>::const_iterator data_plane_vec_c::end() const
 
 int const &data_plane_vec_c::operator()(int locus, int pop, int indiv, int gene) const
 {
-    if(gene > Ploidy - 1)
+    if (gene > Ploidy - 1)
     {
         ++gene;
         throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
@@ -67,64 +80,36 @@ int data_plane_vec_c::index_end_locus(int locus) const
     return Sum_indiv_per_locus * (locus + 1) * Ploidy;
 }
 
-bool data_plane_vec_c::same_indiv(int gene1, int gene2) const
+bool data_plane_vec_c::same_indiv(int gene_index1, int gene_index2) const
 {
-    if (gene1 == gene2)
+    if (gene_index1 == gene_index2)
     {
         return true;
     }
-    if (gene1 > gene2)
+    if (gene_index1 > gene_index2)
     {
-        auto temp = gene1;
-        gene1 = gene2;
-        gene2 = temp;
+        auto temp = gene_index1;
+        gene_index1 = gene_index2;
+        gene_index2 = temp;
     }
 
     bool result{false};
     if (Ploidy == 2)
     {
-        result = (gene1 % 2 == 0) && (gene2 - gene1 == 1);
+        result = (gene_index1 % 2 == 0) && (gene_index2 - gene_index1 == 1);
     }
     return result;
 }
 
-bool data_plane_vec_c::same_pop(int locus, int gene1, int gene2) const
+//Passer par un tableau d'attribut des indivs
+bool data_plane_vec_c::pop_at_dist(int gene_index1, int gene_index2, int dist) const
 {
-    if (gene1 == gene2)
+    if (gene_index1 == gene_index2)
     {
         return true;
     }
+    auto const pop_gen1 = Indiv_feat[get_indiv(gene_index1)].Pop;
+    auto const pop_gen2 = Indiv_feat[get_indiv(gene_index2)].Pop;
 
-    if (gene1 > gene2)
-    {
-        auto temp = gene1;
-        gene1 = gene2;
-        gene2 = temp;
-    }
-
-    int cumul_pop_size = Indiv_nbr_per_pop[0] * Ploidy + index_begin_locus(locus);
-    int end_locus = index_end_locus(locus);
-    int nbr_pop = 0;
-
-    //Gene 1 come from nbr_pop - 1 ?
-    while (cumul_pop_size <= end_locus)
-    {
-        if (gene1 < cumul_pop_size)
-        {
-            if (gene2 < cumul_pop_size)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        //cumul for each locus
-        ++nbr_pop;
-        nbr_pop %= Pop_nbr;
-        cumul_pop_size += Indiv_nbr_per_pop[nbr_pop] * Ploidy;
-    }
-
-    return false;
+    return Dist_btw_pop[pop_gen1][pop_gen2] == dist;
 }

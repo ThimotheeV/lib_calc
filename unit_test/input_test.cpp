@@ -54,7 +54,7 @@ TEST_CASE("input_handler_test")
 
     SECTION("trim_by_string")
     {
-        auto result = trim_vec_by_string({"mtDNA", "Pop", "Grange des Peres  ,  0201 003003 0102 0302 1011 01"}, "Pop");
+        auto result = trim_str_vec_by_string({"mtDNA", "Pop", "Grange des Peres  ,  0201 003003 0102 0302 1011 01"}, "Pop");
 
         REQUIRE(result.size() == 2);
         REQUIRE(result[0][0] == "mtDNA");
@@ -85,7 +85,7 @@ TEST_CASE("gen_pop_input_test")
 
         REQUIRE(input.trim_locus("003003") == std::array{3, 3});
         REQUIRE(input.trim_locus("0201") == std::array{2, 1});
-        REQUIRE(input.trim_locus("01") == std::array{-1, 1});
+        REQUIRE(input.trim_locus("01") == std::array{1, 0});
     }
 
     SECTION("constructor")
@@ -97,8 +97,8 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Locus_name[6] == "mtdna");
         //pop name
         REQUIRE(input.Pop_name.size() == 4);
-        REQUIRE(input.Pop_name[2] == "bonneau05");
-        REQUIRE(input.Pop_name[3] == "lastpop");
+        REQUIRE(input.Pop_name[2] == "02");
+        REQUIRE(input.Pop_name[3] == "03");
         //Name of indiv
         REQUIRE(input.Indiv_name.size() == 4);
         REQUIRE(input.Indiv_name[0][0] == "grangedesperes");
@@ -110,7 +110,7 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Genotype[0].size() == 5);
         //First indiv
         REQUIRE(input.Genotype[0][0].at(0) == std::array{2, 1});
-        REQUIRE(input.Genotype[0][0].at(5) == std::array{-1, 1});
+        REQUIRE(input.Genotype[0][0].at(5) == std::array{1, 0});
         //Last indiv -1
         REQUIRE(input.Genotype[3][2].at(0) == std::array{0, 10});
         REQUIRE(input.Genotype[3][2].at(4) == std::array{8, 7});
@@ -118,7 +118,6 @@ TEST_CASE("gen_pop_input_test")
 
     SECTION("constructor_win_format")
     {
-        std::cout << "test" << std::endl;
         genepop_input_c<2> input("input_test_win_form.txt");
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 7);
@@ -139,9 +138,17 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Genotype[0].size() == 5);
         //First indiv
         REQUIRE(input.Genotype[0][0].at(0) == std::array{2, 1});
-        REQUIRE(input.Genotype[0][0].at(5) == std::array{-1, 1});
+        REQUIRE(input.Genotype[0][0].at(5) == std::array{1, 0});
         //Last indiv -1
         REQUIRE(input.Genotype[3][2].at(0) == std::array{0, 10});
         REQUIRE(input.Genotype[3][2].at(4) == std::array{8, 7});
+    }
+    SECTION("dist_btw_pop")
+    {
+        genepop_input_c<2> input("input_test.txt");
+        REQUIRE(input.Dist_btw_pop[0] == std::vector<int>{0, 1, 2, 3});
+        REQUIRE(input.Dist_btw_pop[1] == std::vector<int>{1, 0, 1, 2});
+        REQUIRE(input.Dist_btw_pop[2] == std::vector<int>{2, 1, 0, 1});
+        REQUIRE(input.Dist_btw_pop[3] == std::vector<int>{3, 2, 1, 0});
     }
 }

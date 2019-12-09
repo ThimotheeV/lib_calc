@@ -2,7 +2,8 @@
 
 #include "calc_stat.hpp"
 
-std::array<int, 2> calc_Q0(data_plane_vec_c const &genotype)
+//calc_Q0 => calc_Q0_intra_ind
+double calc_Q0(data_plane_vec_c const &genotype)
 {
     auto Q0 = std::array<int, 2>{0, 0};
     for (int i = 0; i < genotype.size(); i += 2)
@@ -13,11 +14,11 @@ std::array<int, 2> calc_Q0(data_plane_vec_c const &genotype)
         }
         ++Q0.at(1);
     }
-    return Q0;
+    return static_cast<double>(Q0.at(0)) / Q0.at(1);
 }
 
 //pop/locus/indiv
-std::array<int, 2> calc_Q1(data_plane_vec_c const &genotype)
+double calc_Q1(data_plane_vec_c const &genotype)
 {
     auto Q1 = std::array<int, 2>{0, 0};
     for (int locus = 0; locus < genotype.locus_nbr(); ++locus)
@@ -60,11 +61,11 @@ std::array<int, 2> calc_Q1(data_plane_vec_c const &genotype)
             ++Q1.at(1);
         }
     }
-    return Q1;
+    return static_cast<double>(Q1.at(0)) / Q1.at(1);
 }
 
 //pop/locus/indiv
-std::array<int, 2> calc_Q2(data_plane_vec_c const &genotype)
+double calc_Q2(data_plane_vec_c const &genotype)
 {
     auto Q2 = std::array<int, 2>{0, 0};
     for (int locus = 0; locus < genotype.locus_nbr(); ++locus)
@@ -99,21 +100,19 @@ std::array<int, 2> calc_Q2(data_plane_vec_c const &genotype)
             }
         }
     }
-    return Q2;
+    return static_cast<double>(Q2.at(0)) / Q2.at(1);
 }
 
-std::array<int, 2> calc_Fst(std::array<int, 2> Q1, std::array<int, 2> Q2)
+double calc_Fstat(double Qx, double Qy)
 {
-    std::array<int, 2> fst;
-    //Q1 - Q2 / 1 - Q2 => {a/b - c/d} / {1 - c/d} => {ad-cb}/{bd-cb}
-    fst.at(0) = Q1.at(0) * Q2.at(1) - Q2.at(0) * Q1.at(1);
-    fst.at(1) = Q1.at(1) * Q2.at(1) - Q2.at(0) * Q1.at(1);
-    return fst;
+    return (Qx - Qy) / (1 - Qy);
 }
 
 result_qstat calc_qstat(data_plane_vec_c const &genotype)
 {
-    result_qstat result;
+    auto Q0_intra_ind = std::array<int, 2>{0, 0};
+    auto Q1_intra_pop = std::array<int, 2>{0, 0};
+    auto Q2_inter_pop = std::array<int, 2>{0, 0};
 
     for (int locus = 0; locus < genotype.locus_nbr(); ++locus)
     {
@@ -126,29 +125,90 @@ result_qstat calc_qstat(data_plane_vec_c const &genotype)
                 {
                     if (genotype[gene1] == genotype[gene2])
                     {
-                        ++result.Q0.at(0);
+                        ++Q0_intra_ind.at(0);
                     }
-                    ++result.Q0.at(1);
+                    ++Q0_intra_ind.at(1);
                 }
 
-                if (genotype.same_pop(locus, gene1, gene2))
+                if (genotype.pop_at_dist(gene1, gene2, 0))
                 {
                     if (genotype[gene1] == genotype[gene2])
                     {
-                        ++result.Q1.at(0);
+                        ++Q1_intra_pop.at(0);
                     }
-                    ++result.Q1.at(1);
+                    ++Q1_intra_pop.at(1);
                 }
                 else
                 {
                     if (genotype[gene1] == genotype[gene2])
                     {
-                        ++result.Q2.at(0);
+                        ++Q2_inter_pop.at(0);
                     }
-                    ++result.Q2.at(1);
+                    ++Q2_inter_pop.at(1);
                 }
             }
         }
     }
+
+    result_qstat result;
+    result.Q0_intra_ind = static_cast<double>(Q0_intra_ind.at(0)) / Q0_intra_ind.at(1);
+    result.Q1_intra_pop = static_cast<double>(Q1_intra_pop.at(0)) / Q1_intra_pop.at(1);
+    result.Q2_inter_pop = static_cast<double>(Q2_inter_pop.at(0)) / Q2_inter_pop.at(1);
+    return result;
+}
+
+std::vector<double> calc_qr(data_plane_vec_c const &genotype, int dist_max)
+{
+    std::vector<std::array<int, 2>> result_fract(dist_max + 1);
+    for (int locus = 0; locus < genotype.locus_nbr(); ++locus)
+    {
+        int locus_end = genotype.index_end_locus(locus);
+        for (int gene1 = genotype.index_begin_locus(locus); gene1 < locus_end - 1; ++gene1)
+        {
+            for (int gene2 = gene1 + 1; gene2 < locus_end; ++gene2)
+            {
+                for (int dist = 0; dist <= dist_max; ++dist)
+                {
+                    if (genotype.pop_at_dist(gene1, gene2, dist))
+                    {
+                        if (genotype[gene1] == genotype[gene2])
+                        {
+                            ++result_fract[dist].at(0);
+                        }
+                        ++result_fract[dist].at(1);
+                    }
+                }
+            }
+        }
+    }
+
+    std::vector<double> result(result_fract.size());
+    auto result_itr = result.begin();
+    for (auto const &frac : result_fract)
+    {
+        *result_itr = static_cast<double>(frac.at(0)) / frac.at(1);
+        ++result_itr;
+    }
+    return result;
+}
+
+template <typename value>
+double mean(std::vector<value> X)
+{
+    double result;
+    return result;
+}
+
+template <typename value>
+double var(std::vector<value> X)
+{
+    double result;
+    return result;
+}
+
+template <typename value>
+double cov_X_Y(std::vector<value> X, std::vector<value> Y)
+{
+    double result;
     return result;
 }
