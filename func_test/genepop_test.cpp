@@ -2,6 +2,7 @@
 #include <catch2/catch.hpp>
 
 #include "input.hpp"
+#include "calc_stat.hpp"
 
 TEST_CASE("haplo_gen_pop_input_test")
 {
@@ -32,5 +33,19 @@ TEST_CASE("haplo_gen_pop_input_test")
         //Last indiv -1
         REQUIRE(input.Genotype[3][2].at(0) == std::array{1});
         REQUIRE(input.Genotype[3][2].at(4) == std::array{51});
+    }
+
+    SECTION("Fst_by_dist")
+    {
+        genepop_input_c<1> input("genotype_genepop_format.txt");
+        REQUIRE(input.Dist_btw_pop == std::vector<std::vector<int>>{{0, 1, 2, 3, 4},
+                                                                    {1, 0, 1, 2, 3},
+                                                                    {2, 1, 0, 1, 2},
+                                                                    {3, 2, 1, 0, 1},
+                                                                    {4, 3, 2, 1, 0}});
+        data_plane_vec_c data_plane_vec(input);
+        auto result = calc_qr_all_loc(data_plane_vec, 5);
+        auto Fst = Fst_qstat_all_loc(result);
+
     }
 }
