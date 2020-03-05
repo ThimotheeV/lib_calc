@@ -4,6 +4,7 @@
 #include <iterator>
 #include <functional>
 #include <iostream>
+#include <cmath>
 
 #include "input.hpp"
 
@@ -98,16 +99,10 @@ std::vector<std::vector<std::string>> trim_str_vec_by_string(std::vector<std::st
     result.shrink_to_fit();
     return result;
 }
-//TODO : remove
-std::string trim_spaces_underscores(std::string str)
-{
-    auto space = std::find(str.begin(), str.end(), ' ');
 
-    while (space != str.end())
-    {
-        str.erase(space);
-        space = std::find(str.begin(), str.end(), ' ');
-    }
+std::string remove_spaces_underscores(std::string str)
+{
+    str = remove_spaces_in_range(str, 0, str.size());
 
     auto underscore = std::find(str.begin(), str.end(), '_');
 
@@ -115,6 +110,21 @@ std::string trim_spaces_underscores(std::string str)
     {
         str.erase(underscore);
         underscore = std::find(str.begin(), str.end(), '_');
+    }
+
+    return str;
+}
+
+std::string remove_spaces_in_range(std::string str, int pos_beg, int pos_end)
+{
+    auto beg_itr = str.begin();
+    auto space = std::find(beg_itr + pos_beg, beg_itr + pos_end, ' ');
+
+    while ((space != str.end()) && (pos_end > 0))
+    {
+        str.erase(space);
+        --pos_end;
+        space = std::find(space, beg_itr + pos_end, ' ');
     }
 
     return str;
@@ -172,8 +182,8 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_file)
     // std::cout<<pop_vec[0].size()<<std::endl;
 
     //Special case of header => first line + locus name => in pop_vec[0]
-    Locus_name.reserve(pop_vec[0].size());
-    Locus_name.push_back(pop_vec[0][0]);
+    Locus_name.reserve(pop_vec[0].size()-1);
+    Header = pop_vec[0][0];
     for (int locus = 1; locus < pop_vec[0].size(); ++locus)
     {
         auto const temp_str_vec = trim_by_char(pop_vec[0][locus], ',');
@@ -184,7 +194,7 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_file)
 
     for (int locus = 1; locus < Locus_name.size(); ++locus)
     {
-        Locus_name[locus] = trim_spaces_underscores(Locus_name[locus]);
+        Locus_name[locus] = remove_spaces_underscores(Locus_name[locus]);
     }
 
     //Trim pop by indiv and locus
@@ -203,10 +213,19 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_file)
         for (auto const &indiv : pop_vec[nbr_pop])
         {
             auto const temp_vec = trim_by_char(indiv, ',');
-            //TODO : fonction qui permet d'aller cherhcer le prochain caractère interessant
-            Indiv_name[nbr_pop - 1].push_back(trim_spaces_underscores(temp_vec[0]));
-            auto const locus_vec = trim_by_char(temp_vec[1], ' ');
+            //Remove space before and after text
+            auto tmp_vec = remove_spaces_in_range(temp_vec[0], 0, temp_vec[0].find_first_not_of(' '));
+            tmp_vec = remove_spaces_in_range(tmp_vec, tmp_vec.find_last_not_of(' '), tmp_vec.size());
+            Indiv_name[nbr_pop - 1].push_back(tmp_vec);
+
+            tmp_vec = remove_spaces_in_range(temp_vec[1], 0, temp_vec[1].find_first_not_of(' '));
+            auto const locus_vec = trim_by_char(tmp_vec, ' ');
             //locus level
+            if (locus_vec.size() != Locus_name.size())
+            {
+                std::string str = "Pop " + std::to_string(nbr_pop - 1) + " have " + std::to_string(locus_vec.size()) + " locus but file " + path_to_file + " describ " + std::to_string(Locus_name.size()) + " locus.";
+                throw std::logic_error(str);
+            }
             auto temp_indiv = std::vector<std::array<int, ploidy>>(locus_vec.size());
             for (int locus = 0; locus < locus_vec.size(); ++locus)
             {
@@ -214,7 +233,7 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_file)
             }
             temp_pop.emplace_back(std::move(temp_indiv));
         }
-        Pop_name[nbr_pop - 1] = *(Indiv_name[nbr_pop - 1].end() - 1);
+        Pop_name[nbr_pop - 1] = trim_by_char(*(Indiv_name[nbr_pop - 1].end() - 1), ' ');
         Genotype[nbr_pop - 1] = std::move(temp_pop);
     }
 
@@ -260,22 +279,21 @@ std::array<int, ploidy> genepop_input_c<ploidy>::trim_locus(std::string str)
 template <std::size_t ploidy>
 void genepop_input_c<ploidy>::calc_dist_btw_pop()
 {
-    Dist_btw_pop = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
+    Dist_btw_pop = std::vector<std::vector<float>>(Pop_name.size(), std::vector<float>(Pop_name.size()));
     std::vector<std::array<int, 2>> pop_place(Pop_name.size());
     auto pop_place_itr = pop_place.begin();
 
     for (auto pop : Pop_name)
     {
-        int middle = pop.size() / 2;
         try
         {
-            pop_place_itr->at(0) = std::stoi(pop.substr(0, middle));
-            pop_place_itr->at(1) = std::stoi(pop.substr(middle, pop.size() - 1));
+            pop_place_itr->at(0) = std::stoi(pop[0]);
+            pop_place_itr->at(1) = std::stoi(pop[1]);
         }
         catch (const std::exception &e)
         {
-            std::cerr << pop.substr(0, middle) << " is not a numeric value, can't be use to calculate distance between population. Reset matrix of distance between pop." << std::endl;
-            Dist_btw_pop = std::vector<std::vector<int>>{};
+            std::cerr << pop[0] << " is not a numeric value, can't be use to calculate distance between population. Reset matrix of distance between pop." << std::endl;
+            Dist_btw_pop = std::vector<std::vector<float>>{};
             return;
         }
 
@@ -286,7 +304,8 @@ void genepop_input_c<ploidy>::calc_dist_btw_pop()
     {
         for (auto pop2 = 0; pop2 < Dist_btw_pop.size(); ++pop2)
         {
-            Dist_btw_pop[pop1][pop2] = abs(pop_place[pop1].at(0) - pop_place[pop2].at(0) + abs(pop_place[pop1].at(1) - pop_place[pop2].at(1)));
+            //euclidien dist
+            Dist_btw_pop[pop1][pop2] = sqrt(pow(pop_place[pop1].at(0) - pop_place[pop2].at(0), 2) + pow(pop_place[pop1].at(1) - pop_place[pop2].at(1), 2));
         }
     }
 }

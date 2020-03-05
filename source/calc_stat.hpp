@@ -1,35 +1,20 @@
 #pragma once
 #include <array>
 
-#include "custom_vec.hpp"
+#include "data_plane_vec.hpp"
 
 //TODO : vecteur de mot clé pour pouvoir comparer un ensemble d'attribut (indiv, pop, habitat) => fonction de comparaison
-double calc_Q0(data_plane_vec_c const &genotype);
-double calc_Q1(data_plane_vec_c const &genotype);
-double calc_Q2(data_plane_vec_c const &genotype);
-//Fst = Q1, Q2
-double calc_Fstat(double Qx, double Qy);
+double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec);
+double calc_Q_inter_indiv_intra_pop(data_plane_vec_c const &data_plane_vec);
+double calc_Q_inter_pop(data_plane_vec_c const &data_plane_vec);
 
-struct result_qstat
-{
-    double Q0_intra_ind{0};
-    double Q1_intra_pop{0};
-    double Q2_inter_pop{0};
-};
-
-//Other way to calc
-result_qstat calc_qstat_loc_by_loc(data_plane_vec_c const &genotype, int locus);
-result_qstat calc_qstat_all_loc(data_plane_vec_c const &genotype);
-std::vector<double> calc_qr_loc_by_loc(data_plane_vec_c const &genotype, int dist_max, int locus);
-std::vector<double> calc_qr_all_loc(data_plane_vec_c const &genotype, int dist_max);
-std::vector<double> Fst_qstat_loc_by_loc(std::vector<double> const &calc_qr_loc_by_loc, int locus);
-std::vector<double> Fst_qstat_all_loc(std::vector<double> const &calc_qr_all_loc);
-
-template <typename value>
-double mean(std::vector<value> X_vec);
-template <typename value>
-double var(std::vector<value> X_vec, double meanX);
-template <typename value1, typename value2>
-double cov_X_Y(std::vector<value1> X_vec, double meanX, std::vector<value2> Y_vec, double meanY);
-template <typename value1, typename value2>
-std::array<double, 2> linear_regres_X_Y(std::vector<value1> X_vec, std::vector<value2> Y_vec);
+std::vector<std::array<double, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_plane_vec, int dist_max, int locus);
+std::vector<std::array<double, 2>> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec, int dist_max);
+// std::vector<std::array<double, 2>> ar_ln_dist_qr(data_plane_vec_c const &data_plane_vec, int dist_max);
+//std::vector<std::array<double, 3>> ar_by_locus_by_pair(data_plane_vec_c const &data_plane_vec, int locus);
+std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane_vec);
+std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane_vec);
+//esti Fis, Fst, Fit
+std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c const &data_plane_vec, int locus);
+std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int locus);
+std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec);

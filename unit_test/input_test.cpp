@@ -5,9 +5,18 @@
 
 TEST_CASE("input_handler_test")
 {
-    SECTION("trim_spaces_underscores_andlower")
+    SECTION("remove_spaces_in_range")
     {
-        auto result = trim_spaces_underscores("Grange_des Peres  ");
+        std::string str = "Grange des Peres  ";
+        auto result = remove_spaces_in_range(str, 15, str.size());
+        result = lower_case(result);
+
+        REQUIRE(result == "grange des peres");
+    }
+
+    SECTION("remove_spaces_underscores_andlower")
+    {
+        auto result = remove_spaces_underscores("Grange_des Peres  ");
         result = lower_case(result);
 
         REQUIRE(result == "grangedesperes");
@@ -92,17 +101,19 @@ TEST_CASE("gen_pop_input_test")
     {
         genepop_input_c<2> input("input_test.txt");
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
-        REQUIRE(input.Locus_name.size() == 7);
-        REQUIRE(input.Locus_name[5] == "adh-5");
-        REQUIRE(input.Locus_name[6] == "mtdna");
+        REQUIRE(input.Locus_name.size() == 6);
+        REQUIRE(input.Locus_name[4] == "adh-5");
+        REQUIRE(input.Locus_name[5] == "mtdna");
         //pop name
         REQUIRE(input.Pop_name.size() == 4);
-        REQUIRE(input.Pop_name[2] == "02");
-        REQUIRE(input.Pop_name[3] == "03");
+        REQUIRE(input.Pop_name[2][0] == "0");
+        REQUIRE(input.Pop_name[2][1] == "2.00");
+        REQUIRE(input.Pop_name[3][0] == "-0.00");
+        REQUIRE(input.Pop_name[3][1] == "3");
         //Name of indiv
         REQUIRE(input.Indiv_name.size() == 4);
-        REQUIRE(input.Indiv_name[0][0] == "grangedesperes");
-        REQUIRE(input.Indiv_name[2][1] == "bonneau02");
+        REQUIRE(input.Indiv_name[0][0] == "grange des peres");
+        REQUIRE(input.Indiv_name[2][1] == "bonneau 02");
         REQUIRE(input.Indiv_name[3][2] == "");
         //Number of pop
         REQUIRE(input.Genotype.size() == 4);
@@ -120,17 +131,17 @@ TEST_CASE("gen_pop_input_test")
     {
         genepop_input_c<2> input("input_test_win_form.txt");
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
-        REQUIRE(input.Locus_name.size() == 7);
-        REQUIRE(input.Locus_name[5] == "adh-5");
-        REQUIRE(input.Locus_name[6] == "mtdna");
+        REQUIRE(input.Locus_name.size() == 6);
+        REQUIRE(input.Locus_name[4] == "adh-5");
+        REQUIRE(input.Locus_name[5] == "mtdna");
         //pop name
         REQUIRE(input.Pop_name.size() == 4);
-        REQUIRE(input.Pop_name[2] == "bonneau05");
-        REQUIRE(input.Pop_name[3] == "lastpop");
+        REQUIRE(input.Pop_name[2][0] == "bonneau");
+        REQUIRE(input.Pop_name[3][0] == "last");
         //Name of indiv
         REQUIRE(input.Indiv_name.size() == 4);
-        REQUIRE(input.Indiv_name[0][0] == "grangedesperes");
-        REQUIRE(input.Indiv_name[2][1] == "bonneau02");
+        REQUIRE(input.Indiv_name[0][0] == "grange des peres");
+        REQUIRE(input.Indiv_name[2][1] == "bonneau 02");
         REQUIRE(input.Indiv_name[3][2] == "");
         //Number of pop
         REQUIRE(input.Genotype.size() == 4);
@@ -146,9 +157,9 @@ TEST_CASE("gen_pop_input_test")
     SECTION("dist_btw_pop")
     {
         genepop_input_c<2> input("input_test.txt");
-        REQUIRE(input.Dist_btw_pop[0] == std::vector<int>{0, 1, 2, 3});
-        REQUIRE(input.Dist_btw_pop[1] == std::vector<int>{1, 0, 1, 2});
-        REQUIRE(input.Dist_btw_pop[2] == std::vector<int>{2, 1, 0, 1});
-        REQUIRE(input.Dist_btw_pop[3] == std::vector<int>{3, 2, 1, 0});
+        REQUIRE(input.Dist_btw_pop[0] == std::vector<float>{0, 1, 2, 3});
+        REQUIRE(input.Dist_btw_pop[1] == std::vector<float>{1, 0, 1, 2});
+        REQUIRE(input.Dist_btw_pop[2] == std::vector<float>{2, 1, 0, 1});
+        REQUIRE(input.Dist_btw_pop[3] == std::vector<float>{3, 2, 1, 0});
     }
 }
