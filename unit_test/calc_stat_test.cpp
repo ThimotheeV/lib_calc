@@ -63,100 +63,217 @@ TEST_CASE("Q_intra_indiv Q_inter_indiv_intra_pop Q_inter_pop calc_stat_test")
     //     auto result = calc_Q_inter_pop(data_plane_vec);
     //     REQUIRE(result == 67.0 / 216);
     // }
-    SECTION("Q_inter_pop with missing value")
-    {
-        genepop_input_c<2> gen_pop_input;
-        //3 pop, 3 indiv, 2 locus
-        gen_pop_input.Genotype = {{{{1, 0}, {1, 1}}, {{1, 1}, {1, 1}}, {{0, 2}, {1, 3}}},
-                                  {{{1, 3}, {1, 3}}, {{0, 3}, {2, 3}}, {{2, 3}, {2, 3}}},
-                                  {{{1, 1}, {1, 2}}, {{1, 3}, {2, 1}}, {{2, 2}, {2, 0}}}};
+    // SECTION("Q_inter_pop with missing value")
+    // {
+    //     genepop_input_c<2> gen_pop_input;
+    //     //3 pop, 3 indiv, 2 locus
+    //     gen_pop_input.Genotype = {{{{1, 0}, {1, 1}}, {{1, 1}, {1, 1}}, {{0, 2}, {1, 3}}},
+    //                               {{{1, 3}, {1, 3}}, {{0, 3}, {2, 3}}, {{2, 3}, {2, 3}}},
+    //                               {{{1, 1}, {1, 2}}, {{1, 3}, {2, 1}}, {{2, 2}, {2, 0}}}};
 
-        data_plane_vec_c data_plane_vec(gen_pop_input);
-        auto result = calc_Q_inter_pop(data_plane_vec);
-        REQUIRE(result == 53.0 / 170);
-    }
-    SECTION("Q_inter_pop with diff pop size")
-    {
-        genepop_input_c<2> gen_pop_input;
-        //3 pop, 2-1-3 indiv, 3 locus
-        gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
-                                  {{{1, 3}, {1, 3}, {1, 3}}},
-                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 3}}}};
+    //     data_plane_vec_c data_plane_vec(gen_pop_input);
+    //     auto result = calc_Q_inter_pop(data_plane_vec);
+    //     REQUIRE(result == 53.0 / 170);
+    // }
+    // SECTION("Q_inter_pop with diff pop size")
+    // {
+    //     genepop_input_c<2> gen_pop_input;
+    //     //3 pop, 2-1-3 indiv, 3 locus
+    //     gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+    //                               {{{1, 3}, {1, 3}, {1, 3}}},
+    //                               {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 3}}}};
 
-        data_plane_vec_c data_plane_vec(gen_pop_input);
-        auto result = calc_Q_inter_pop(data_plane_vec);
-        REQUIRE(result == 44.0 / 132);
-    }
+    //     data_plane_vec_c data_plane_vec(gen_pop_input);
+    //     auto result = calc_Q_inter_pop(data_plane_vec);
+    //     REQUIRE(result == 44.0 / 132);
+    // }
 }
-
-TEST_CASE("qr_all_loc_test")
+TEST_CASE("calc_Hnei_calc_stat_test")
 {
-    SECTION("qr by locus without missing value")
+    //Compare with IBDSim
+    SECTION("calc_Hnei one locus")
     {
         genepop_input_c<2> gen_pop_input;
         gen_pop_input.Dist_btw_pop = {{0, 1, 2},
                                       {1, 0, 1},
                                       {2, 1, 0}};
+        //3 pop, 3 indiv, 1 locus
+        gen_pop_input.Genotype = {{{{1, 2}}, {{3, 1}}, {{4, 5}}},
+                                  {{{6, 1}}, {{5, 7}}, {{8, 9}}},
+                                  {{{10, 11}}, {{12, 1}}, {{5, 13}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        auto result = calc_Hnei_per_loc(data_plane_vec, 0);
+        REQUIRE(result == Approx(0.941176).margin(0.0001));
+    }
+
+    SECTION("calc_Hnei multi locus")
+    {
+        genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Dist_btw_pop = {{0, 1, 2},
+                                      {1, 0, 1},
+                                      {2, 1, 0}};
+        //3 pop, 3 indiv, 3 locus
+        gen_pop_input.Genotype = {{{{1, 2}, {1, 2}, {1, 2}}, {{3, 1}, {3, 2}, {3, 4}}, {{4, 5}, {4, 5}, {5, 6}}},
+                                  {{{6, 1}, {6, 7}, {7, 8}}, {{5, 7}, {1, 8}, {8, 9}}, {{8, 9}, {9, 1}, {10, 11}}},
+                                  {{{10, 11}, {4, 1}, {1, 11}}, {{12, 1}, {8, 5}, {6, 12}}, {{5, 13}, {10, 1}, {13, 14}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        auto result = calc_Hnei(data_plane_vec);
+        REQUIRE(result == Approx(0.941176).margin(0.0001));
+    }
+}
+
+TEST_CASE("calc_Var_calc_stat_test")
+{
+    SECTION("calc_Var simple case")
+    {
+        genepop_input_c<2> gen_pop_input;
+        //3 pop, 2 indiv, 1 locus
+        gen_pop_input.Genotype = {{{{10, 12}}, {{10, 8}}},
+                                  {{{10, 8}}, {{12, 12}}},
+                                  {{{10, 10}}, {{8, 10}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        REQUIRE(calc_Var_per_loc(data_plane_vec, 0) == (24.0 / 12)*(12.0/11));
+    }
+
+    SECTION("calc_Var complexe case")
+    {
+        genepop_input_c<2> gen_pop_input;
+        //2 pop, 2 indiv, 1 locus
+        gen_pop_input.Genotype = {{{{1, 2}}, {{2, 1}}},
+                                  {{{5, 4}}, {{9, 7}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        REQUIRE(calc_Var_per_loc(data_plane_vec, 0) == Approx(8.6964).margin(0.0001));
+    }
+}
+
+TEST_CASE("calc_Hobs_calc_stat_test")
+{
+    SECTION("calc_Hobs without missing value")
+    {
+        genepop_input_c<2> gen_pop_input;
         //3 pop, 2 indiv, 3 locus
         gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
                                   {{{1, 3}, {1, 3}, {1, 3}}, {{2, 3}, {2, 3}, {2, 3}}},
                                   {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}}};
 
         data_plane_vec_c data_plane_vec(gen_pop_input);
-        auto result = calc_qr_loc_by_loc(data_plane_vec, 2, 0);
-        REQUIRE(result[0] == std::array<double, 2>{0, 7.0 / 18});
-        REQUIRE(result[1] == std::array<double, 2>{1, 8.0 / 32});
-        REQUIRE(result[2] == std::array<double, 2>{2, 10.0 / 16});
+        REQUIRE(calc_Hobs_per_loc(data_plane_vec, 0) == 4.0 / 6);
+        REQUIRE(calc_Hobs_per_loc(data_plane_vec, 1) == 4.0 / 6);
+        REQUIRE(calc_Hobs_per_loc(data_plane_vec, 2) == 5.0 / 6);
+    }
+}
 
-        result = calc_qr_loc_by_loc(data_plane_vec, 2, 1);
-        REQUIRE(result[0] == std::array<double, 2>{0, 7.0 / 18});
-        REQUIRE(result[1] == std::array<double, 2>{1, 8.0 / 32});
-        REQUIRE(result[2] == std::array<double, 2>{2, 6.0 / 16});
+TEST_CASE("calc_MGW_calc_stat_test")
+{
+    //Compare with IBDSim
+    SECTION("calc_MGW one locus")
+    {
+        genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Dist_btw_pop = {{0, 1, 2},
+                                      {1, 0, 1},
+                                      {2, 1, 0}};
+        //3 pop, 3 indiv, 1 locus
+        gen_pop_input.Genotype = {{{{1, 2}}, {{3, 1}}, {{4, 5}}},
+                                  {{{6, 1}}, {{5, 7}}, {{8, 6}}},
+                                  {{{10, 8}}, {{10, 1}}, {{5, 10}}}};
 
-        result = calc_qr_loc_by_loc(data_plane_vec, 2, 2);
-        REQUIRE(result[0] == std::array<double, 2>{0, 5.0 / 18});
-        REQUIRE(result[1] == std::array<double, 2>{1, 11.0 / 32});
-        REQUIRE(result[2] == std::array<double, 2>{2, 5.0 / 16});
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        auto result = calc_MGW_per_loc(data_plane_vec, 0);
+        REQUIRE(result == 0.9);
+    }
+
+    SECTION("calc_MGW multi locus")
+    {
+        genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Dist_btw_pop = {{0, 1, 2},
+                                      {1, 0, 1},
+                                      {2, 1, 0}};
+        //3 pop, 3 indiv, 3 locus
+        gen_pop_input.Genotype = {{{{1, 2}, {1, 2}, {1, 2}}, {{3, 1}, {3, 2}, {3, 4}}, {{4, 5}, {4, 5}, {5, 6}}},
+                                  {{{6, 1}, {6, 7}, {7, 8}}, {{5, 7}, {1, 8}, {8, 9}}, {{8, 9}, {9, 1}, {10, 11}}},
+                                  {{{10, 11}, {4, 1}, {1, 11}}, {{12, 1}, {8, 5}, {6, 12}}, {{5, 13}, {10, 1}, {13, 14}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        auto result = calc_MGW(data_plane_vec);
+        REQUIRE(result == 1);
+    }
+}
+
+TEST_CASE("qr_all_loc_calc_stat_test")
+{
+    SECTION("qr by locus without missing value")
+    {
+        genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Nbr_dist_class = 3;
+        gen_pop_input.Dist_class_btw_pop = {{0, 1, 2},
+                                            {1, 0, 1},
+                                            {2, 1, 0}};
+        //3 pop, 2 indiv, 3 locus
+        gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+                                  {{{1, 3}, {1, 3}, {1, 3}}, {{2, 3}, {2, 3}, {2, 3}}},
+                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}}};
+
+        data_plane_vec_c data_plane_vec(gen_pop_input);
+        auto result = calc_qr_loc_by_loc(data_plane_vec, 0);
+        REQUIRE(result[0] == std::array<int, 2>{7, 18});
+        REQUIRE(result[1] == std::array<int, 2>{8, 32});
+        REQUIRE(result[2] == std::array<int, 2>{10, 16});
+
+        result = calc_qr_loc_by_loc(data_plane_vec, 1);
+        REQUIRE(result[0] == std::array<int, 2>{7, 18});
+        REQUIRE(result[1] == std::array<int, 2>{8, 32});
+        REQUIRE(result[2] == std::array<int, 2>{6, 16});
+
+        result = calc_qr_loc_by_loc(data_plane_vec, 2);
+        REQUIRE(result[0] == std::array<int, 2>{5,18});
+        REQUIRE(result[1] == std::array<int, 2>{11,32});
+        REQUIRE(result[2] == std::array<int, 2>{5, 16});
     }
 
     SECTION("qr without missing value")
     {
         genepop_input_c<2> gen_pop_input;
-        gen_pop_input.Dist_btw_pop = {{0, 1, 2},
-                                      {1, 0, 1},
-                                      {2, 1, 0}};
+        gen_pop_input.Nbr_dist_class = 3;
+        gen_pop_input.Dist_class_btw_pop = {{0, 1, 2},
+                                            {1, 0, 1},
+                                            {2, 1, 0}};
         //3 pop, 2 indiv, 3 locus
         gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
                                   {{{1, 3}, {1, 3}, {1, 3}}, {{2, 3}, {2, 3}, {2, 3}}},
                                   {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}}};
 
         data_plane_vec_c data_plane_vec(gen_pop_input);
-        auto result = calc_qr_all_loc(data_plane_vec, 2);
-        REQUIRE(result[0] == std::array<double, 2>{0, 19.0 / 54});
-        REQUIRE(result[1] == std::array<double, 2>{1, 27.0 / 96});
-        REQUIRE(result[2] == std::array<double, 2>{2, 21.0 / 48});
+        auto result = calc_qr_all_loc(data_plane_vec);
+        REQUIRE(result[0] == 19.0 / 54);
+        REQUIRE(result[1] == 27.0 / 96);
+        REQUIRE(result[2] == 21.0 / 48);
     }
 
     SECTION("haploid qr with diff pop size")
     {
         genepop_input_c<1> gen_pop_input;
-        gen_pop_input.Dist_btw_pop = {{0, 1, 2},
-                                      {1, 0, 1},
-                                      {2, 1, 0}};
+        gen_pop_input.Nbr_dist_class = 3;
+        gen_pop_input.Dist_class_btw_pop = {{0, 1, 2},
+                                            {1, 0, 1},
+                                            {2, 1, 0}};
         //3 pop, 2-1-3 indiv, 3 locus
         gen_pop_input.Genotype = {{{{1}, {1}, {1}}, {{1}, {1}, {1}}},
                                   {{{1}, {1}, {1}}},
                                   {{{1}, {1}, {1}}, {{2}, {2}, {2}}, {{2}, {2}, {2}}}};
 
         data_plane_vec_c data_plane_vec(gen_pop_input);
-        auto result = calc_qr_all_loc(data_plane_vec, 2);
-        REQUIRE(result[0] == std::array<double, 2>{0, 6.0 / 12});
-        REQUIRE(result[1] == std::array<double, 2>{1, 9.0 / 15});
-        REQUIRE(result[2] == std::array<double, 2>{2, 6.0 / 18});
+        auto result = calc_qr_all_loc(data_plane_vec);
+        REQUIRE(result[0] == 6.0 / 12);
+        REQUIRE(result[1] == 9.0 / 15);
+        REQUIRE(result[2] == 6.0 / 18);
     }
 }
 
-TEST_CASE("ar_test")
+TEST_CASE("ar_calc_stat_test")
 {
     SECTION("diploid ar without missing value")
     {
@@ -205,7 +322,7 @@ TEST_CASE("ar_test")
     }
 }
 
-TEST_CASE("er_test")
+TEST_CASE("er_calc_stat_test")
 {
     SECTION("simple er without missing value")
     {
@@ -309,7 +426,7 @@ TEST_CASE("er_test")
     }
 }
 
-TEST_CASE("Fstat_by_loc_with_probid_test")
+TEST_CASE("Fstat_by_loc_with_probid_calc_stat_test")
 {
     SECTION("Fstat_by_loc_with_probid simple case")
     {
@@ -354,7 +471,7 @@ TEST_CASE("Fstat_by_loc_with_probid_test")
     }
 }
 
-TEST_CASE("Fstat_by_loc_with_indic_test")
+TEST_CASE("Fstat_by_loc_with_indic_calc_stat_test")
 {
     SECTION("Fstat_by_loc_with_indic simple case")
     {

@@ -102,15 +102,15 @@ TEST_CASE("regr_r2_test")
 {
     SECTION("std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> X_Y_vec)")
     {
-        std::vector<float> vec_i = {479, 720, 63, 435, 234, 967, 608, 1, 270, 991,
+        std::vector<double> vec_i = {479, 720, 63, 435, 234, 967, 608, 1, 270, 991,
                                     220, 279, 836, 117, 498, 300, 101, 269, 983, 575,
                                     923, 401, 37, 197, 398, 355, 228, 865, 307, 897};
 
-        std::vector<float> vec_d = {0.971, 0.564, 0.329, 0.962, 0.803, 0.894, 0.178, 0.709, 0.633, 0.607,
+        std::vector<double> vec_d = {0.971, 0.564, 0.329, 0.962, 0.803, 0.894, 0.178, 0.709, 0.633, 0.607,
                                     0.917, 0.810, 0.410, 0.952, 0.234, 0.708, 0.168, 0.648, 0.066, 0.902,
                                     0.616, 0.426, 0.839, 0.397, 0.682, 0.398, 0.940, 0.190, 0.852, 0.822};
 
-        std::vector<std::array<float, 2>> vec_i_d(vec_i.size());
+        std::vector<std::array<double, 2>> vec_i_d(vec_i.size());
         auto vec_i_itr = vec_i.begin();
         auto vec_d_itr = vec_d.begin();
 

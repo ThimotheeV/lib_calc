@@ -17,24 +17,26 @@ class data_plane_vec_c
 private:
     std::vector<int> Plane_vec;
     std::vector<feature_c> Indiv_feat;
-    std::vector<std::vector<float>> Dist_btw_pop;
+    std::vector<std::vector<double>> Dist_btw_pop;
+    std::vector<std::vector<int>> Dist_class_btw_pop;
+    int Nbr_dist_class = 10;
     //Locus, pop
-    int Pop_nbr{0};
+    int Nbr_of_pop{0};
     //Cumul sum of indiv for each pop
-    int Indiv_nbr_tot{0};
-    std::vector<int> Indiv_nbr_per_pop;
-    std::vector<int> Cumul_indiv_nbr_per_pop;
+    int Nbr_of_indiv_tot{0};
+    std::vector<int> Nbr_of_indiv_per_pop;
+    std::vector<int> Cumul_nbr_of_indiv_per_pop;
     int Locus_nbr{0};
     //Complete indiv sampled
-    std::vector<int> Nomiss_gene_nbr_per_loc;
-    std::vector<int> Nomiss_indiv_nbr_per_loc;
-    std::vector<int> Nomiss_pop_nbr_per_loc;
+    std::vector<int> Nomiss_nbr_of_gene_per_loc;
+    std::vector<int> Nomiss_nbr_of_indiv_per_loc;
+    std::vector<int> Nomiss_nbr_of_pop_per_loc;
     //matrix(indiv, loc)
     std::vector<bin_vec> Nomiss_indiv_bool_per_loc;
-    std::vector<std::vector<int>> Nomiss_gene_nbr_per_loc_per_pop;
-    std::vector<std::vector<int>> Nomiss_indiv_nbr_per_loc_per_pop;
+    std::vector<std::vector<int>> Nomiss_nbr_of_gene_per_loc_per_pop;
+    std::vector<std::vector<int>> Nomiss_nbr_of_indiv_per_loc_per_pop;
     //Allele state resum by loc (min, max, nbr of state)
-    std::vector<std::array<int, 3>> Allele_state_per_loc;
+    std::vector<std::vector<std::array<int, 2>>> Allele_state_per_loc;
     int Ploidy{-1};
 
 public:
@@ -52,24 +54,26 @@ public:
     int get_Ploidy() const;
 
     int size() const;
-    int pop_nbr() const;
-    int locus_nbr() const;                    //number of locus in a specifique indiv
-    int indiv_nbr() const;                    //number of pop
-    int indiv_nbr_per_pop(int pop_nbr) const; //pop size
-    std::vector<int> const &cumul_indiv_nbr_per_pop() const;
+    int nbr_of_pop() const;
+    int nbr_of_locus() const;                    //number of locus in a specifique indiv
+    int nbr_of_gene()  const;
+    int nbr_of_indiv() const;
+    int nbr_of_indiv_per_pop(int nbr_of_pop) const; //pop size
+    std::vector<int> const &cumul_nbr_of_indiv_per_pop() const;
 
     int get_indiv(int gene) const;
     feature_c const &get_feature(int indiv);
 
-    int nomiss_gene_nbr_per_loc(int locus) const;
-    int nomiss_indiv_nbr_per_loc(int locus) const;
-    std::vector<int> const &nomiss_gene_nbr_per_loc_per_pop(int locus) const;
-    int nomiss_gene_nbr_per_loc_per_pop(int locus, int pop) const;
-    std::vector<int> const &nomiss_indiv_nbr_per_loc_per_pop(int locus) const;
-    int nomiss_indiv_nbr_per_loc_per_pop(int locus, int pop) const;
-    int nomiss_pop_nbr_per_loc(int locus) const;
+    int nomiss_nbr_of_gene_per_loc(int locus) const;
+    int nomiss_nbr_of_indiv_per_loc(int locus) const;
+    std::vector<int> const &nomiss_nbr_of_gene_per_loc_per_pop(int locus) const;
+    int nomiss_nbr_of_gene_per_loc_per_pop(int locus, int pop) const;
+    std::vector<int> const &nomiss_nbr_of_indiv_per_loc_per_pop(int locus) const;
+    int nomiss_nbr_of_indiv_per_loc_per_pop(int locus, int pop) const;
+    int nomiss_nbr_of_pop_per_loc(int locus) const;
 
-    std::array<int, 3> const &allele_state_per_loc(int locus) const;
+    int nbr_allele_per_loc(int locus) const;
+    std::vector<std::array<int, 2>> const &allele_state_per_loc(int locus) const;
 
     std::vector<int> const &get_plane_vec();
     int operator[](int i) const;
@@ -88,7 +92,9 @@ public:
     bool same_pop(int dpv_gene_index1, int dpv_gene_index2) const;
     bin_vec const &nomiss_data_indiv(int indiv) const;
     bool nomiss_data_indiv_per_loc(int indiv, int locus) const;
-    float dist_btw_pop(int dpv_gene_index1, int dpv_gene_index2) const;
+    double dist_btw_pop(int dpv_gene_index1, int dpv_gene_index2) const;
+    int nbr_of_dist_class() const;
+    int dist_class_btw_pop(int dpv_gene_index1, int dpv_gene_index2) const;
 };
 
 #include "data_plane_vec.tpp"

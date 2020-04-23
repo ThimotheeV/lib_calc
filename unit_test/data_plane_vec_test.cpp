@@ -18,13 +18,14 @@ TEST_CASE("haploid_data_plane_vec_test")
         //{{{{1}, {1}}, {{3}, {3}}, {{1}, {2}}},
         // {{{1}, {2}}, {{1}, {2}}, {{2}, {2}}},
         // {{{1}, {3}}, {{3}, {2}}, {{3}, {2}}}};
-        REQUIRE(plane_3d_vec.pop_nbr() == 3);
-        REQUIRE(plane_3d_vec.indiv_nbr_per_pop(0) == 2);
-        REQUIRE(plane_3d_vec.locus_nbr() == 3);
-        REQUIRE(plane_3d_vec.indiv_nbr() == 6);
+        REQUIRE(plane_3d_vec.nbr_of_pop() == 3);
+        REQUIRE(plane_3d_vec.nbr_of_indiv_per_pop(0) == 2);
+        REQUIRE(plane_3d_vec.nbr_of_locus() == 3);
+        REQUIRE(plane_3d_vec.nbr_of_indiv() == 6);
 
-        REQUIRE(plane_3d_vec.cumul_indiv_nbr_per_pop() == std::vector<int>{0, 2, 4});
-        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::array<int, 3>{1, 2, 2});
+        REQUIRE(plane_3d_vec.cumul_nbr_of_indiv_per_pop() == std::vector<int>{0, 2, 4});
+        REQUIRE(plane_3d_vec.nbr_allele_per_loc(1) == 2);
+        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::vector<std::array<int, 2>>{{1, 2}, {2, 4}});
 
         std::vector<int> result = {1, 1, 3, 3, 1, 2, 1, 2, 1, 2, 2, 2, 1, 3, 3, 2, 3, 2};
         REQUIRE(plane_3d_vec.get_plane_vec() == result);
@@ -46,31 +47,32 @@ TEST_CASE("haploid_data_plane_vec_test")
         //{{{{1}, {1}}, {{3}, {3}}, {{1}, {2}}},
         // {{{1}, {2}}, {{1}, {2}}, {{0}, {0}}},
         // {{{0}, {3}}, {{3}, {2}}, {{3}, {2}}}};
-        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::array<int, 3>{1, 2, 2});
+        REQUIRE(plane_3d_vec.nbr_allele_per_loc(1) == 2);
+        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::vector<std::array<int, 2>>{{1, 2}, {2, 2}});
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(0) == 6);
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(1) == 4);
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(2) == 5);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(0) == 6);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(1) == 4);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(2) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(0, 0) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(0, 0) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(1) == std::vector<int>{2, 2});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(2) == std::vector<int>{1, 2, 2});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(2, 2) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(1) == std::vector<int>{2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(2) == std::vector<int>{1, 2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(2, 2) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(0) == 6);
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(1) == 4);
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(2) == 5);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(0) == 6);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(1) == 4);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(2) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(0, 0) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(0, 0) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(1) == std::vector<int>{2, 2});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(2) == std::vector<int>{1, 2, 2});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(2, 2) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(1) == std::vector<int>{2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(2) == std::vector<int>{1, 2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(2, 2) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_pop_nbr_per_loc(0) == 3);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_pop_per_loc(0) == 3);
     }
 
     SECTION("get_indiv(int gene_index)")
@@ -288,13 +290,14 @@ TEST_CASE("diploid_data_plane_vec_test")
         //{{{{1, 2}, {1, 1}}, {{1, 3}, {2, 3}}, {{1, 1}, {2, 1}}},
         // {{{1, 1}, {1, 2}}, {{1, 3}, {2, 3}}, {{1, 2}, {2, 2}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}, {2, 3}}, {{1, 3}, {2, 3}}}};
-        REQUIRE(plane_3d_vec.pop_nbr() == 3);
-        REQUIRE(plane_3d_vec.indiv_nbr_per_pop(0) == 2);
-        REQUIRE(plane_3d_vec.locus_nbr() == 3);
-        REQUIRE(plane_3d_vec.indiv_nbr() == 6);
+        REQUIRE(plane_3d_vec.nbr_of_pop() == 3);
+        REQUIRE(plane_3d_vec.nbr_of_indiv_per_pop(0) == 2);
+        REQUIRE(plane_3d_vec.nbr_of_locus() == 3);
+        REQUIRE(plane_3d_vec.nbr_of_indiv() == 6);
 
-        REQUIRE(plane_3d_vec.cumul_indiv_nbr_per_pop() == std::vector<int>{0, 2, 4});
-        REQUIRE(plane_3d_vec.allele_state_per_loc(0) == std::array<int, 3>{1, 3, 3});
+        REQUIRE(plane_3d_vec.cumul_nbr_of_indiv_per_pop() == std::vector<int>{0, 2, 4});
+        REQUIRE(plane_3d_vec.nbr_allele_per_loc(1) == 3);
+        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::vector<std::array<int, 2>>{{1, 5}, {2, 5}, {3, 2}});
 
         std::vector<int> result = {1, 2, 1, 1, 1, 3, 2, 3, 1, 1, 2, 1, 1, 1, 1, 2, 1, 3, 2, 3, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 2, 3, 1, 3, 2, 3};
         REQUIRE(plane_3d_vec.get_plane_vec() == result);
@@ -317,31 +320,32 @@ TEST_CASE("diploid_data_plane_vec_test")
         // {{{1, 1}, {1, 2}}, {{1, 3}, {0, 3}}, {{1, 2}, {2, 2}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}, {2, 3}}, {{0, 0}, {2, 3}}}};
 
-        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::array<int, 3>{1, 3, 3});
+        REQUIRE(plane_3d_vec.nbr_allele_per_loc(1) == 3);
+        REQUIRE(plane_3d_vec.allele_state_per_loc(1) == std::vector<std::array<int, 2>>{{1, 5}, {2, 4}, {3, 2}});
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(0) == 12);
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(1) == 11);
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc(2) == 10);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(0) == 12);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(1) == 11);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc(2) == 10);
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(0) == std::vector<int>{4, 4, 4});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(0, 0) == 4);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(0) == std::vector<int>{4, 4, 4});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(0, 0) == 4);
 
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(1) == std::vector<int>{4, 3, 4});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(2) == std::vector<int>{4, 4, 2});
-        REQUIRE(plane_3d_vec.nomiss_gene_nbr_per_loc_per_pop(2, 2) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(1) == std::vector<int>{4, 3, 4});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(2) == std::vector<int>{4, 4, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_loc_per_pop(2, 2) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(0) == 6);
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(1) == 5);
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc(2) == 5);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(0) == 6);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(1) == 5);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc(2) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(0, 0) == 2);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(0) == std::vector<int>{2, 2, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(0, 0) == 2);
 
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(1) == std::vector<int>{2, 1, 2});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(2) == std::vector<int>{2, 2, 1});
-        REQUIRE(plane_3d_vec.nomiss_indiv_nbr_per_loc_per_pop(2, 2) == 1);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(1) == std::vector<int>{2, 1, 2});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(2) == std::vector<int>{2, 2, 1});
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_loc_per_pop(2, 2) == 1);
 
-        REQUIRE(plane_3d_vec.nomiss_pop_nbr_per_loc(0) == 3);
+        REQUIRE(plane_3d_vec.nomiss_nbr_of_pop_per_loc(0) == 3);
     }
 
     SECTION("get_indiv(int gene_index)")
@@ -549,9 +553,10 @@ TEST_CASE("diploid_data_plane_vec_test")
 
 TEST_CASE("Indiv_feat_test")
 {
-    SECTION("float dist_btw_pop(int gene_index1, int gene_index2)")
+    SECTION("double dist_btw_pop(int gene_index1, int gene_index2)")
     {
         genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Nbr_dist_class = 3;
         gen_pop_input.Dist_btw_pop = {{0, 1, 2},
                                       {1, 0, 1},
                                       {2, 1, 0}};
@@ -565,6 +570,8 @@ TEST_CASE("Indiv_feat_test")
         //{{{{1, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
         // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 3}}}};
+
+        REQUIRE(plane_3d_vec.nbr_of_dist_class() == 3);
 
         REQUIRE(plane_3d_vec.dist_btw_pop(0, 1) == 0);
         REQUIRE(plane_3d_vec.dist_btw_pop(0, 2) == 0);
@@ -584,5 +591,44 @@ TEST_CASE("Indiv_feat_test")
         REQUIRE(plane_3d_vec.dist_btw_pop(12, 14) == 0);
         REQUIRE(plane_3d_vec.dist_btw_pop(12, 15) == 0);
         REQUIRE(plane_3d_vec.dist_btw_pop(12, 16) == 1);
+    }
+
+    SECTION("int dist_class_btw_pop(int gene_index1, int gene_index2)")
+    {
+        genepop_input_c<2> gen_pop_input;
+        gen_pop_input.Nbr_dist_class = 3;
+        gen_pop_input.Dist_class_btw_pop = {{0, 1, 2},
+                                            {1, 0, 1},
+                                            {2, 1, 0}};
+        //3 pop, 2 indiv, 3 locus
+        gen_pop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+                                  {{{1, 3}, {1, 3}, {1, 3}}},
+                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 3}}}};
+
+        data_plane_vec_c plane_3d_vec(gen_pop_input);
+        //3 locus, 3 pop, 2-1-3 indiv
+        //{{{{1, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
+        // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
+        // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 3}}}};
+        REQUIRE(plane_3d_vec.nbr_of_dist_class() == 3);
+
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(0, 1) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(0, 2) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(0, 4) == 1);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(0, 7) == 2);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(0, 12) == 0);
+
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(4, 1) == 1);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(4, 5) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(4, 6) == 1);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(4, 8) == 1);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(4, 16) == 0);
+
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 1) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 5) == 1);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 6) == 2);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 14) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 15) == 0);
+        REQUIRE(plane_3d_vec.dist_class_btw_pop(12, 16) == 1);
     }
 }

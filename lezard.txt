@@ -1,0 +1,24 @@
+Hobs_moy	Hexp_moy	Var_moy	MGW_moy	F_moy	nb_allele_moy	Qr0	Qr1	Qr2	Qr3	Qr4	Qr5	Qr6	Qr7	Qr8	Qr9	Qr10	Qr11	Qr12	ar_slope	ar_intercept	er_slope	er_intercept
+0.3333333
+0.362963
+0.1633333
+1
+-nan
+2
+0.6666667
+0.5833333
+0.6666667
+0.5833333
+0.8333333
+-nan
+-nan
+-nan
+-nan
+-nan
+-nan
+-nan
+-nan
+-0.05
+0.2
+-0.06
+0.1600001
