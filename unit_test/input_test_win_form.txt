@@ -1,4 +1,4 @@
-﻿Title line: "Grape populations in southern France"
+﻿Title line: "Grape demeulations in southern France"
 ADH Locus 1
 ADH #2
 ADH three
@@ -26,4 +26,4 @@ Pop
     ,   0000 002001 0202 0402 0007 01
    ,   0200 002001 0202 0205 0707 01
     ,   0010 002001 0101 0105 0807 01
-last pop    ,   0101 002001 0101 0401 0807 02
+last deme    ,   0101 002001 0101 0401 0807 02

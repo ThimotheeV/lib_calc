@@ -5,105 +5,182 @@
 #include "calc_stat.hpp"
 
 //calc_Q_intra_indiv => calc_Qwi_frac
-double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
+std::array<int, 2> calc_Q_intra_indiv_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
 {
     auto Q0 = std::array<int, 2>{0, 0};
-    for (int i = 0; i < data_plane_vec.size(); i += 2)
+    for (int indiv = 0; indiv < data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus); ++indiv)
     {
-        if ((data_plane_vec[i] != 0) && (data_plane_vec[i + 1] != 0))
+        int indiv1_gene1 = data_plane_vec(locus, indiv, 0);
+        int indiv1_gene2 = data_plane_vec(locus, indiv, 1);
+        if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
         {
-            if (data_plane_vec[i] == data_plane_vec[i + 1])
+            if (indiv1_gene1 == indiv1_gene2)
             {
                 ++Q0.at(0);
             }
             ++Q0.at(1);
         }
     }
+    return Q0;
+}
+
+double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
+{
+    auto Q0 = std::array<int, 2>{0, 0};
+    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    {
+        for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
+        {
+            auto temp = calc_Q_intra_indiv_per_locus(data_plane_vec, locus);
+            Q0.at(0) += temp.at(0);
+            Q0.at(1) += temp.at(1);
+        }
+    }
     return static_cast<double>(Q0.at(0)) / Q0.at(1);
 }
 
-//pop/locus/indiv
-double calc_Q_inter_indiv_intra_pop(data_plane_vec_c const &data_plane_vec)
+std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int locus, int deme)
+{
+    auto Q1 = std::array<int, 2>{0, 0};
+
+    if (data_plane_vec.get_Ploidy() == 1)
+    {
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme) - 1; ++indiv)
+        {
+            int indiv1_gene = data_plane_vec(locus, deme, indiv, 0);
+
+            for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++next_indiv)
+            {
+                int indiv2_gene = data_plane_vec(locus, deme, next_indiv, 0);
+                if ((indiv1_gene != 0) && (indiv2_gene != 0))
+                {
+                    if (indiv1_gene == indiv2_gene)
+                    {
+                        ++Q1.at(0);
+                    }
+                    ++Q1.at(1);
+                }
+            }
+        }
+    }
+    if (data_plane_vec.get_Ploidy() == 2)
+    {
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme) - 1; ++indiv)
+        {
+            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
+
+            for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++next_indiv)
+            {
+                int indiv2_gene1 = data_plane_vec(locus, deme, next_indiv, 0);
+                int indiv2_gene2 = data_plane_vec(locus, deme, next_indiv, 1);
+                if ((indiv1_gene1 != 0))
+                {
+                    if ((indiv2_gene1 != 0))
+                    {
+                        if (indiv1_gene1 == indiv2_gene1)
+                        {
+                            ++Q1.at(0);
+                        }
+                        ++Q1.at(1);
+                    }
+                    if ((indiv2_gene2 != 0))
+                    {
+                        if (indiv1_gene1 == indiv2_gene2)
+                        {
+                            ++Q1.at(0);
+                        }
+                        ++Q1.at(1);
+                    }
+                }
+                if ((indiv1_gene2 != 0))
+                {
+                    if ((indiv2_gene1 != 0))
+                    {
+                        if (indiv1_gene2 == indiv2_gene1)
+                        {
+                            ++Q1.at(0);
+                        }
+                        ++Q1.at(1);
+                    }
+                    if ((indiv2_gene2 != 0))
+                    {
+                        if (indiv1_gene2 == indiv2_gene2)
+                        {
+                            ++Q1.at(0);
+                        }
+                        ++Q1.at(1);
+                    }
+                }
+            }
+        }
+    }
+    return Q1;
+}
+
+double calc_Q_inter_indiv_intra_deme(data_plane_vec_c const &data_plane_vec)
 {
     auto Q1 = std::array<int, 2>{0, 0};
     for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
     {
-        for (int pop = 0; pop < data_plane_vec.nbr_of_pop(); ++pop)
+        for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
         {
-            //Handle last indiv
-            for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_pop(pop) - 1; ++indiv)
-            {
-                int indiv1_gene1 = data_plane_vec(locus, pop, indiv, 0);
-                int indiv1_gene2 = data_plane_vec(locus, pop, indiv, 1);
+            auto temp = calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus, deme);
+            Q1.at(0) += temp.at(0);
+            Q1.at(1) += temp.at(1);
+        }
+    }
+    return static_cast<double>(Q1.at(0)) / Q1.at(1);
+}
 
-                for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv_per_pop(pop); ++next_indiv)
+std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
+{
+    auto Q2 = std::array<int, 2>{0, 0};
+
+    if (data_plane_vec.get_Ploidy() == 1)
+    {
+        for (int deme = 0; deme < data_plane_vec.nbr_of_deme() - 1; ++deme)
+        {
+            for (int other_deme = deme + 1; other_deme < data_plane_vec.nbr_of_deme(); ++other_deme)
+            {
+                for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
                 {
-                    int indiv2_gene1 = data_plane_vec(locus, pop, next_indiv, 0);
-                    int indiv2_gene2 = data_plane_vec(locus, pop, next_indiv, 1);
-                    if ((indiv1_gene1 != 0))
+                    int indiv1_gene = data_plane_vec(locus, deme, indiv, 0);
+                    if (indiv1_gene != 0)
                     {
-                        if ((indiv2_gene1 != 0))
+                        for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
                         {
-                            if (indiv1_gene1 == indiv2_gene1)
+                            int indiv2_gene = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
+                            if (indiv2_gene != 0)
                             {
-                                ++Q1.at(0);
+                                if (indiv1_gene == indiv2_gene)
+                                {
+                                    ++Q2.at(0);
+                                }
+                                ++Q2.at(1);
                             }
-                            ++Q1.at(1);
-                        }
-                        if ((indiv2_gene2 != 0))
-                        {
-                            if (indiv1_gene1 == indiv2_gene2)
-                            {
-                                ++Q1.at(0);
-                            }
-                            ++Q1.at(1);
-                        }
-                    }
-                    if ((indiv1_gene2 != 0))
-                    {
-                        if ((indiv2_gene1 != 0))
-                        {
-                            if (indiv1_gene2 == indiv2_gene1)
-                            {
-                                ++Q1.at(0);
-                            }
-                            ++Q1.at(1);
-                        }
-                        if ((indiv2_gene2 != 0))
-                        {
-                            if (indiv1_gene2 == indiv2_gene2)
-                            {
-                                ++Q1.at(0);
-                            }
-                            ++Q1.at(1);
                         }
                     }
                 }
             }
         }
     }
-    return static_cast<double>(Q1.at(0)) / Q1.at(1);
-}
 
-//pop/locus/indiv
-double calc_Q_inter_pop(data_plane_vec_c const &data_plane_vec)
-{
-    auto Q2 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    if (data_plane_vec.get_Ploidy() == 2)
     {
-        for (int pop = 0; pop < data_plane_vec.nbr_of_pop() - 1; ++pop)
+        for (int deme = 0; deme < data_plane_vec.nbr_of_deme() - 1; ++deme)
         {
-            for (int other_pop = pop + 1; other_pop < data_plane_vec.nbr_of_pop(); ++other_pop)
+            for (int other_deme = deme + 1; other_deme < data_plane_vec.nbr_of_deme(); ++other_deme)
             {
-                for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_pop(pop); ++indiv)
+                for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
                 {
-                    int indiv1_gene1 = data_plane_vec(locus, pop, indiv, 0);
-                    int indiv1_gene2 = data_plane_vec(locus, pop, indiv, 1);
+                    int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
+                    int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
 
-                    for (int indiv_other_pop = 0; indiv_other_pop < data_plane_vec.nbr_of_indiv_per_pop(other_pop); ++indiv_other_pop)
+                    for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
                     {
-                        int indiv2_gene1 = data_plane_vec(locus, other_pop, indiv_other_pop, 0);
-                        int indiv2_gene2 = data_plane_vec(locus, other_pop, indiv_other_pop, 1);
+                        int indiv2_gene1 = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
+                        int indiv2_gene2 = data_plane_vec(locus, other_deme, indiv_other_deme, 1);
                         if ((indiv1_gene1 != 0))
                         {
                             if ((indiv2_gene1 != 0))
@@ -146,6 +223,20 @@ double calc_Q_inter_pop(data_plane_vec_c const &data_plane_vec)
                 }
             }
         }
+    }
+
+    return Q2;
+}
+
+//deme/locus/indiv
+double calc_Q_inter_deme(data_plane_vec_c const &data_plane_vec)
+{
+    auto Q2 = std::array<int, 2>{0, 0};
+    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    {
+        auto temp = calc_Q_inter_deme_per_locus(data_plane_vec, locus);
+        Q2.at(0) += temp.at(0);
+        Q2.at(1) += temp.at(1);
     }
     return static_cast<double>(Q2.at(0)) / Q2.at(1);
 }
@@ -245,7 +336,7 @@ std::vector<std::array<int, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_
     {
         for (int gene2 = gene1 + 1; gene2 < locus_end; ++gene2)
         {
-            auto dist_class = data_plane_vec.dist_class_btw_pop(gene1, gene2);
+            auto dist_class = data_plane_vec.dist_class_btw_deme(gene1, gene2);
             auto &frac = result_fract[dist_class];
             if (data_plane_vec[gene1] == data_plane_vec[gene2])
             {
@@ -255,12 +346,11 @@ std::vector<std::array<int, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_
         }
     }
 
-    std::vector<std::array<int, 2>> result(result_fract.size());
-    auto result_itr = result.begin();
-    for (auto const &frac : result_fract)
+    int nbr_dist_class = data_plane_vec.nbr_of_dist_class();
+    std::vector<std::array<int, 2>> result(nbr_dist_class);
+    for (int i = 0; i < nbr_dist_class; ++i)
     {
-        *result_itr = {frac.second.at(0), frac.second.at(1)};
-        ++result_itr;
+        result[i] = {result_fract[i].at(0), result_fract[i].at(1)};
     }
     return result;
 }
@@ -332,7 +422,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
 
                         if (locus == 0)
                         {
-                            result_itr->at(0) = data_plane_vec.dist_btw_pop(indiv * Ploidy, next_indiv * Ploidy);
+                            result_itr->at(0) = data_plane_vec.dist_btw_deme(indiv * Ploidy, next_indiv * Ploidy);
                         }
                         result_itr->at(1) += Qw - 2 * Qr + 1;
                     }
@@ -400,7 +490,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
 
     //numerator and denominator
     std::vector<std::array<double, 2>> save_value(nbr_of_pair, {0, 0});
-    //To calculate e_r like Genepop (Rousset, ...) with Loiselle F statistic equivalent d_k^2 terme
+    //To calculate e_r like Genedeme (Rousset, ...) with Loiselle F statistic equivalent d_k^2 terme
     std::vector<double> sum_Qij_by_locus(data_plane_vec.nbr_of_locus(), 0);
     //In prob_id case Qw with a missing value = 0; Denom by locus will be the same for all pair
     std::vector<double> Qw_by_locus(data_plane_vec.nbr_of_locus(), 0);
@@ -433,7 +523,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
 
                         if (locus == 0)
                         {
-                            save_value_itr->at(0) = data_plane_vec.dist_btw_pop(indiv * Ploidy, next_indiv * Ploidy);
+                            save_value_itr->at(0) = data_plane_vec.dist_btw_deme(indiv * Ploidy, next_indiv * Ploidy);
                         }
                         save_value_itr->at(1) += Qij;
                         sum_Qij_by_locus[locus] += Qij;
@@ -468,7 +558,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
         sum_Qw_all_loc += Qw_by_locus[locus];
     }
 
-    //calc of terme for match Genepop based on Loisel F statistic
+    //calc of terme for match Genedeme based on Loisel F statistic
 
     std::vector<double> Qi_use_by_pair(nbr_of_pair, 0);
     //nbr of pair use to calc sum_Qij (bijection with the number of indiv)
@@ -550,20 +640,20 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
     //
     auto Qwi_frac = std::array<int, 2>{0, 0};
     //+
-    auto Qwp_frac_v = std::vector<std::array<int, 2>>(data_plane_vec.nbr_of_pop(), {0, 0});
+    auto Qwp_frac_v = std::vector<std::array<int, 2>>(data_plane_vec.nbr_of_deme(), {0, 0});
     auto Qbp_frac = std::array<int, 2>{0, 0};
 
     int locus_end = data_plane_vec.index_end_locus(locus);
     auto Qwp_frac_v_itr = Qwp_frac_v.begin();
-    auto cumul_pop_size_itr = data_plane_vec.cumul_nbr_of_indiv_per_pop().begin() + 1;
+    auto cumul_deme_size_itr = data_plane_vec.cumul_nbr_of_indiv_per_deme().begin() + 1;
     int indiv_relatif_nbr = -1;
 
     for (int gene1 = data_plane_vec.index_begin_locus(locus); gene1 < locus_end - 1; ++gene1)
     {
         ++indiv_relatif_nbr;
-        if (indiv_relatif_nbr == (*cumul_pop_size_itr) * data_plane_vec.get_Ploidy())
+        if (indiv_relatif_nbr == (*cumul_deme_size_itr) * data_plane_vec.get_Ploidy())
         {
-            ++cumul_pop_size_itr;
+            ++cumul_deme_size_itr;
             ++Qwp_frac_v_itr;
         }
         if (data_plane_vec[gene1] != 0)
@@ -582,7 +672,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
                     }
                     else
                     {
-                        if (data_plane_vec.same_pop(gene1, gene2))
+                        if (data_plane_vec.same_deme(gene1, gene2))
                         {
                             if (data_plane_vec[gene1] == data_plane_vec[gene2])
                             {
@@ -617,12 +707,12 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
 
     double S1 = 0;
     double S2 = 0;
-    double ns = data_plane_vec.nomiss_nbr_of_pop_per_loc(locus);
+    double ns = data_plane_vec.nomiss_nbr_of_deme_per_loc(locus);
 
-    for (auto pop_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_pop(locus))
+    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus))
     {
-        S1 += pop_size;
-        S2 += pow(pop_size, 2);
+        S1 += deme_size;
+        S2 += pow(deme_size, 2);
     }
     double nc = (S1 - S2 / S1) / (ns - 1);
 
@@ -653,27 +743,27 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
 
     double S1 = 0;
     double S2 = 0;
-    double ns = data_plane_vec.nomiss_nbr_of_pop_per_loc(locus);
+    double ns = data_plane_vec.nomiss_nbr_of_deme_per_loc(locus);
 
-    for (auto pop_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_pop(locus))
+    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus))
     {
-        S1 += pop_size;
-        S2 += pow(pop_size, 2);
+        S1 += deme_size;
+        S2 += pow(deme_size, 2);
     }
-    //Indicatrix matrix mean for each pop
-    std::vector<std::vector<double>> pop_state_mean(data_plane_vec.nbr_of_pop(), std::vector<double>(allele_state.size(), 0));
+    //Indicatrix matrix mean for each deme
+    std::vector<std::vector<double>> deme_state_mean(data_plane_vec.nbr_of_deme(), std::vector<double>(allele_state.size(), 0));
 
     //Calc mean for sample
     std::vector<double> state_mean_samp(allele_state.size(), 0);
-    for (int pop = 0; pop < data_plane_vec.nbr_of_pop(); ++pop)
+    for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
         //for handle missing value need to remove all indiv with missing value
-        int gene_in_nomiss_nbr_of_indiv_per_pop = data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_pop(locus, pop) * 2;
+        int gene_in_nomiss_nbr_of_indiv_per_deme = data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus, deme) * 2;
         int tot_gene_in_nomiss_nbr_of_indiv = (S1 * 2);
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_pop(pop); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
         {
-            int indiv1_gene1 = data_plane_vec(locus, pop, indiv, 0);
-            int indiv1_gene2 = data_plane_vec(locus, pop, indiv, 1);
+            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
 
             if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
             {
@@ -681,7 +771,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
                 for (auto const &state : allele_state)
                 {
                     double temp = (static_cast<double>(indiv1_gene1 == state.at(0)) + static_cast<double>(indiv1_gene2 == state.at(0)));
-                    pop_state_mean[pop][count] += (temp / gene_in_nomiss_nbr_of_indiv_per_pop);
+                    deme_state_mean[deme][count] += (temp / gene_in_nomiss_nbr_of_indiv_per_deme);
                     state_mean_samp[count] += (temp / tot_gene_in_nomiss_nbr_of_indiv);
                     ++count;
                 }
@@ -691,12 +781,12 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
 
     double SSg = 0, SSi = 0, SSp = 0;
 
-    for (int pop = 0; pop < data_plane_vec.nbr_of_pop(); ++pop)
+    for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_pop(pop); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
         {
-            int indiv1_gene1 = data_plane_vec(locus, pop, indiv, 0);
-            int indiv1_gene2 = data_plane_vec(locus, pop, indiv, 1);
+            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
 
             if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
             {
@@ -707,9 +797,9 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
                     int Xij2 = (indiv1_gene2 == state.at(0));
                     double Xij = (Xij1 + Xij2) / 2.0;
                     SSg += pow(Xij1 - Xij, 2) + pow(Xij2 - Xij, 2);
-                    SSi += (pow(Xij - pop_state_mean[pop][count], 2)) * 2;
+                    SSi += (pow(Xij - deme_state_mean[deme][count], 2)) * 2;
                     //Two genes
-                    SSp += (pow(pop_state_mean[pop][count] - state_mean_samp[count], 2) * 2);
+                    SSp += (pow(deme_state_mean[deme][count] - state_mean_samp[count], 2) * 2);
                     ++count;
                 }
             }

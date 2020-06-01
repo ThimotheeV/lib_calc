@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_MAIN GenepopTest
+#define CATCH_CONFIG_MAIN GenedemeTest
 #include <catch2/catch.hpp>
 #include <iostream>
 
@@ -6,16 +6,16 @@
 #include "common_tools.hpp"
 #include "calc_stat.hpp"
 
-TEST_CASE("haplo_gen_pop_input_test")
+TEST_CASE("haplo_genepop_input_test")
 {
     SECTION("read_test")
     {
-        genepop_input_c<1> input("genotype_genepop_format.txt");
+        genepop_input_c<1> input("genotype_genedeme_format.txt");
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 10);
         REQUIRE(input.Locus_name[4] == "4");
         REQUIRE(input.Locus_name[5] == "5");
-        //pop name
+        //deme name
         REQUIRE(input.Pop_name.size() == 5);
         REQUIRE(input.Indiv_name.size() == 5);
         REQUIRE(input.Pop_name[0][0] == "-0.1");
@@ -28,7 +28,7 @@ TEST_CASE("haplo_gen_pop_input_test")
         REQUIRE(input.Indiv_name[2][1] == "-0.1 2.1 ");
         REQUIRE(input.Indiv_name[3][2] == "-0.1 3.1 ");
         REQUIRE(input.Indiv_name[4][2] == "-0.1 4.1 ");
-        //Number of pop
+        //Number of deme
         REQUIRE(input.Genotype.size() == 5);
         //Pop size
         REQUIRE(input.Genotype[0].size() == 10);
@@ -40,14 +40,14 @@ TEST_CASE("haplo_gen_pop_input_test")
         REQUIRE(input.Genotype[4][9].at(9) == std::array{46});
     }
 
-    SECTION("Dist_btw_pop")
+    SECTION("Dist_btw_deme")
     {
-        genepop_input_c<1> input("genotype_genepop_format.txt");
-        REQUIRE(input.Dist_btw_pop[0][0] == Approx(0).margin(0.0001));
-        REQUIRE(input.Dist_btw_pop[0][1] == Approx(1).margin(0.0001));
-        REQUIRE(input.Dist_btw_pop[0][2] == Approx(2).margin(0.0001));
-        REQUIRE(input.Dist_btw_pop[0][3] == Approx(3).margin(0.0001));
-        REQUIRE(input.Dist_btw_pop[0][4] == Approx(4).margin(0.0001));
+        genepop_input_c<1> input("genotype_genedeme_format.txt");
+        REQUIRE(input.Dist_btw_deme[0][0] == Approx(0).margin(0.0001));
+        REQUIRE(input.Dist_btw_deme[0][1] == Approx(1).margin(0.0001));
+        REQUIRE(input.Dist_btw_deme[0][2] == Approx(2).margin(0.0001));
+        REQUIRE(input.Dist_btw_deme[0][3] == Approx(3).margin(0.0001));
+        REQUIRE(input.Dist_btw_deme[0][4] == Approx(4).margin(0.0001));
     }
 
     SECTION("regres_ar_without_missing_value")
@@ -168,7 +168,7 @@ TEST_CASE("func_test")
         REQUIRE(Hexp_moy == Approx(0.7237660).margin(0.0000001));
         REQUIRE(var_moy == Approx(3.158315).margin(0.000001));
         REQUIRE(MGW_moy == Approx(0.9297619).margin(0.0000001));
-        REQUIRE(F_moy == Approx(0.2452756).margin(0.0000001)); //Le Fst de genepop => moyenne des Fst des locus dans genepop (et non pas le Fst moyen de Genepop)
+        REQUIRE(F_moy == Approx(0.2452756).margin(0.0000001)); //Le Fst de genedeme => moyenne des Fst des locus dans genedeme (et non pas le Fst moyen de Genedeme)
         REQUIRE(nb_allele_moy == 6.1);
         REQUIRE(Qr[0] == Approx(0.37333).margin(0.00001));
         REQUIRE(Qr[1] == Approx(0.31281).margin(0.00001));

@@ -20,14 +20,14 @@ struct genepop_input_c
     genepop_input_c(std::string path_to_file, int nbr_class = 10);
 
     std::array<int, ploidy> trim_locus(std::string locus);
-    void calc_dist_class_btw_pop(int nbr_class);
+    void calc_dist_class_btw_deme(int nbr_class);
 
     std::string Header;
     std::vector<std::string> Locus_name;
     std::vector<std::vector<std::string>> Pop_name;
-    std::vector<std::vector<double>> Dist_btw_pop;
+    std::vector<std::vector<double>> Dist_btw_deme;
     int Nbr_dist_class;
-    std::vector<std::vector<int>> Dist_class_btw_pop;
+    std::vector<std::vector<int>> Dist_class_btw_deme;
     std::vector<std::vector<std::string>> Indiv_name;
     //Pop<Indiv<Name, Locus>
     std::vector<std::vector<std::vector<std::array<int, ploidy>>>> Genotype;

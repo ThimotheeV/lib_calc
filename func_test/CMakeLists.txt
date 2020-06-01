@@ -2,6 +2,7 @@ project(func_test LANGUAGES CXX)
 
 #TV -> FD : J'ai effectué des modifications afin de pouvoir compiler les tests sur ma version d'ubuntu 18.04
 #set(Boost_USE_STATIC_LIBS ON)
+#TODO : a supprimer parce que plus Boost (a vérifier)
 if (WIN32)
   set(Boost_USE_STATIC_LIBS ON)
 else()

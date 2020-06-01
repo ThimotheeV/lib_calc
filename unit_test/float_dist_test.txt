@@ -1,4 +1,4 @@
-Title line: "Grape populations in southern France"
+Title line: "Grape demeulations in southern France"
 ADH Locus 1
 ADH #2
 ADH three

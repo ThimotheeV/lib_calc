@@ -1,4 +1,5 @@
 project(libsource)
+set(CMAKE_CXX_STANDARD 17)
 
 aux_source_directory(. SOURCES_LIST)
 if (WIN32)

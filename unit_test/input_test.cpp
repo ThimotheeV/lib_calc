@@ -80,7 +80,7 @@ TEST_CASE("input_handler_test")
     }
 }
 
-TEST_CASE("gen_pop_input_test")
+TEST_CASE("genepop_input_test")
 {
     SECTION("empty_constructor")
     {
@@ -107,7 +107,7 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Locus_name[0] == "adhlocus1");
         REQUIRE(input.Locus_name[4] == "adh-5");
         REQUIRE(input.Locus_name[5] == "mtdna");
-        //pop name
+        //deme name
         REQUIRE(input.Pop_name.size() == 4);
         REQUIRE(input.Pop_name[2][0] == "0");
         REQUIRE(input.Pop_name[2][1] == "2.00");
@@ -118,7 +118,7 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Indiv_name[0][0] == "grange des peres  ");
         REQUIRE(input.Indiv_name[2][1] == "bonneau 02   ");
         REQUIRE(input.Indiv_name[3][2] == "    ");
-        //Number of pop
+        //Number of deme
         REQUIRE(input.Genotype.size() == 4);
         //Pop size
         REQUIRE(input.Genotype[0].size() == 3);
@@ -137,7 +137,7 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Locus_name.size() == 6);
         REQUIRE(input.Locus_name[4] == "adh-5");
         REQUIRE(input.Locus_name[5] == "mtdna");
-        //pop name
+        //deme name
         REQUIRE(input.Pop_name.size() == 4);
         REQUIRE(input.Pop_name[2][0] == "bonneau");
         REQUIRE(input.Pop_name[3][0] == "last");
@@ -146,7 +146,7 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Indiv_name[0][0] == "grange des peres  ");
         REQUIRE(input.Indiv_name[2][1] == "bonneau 02   ");
         REQUIRE(input.Indiv_name[3][2] == "    ");
-        //Number of pop
+        //Number of deme
         REQUIRE(input.Genotype.size() == 4);
         //Pop size
         REQUIRE(input.Genotype[0].size() == 5);
@@ -157,47 +157,47 @@ TEST_CASE("gen_pop_input_test")
         REQUIRE(input.Genotype[3][2].at(0) == std::array{0, 10});
         REQUIRE(input.Genotype[3][2].at(4) == std::array{8, 7});
     }
-    SECTION("dist_btw_pop for int dist")
+    SECTION("dist_btw_deme for int dist")
     {
         genepop_input_c<2> input("input_test.txt");
-        REQUIRE(input.Dist_btw_pop[0] == std::vector<double>{0, 1, 2, 3});
-        REQUIRE(input.Dist_btw_pop[1] == std::vector<double>{1, 0, 1, 2});
-        REQUIRE(input.Dist_btw_pop[2] == std::vector<double>{2, 1, 0, 1});
-        REQUIRE(input.Dist_btw_pop[3] == std::vector<double>{3, 2, 1, 0});
+        REQUIRE(input.Dist_btw_deme[0] == std::vector<double>{0, 1, 2, 3});
+        REQUIRE(input.Dist_btw_deme[1] == std::vector<double>{1, 0, 1, 2});
+        REQUIRE(input.Dist_btw_deme[2] == std::vector<double>{2, 1, 0, 1});
+        REQUIRE(input.Dist_btw_deme[3] == std::vector<double>{3, 2, 1, 0});
         //10 classes
-        REQUIRE(input.Dist_class_btw_pop[0] == std::vector<int>{0, 3, 6, 9});
-        REQUIRE(input.Dist_class_btw_pop[1] == std::vector<int>{3, 0, 3, 6});
-        REQUIRE(input.Dist_class_btw_pop[2] == std::vector<int>{6, 3, 0, 3});
-        REQUIRE(input.Dist_class_btw_pop[3] == std::vector<int>{9, 6, 3, 0});
+        REQUIRE(input.Dist_class_btw_deme[0] == std::vector<int>{0, 3, 6, 9});
+        REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{3, 0, 3, 6});
+        REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{6, 3, 0, 3});
+        REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{9, 6, 3, 0});
     }
 
-    SECTION("dist_btw_pop for int dist")
+    SECTION("dist_btw_deme for int dist")
     {
         genepop_input_c<2> input("float_dist_test.txt", 3);
         REQUIRE(input.Nbr_dist_class == 3);
-        REQUIRE(input.Dist_btw_pop[0][0] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[0][1] == Approx(1.5).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[0][2] == Approx(6.8).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[0][3] == Approx(8.1).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[0][0] == Approx(0).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[0][1] == Approx(1.5).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[0][2] == Approx(6.8).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[0][3] == Approx(8.1).margin(0.01));
 
-        REQUIRE(input.Dist_btw_pop[1][0] == Approx(1.5).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[1][1] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[1][2] == Approx(5.3).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[1][3] == Approx(6.6).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[1][0] == Approx(1.5).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[1][1] == Approx(0).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[1][2] == Approx(5.3).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[1][3] == Approx(6.6).margin(0.01));
 
-        REQUIRE(input.Dist_btw_pop[2][0] == Approx(6.8).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[2][1] == Approx(5.3).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[2][2] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[2][3] == Approx(1.3).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[2][0] == Approx(6.8).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[2][1] == Approx(5.3).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[2][2] == Approx(0).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[2][3] == Approx(1.3).margin(0.01));
 
-        REQUIRE(input.Dist_btw_pop[3][0] == Approx(8.1).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[3][1] == Approx(6.6).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[3][2] == Approx(1.3).margin(0.01));
-        REQUIRE(input.Dist_btw_pop[3][3] == Approx(0).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[3][0] == Approx(8.1).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[3][1] == Approx(6.6).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[3][2] == Approx(1.3).margin(0.01));
+        REQUIRE(input.Dist_btw_deme[3][3] == Approx(0).margin(0.01));
 
-        REQUIRE(input.Dist_class_btw_pop[0] == std::vector<int>{0, 0, 2, 2});
-        REQUIRE(input.Dist_class_btw_pop[1] == std::vector<int>{0, 0, 1, 2});
-        REQUIRE(input.Dist_class_btw_pop[2] == std::vector<int>{2, 1, 0, 0});
-        REQUIRE(input.Dist_class_btw_pop[3] == std::vector<int>{2, 2, 0, 0});
+        REQUIRE(input.Dist_class_btw_deme[0] == std::vector<int>{0, 0, 2, 2});
+        REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{0, 0, 1, 2});
+        REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{2, 1, 0, 0});
+        REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
     }
 }
