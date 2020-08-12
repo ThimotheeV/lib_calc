@@ -1,12 +1,8 @@
-project(libsource)
-set(CMAKE_CXX_STANDARD 17)
+project(libsources)
 
 aux_source_directory(. SOURCES_LIST)
-if (WIN32)
-    add_library(${PROJECT_NAME} STATIC ${SOURCES_LIST})
-else()
-    add_library(${PROJECT_NAME} SHARED ${SOURCES_LIST})
-endif()
+# static lib are include in the final bin
+add_library(${PROJECT_NAME} STATIC ${SOURCES_LIST})
 
 SET(MY_DEBUG_OPTIONS "-Wall" "-Werror" "-Wfatal-errors" "-g")
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")

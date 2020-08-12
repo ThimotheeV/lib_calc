@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN CommonToolsTest
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 #include "common_tools.hpp"
 

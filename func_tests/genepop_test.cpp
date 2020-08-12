@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN GenedemeTest
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 #include <iostream>
 
 #include "input.hpp"

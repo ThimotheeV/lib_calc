@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN InputTest
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 #include "input.hpp"
 

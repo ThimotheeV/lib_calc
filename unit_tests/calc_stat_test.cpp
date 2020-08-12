@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN CalcStatTest
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 #include "calc_stat.hpp"
 

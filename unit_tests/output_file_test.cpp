@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN OutputTest
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 #include "output_file.hpp"
 
