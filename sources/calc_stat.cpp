@@ -27,7 +27,7 @@ std::array<int, 2> calc_Q_intra_indiv_per_locus(data_plane_vec_c const &data_pla
 double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
 {
     auto Q0 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
         {
@@ -118,17 +118,28 @@ std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const 
     return Q1;
 }
 
+std::array<int, 2> calc_Q_inter_indiv_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
+{
+    auto Q1 = std::array<int, 2>{0, 0};
+
+    for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
+    {
+        auto temp = calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus, deme);
+        Q1.at(0) += temp.at(0);
+        Q1.at(1) += temp.at(1);
+    }
+
+    return Q1;
+}
+
 double calc_Q_inter_indiv_intra_deme(data_plane_vec_c const &data_plane_vec)
 {
     auto Q1 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
-        for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
-        {
-            auto temp = calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus, deme);
-            Q1.at(0) += temp.at(0);
-            Q1.at(1) += temp.at(1);
-        }
+        auto temp = calc_Q_inter_indiv_per_locus(data_plane_vec, locus);
+        Q1.at(0) += temp.at(0);
+        Q1.at(1) += temp.at(1);
     }
     return static_cast<double>(Q1.at(0)) / Q1.at(1);
 }
@@ -146,19 +157,17 @@ std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plan
                 for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
                 {
                     int indiv1_gene = data_plane_vec(locus, deme, indiv, 0);
-                    if (indiv1_gene != 0)
+
+                    for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
                     {
-                        for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
+                        int indiv2_gene = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
+                        if ((indiv1_gene != 0) && (indiv2_gene != 0))
                         {
-                            int indiv2_gene = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
-                            if (indiv2_gene != 0)
+                            if (indiv1_gene == indiv2_gene)
                             {
-                                if (indiv1_gene == indiv2_gene)
-                                {
-                                    ++Q2.at(0);
-                                }
-                                ++Q2.at(1);
+                                ++Q2.at(0);
                             }
+                            ++Q2.at(1);
                         }
                     }
                 }
@@ -232,7 +241,7 @@ std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plan
 double calc_Q_inter_deme(data_plane_vec_c const &data_plane_vec)
 {
     auto Q2 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         auto temp = calc_Q_inter_deme_per_locus(data_plane_vec, locus);
         Q2.at(0) += temp.at(0);
@@ -256,13 +265,13 @@ double calc_Hnei_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
 double calc_Hnei(data_plane_vec_c const &data_plane_vec)
 {
     double result = 0;
-    int nbr_of_locus = data_plane_vec.nbr_of_locus();
-    for (auto locus = 0; locus < nbr_of_locus; ++locus)
+    int base_nbr_locus_per_indiv = data_plane_vec.base_nbr_locus_per_indiv();
+    for (auto locus = 0; locus < base_nbr_locus_per_indiv; ++locus)
     {
         result += calc_Hnei_per_loc(data_plane_vec, locus);
     }
 
-    return result / nbr_of_locus;
+    return result / base_nbr_locus_per_indiv;
 }
 
 //WARNING : For microsat only
@@ -317,13 +326,13 @@ double calc_MGW_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
 double calc_MGW(data_plane_vec_c const &data_plane_vec)
 {
     double result = 0;
-    int nbr_of_locus = data_plane_vec.nbr_of_locus();
-    for (auto locus = 0; locus < nbr_of_locus; ++locus)
+    int base_nbr_locus_per_indiv = data_plane_vec.base_nbr_locus_per_indiv();
+    for (auto locus = 0; locus < base_nbr_locus_per_indiv; ++locus)
     {
         result += calc_MGW_per_loc(data_plane_vec, locus);
     }
 
-    return result / nbr_of_locus;
+    return result / base_nbr_locus_per_indiv;
 }
 
 #include <iostream>
@@ -331,10 +340,13 @@ double calc_MGW(data_plane_vec_c const &data_plane_vec)
 std::vector<std::array<int, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_plane_vec, int locus)
 {
     std::map<double, std::array<int, 2>> result_fract;
+    int ploidy = data_plane_vec.get_Ploidy();
     int locus_end = data_plane_vec.index_end_locus(locus);
     for (int gene1 = data_plane_vec.index_begin_locus(locus); gene1 < locus_end - 1; ++gene1)
     {
-        for (int gene2 = gene1 + 1; gene2 < locus_end; ++gene2)
+        // gene1 + ploidy - (gene1 % ploidy) haploid case = gene1 + 1
+        //gene1 + ploidy - (gene1 % ploidy) diploid case = gene1 + 1 (impair) or + 2 (pair)
+        for (int gene2 = gene1 + ploidy - (gene1 % ploidy); gene2 < locus_end; ++gene2)
         {
             auto dist_class = data_plane_vec.dist_class_btw_deme(gene1, gene2);
             auto &frac = result_fract[dist_class];
@@ -346,9 +358,9 @@ std::vector<std::array<int, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_
         }
     }
 
-    int nbr_dist_class = data_plane_vec.nbr_of_dist_class();
-    std::vector<std::array<int, 2>> result(nbr_dist_class);
-    for (int i = 0; i < nbr_dist_class; ++i)
+    int dist_class_nbr = data_plane_vec.nbr_of_dist_class();
+    std::vector<std::array<int, 2>> result(dist_class_nbr);
+    for (int i = 0; i < dist_class_nbr; ++i)
     {
         result[i] = {result_fract[i].at(0), result_fract[i].at(1)};
     }
@@ -360,11 +372,11 @@ std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
 {
     std::vector<std::array<int, 2>> result_frac(data_plane_vec.nbr_of_dist_class());
 
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         auto temp = calc_qr_loc_by_loc(data_plane_vec, locus);
 
-        for (int i = 0; i < temp.size(); ++i)
+        for (std::size_t i = 0; i < temp.size(); ++i)
         {
             result_frac[i].at(0) += temp[i].at(0);
             result_frac[i].at(1) += temp[i].at(1);
@@ -387,7 +399,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("Can't calculate ar if ploidy was different than 2.");
+        throw std::logic_error("( Can't calculate ar if ploidy was different than 2. I exit. )");
     }
 
     int nbr_of_pair = combination(2, data_plane_vec.nbr_of_indiv());
@@ -395,12 +407,12 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
     //numerator and denominator
     std::vector<std::array<double, 2>> result(nbr_of_pair, {0, 0});
     //In prob_id case Qw with a missing value = 0; Denom by locus will be the same for all pair
-    std::vector<double> Qw_by_locus(data_plane_vec.nbr_of_locus(), 0);
+    std::vector<double> Qw_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
     //
     double sum_Qw_all_loc = 0;
 
     //Multilocus estimates are defined as the sum of locus-specific numerators divided by the sum of locus-specific denominators (Weir & Cockerham, 1984)
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         auto result_itr = result.begin();
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv() - 1; ++indiv)
@@ -445,7 +457,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
 
     //compute denom because in missing value denom will be diff between pair (When the data_plane_vec is unknown for some locus in one individual from a pair, this locus is not included in the sum over loci Rousset, 2000)
     //compute by remove Qw from sum_Qw_all_loc
-    std::vector<std::array<double, 2>> sum_Qw_use_by_pair(nbr_of_pair, {sum_Qw_all_loc, static_cast<double>(data_plane_vec.nbr_of_locus())});
+    std::vector<std::array<double, 2>> sum_Qw_use_by_pair(nbr_of_pair, {sum_Qw_all_loc, static_cast<double>(data_plane_vec.base_nbr_locus_per_indiv())});
 
     auto sum_Qw_use_by_pair_itr = sum_Qw_use_by_pair.begin();
     for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv() - 1; ++indiv)
@@ -453,7 +465,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
         for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv(); ++next_indiv)
         {
             std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv(indiv), data_plane_vec.nomiss_data_indiv(next_indiv));
-            for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+            for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
                 if (!nomiss_data[locus])
@@ -482,7 +494,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("Can't calculate ar if ploidy was different than 2.");
+        throw std::logic_error("( Can't calculate ar if ploidy was different than 2. I exit. )");
     }
 
     int nbr_indiv = data_plane_vec.nbr_of_indiv();
@@ -491,17 +503,17 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
     //numerator and denominator
     std::vector<std::array<double, 2>> save_value(nbr_of_pair, {0, 0});
     //To calculate e_r like Genedeme (Rousset, ...) with Loiselle F statistic equivalent d_k^2 terme
-    std::vector<double> sum_Qij_by_locus(data_plane_vec.nbr_of_locus(), 0);
+    std::vector<double> sum_Qij_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
     //In prob_id case Qw with a missing value = 0; Denom by locus will be the same for all pair
-    std::vector<double> Qw_by_locus(data_plane_vec.nbr_of_locus(), 0);
+    std::vector<double> Qw_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
     double sum_Qw_all_loc = 0;
 
-    //All Qi need to be concerve for later correction
-    std::vector<std::vector<double>> Qi_by_indiv_by_locus(nbr_indiv, std::vector<double>(data_plane_vec.nbr_of_locus(), 0));
+    //All Qi need to be stored for later correction
+    std::vector<std::vector<double>> Qi_by_indiv_by_locus(nbr_indiv, std::vector<double>(data_plane_vec.base_nbr_locus_per_indiv(), 0));
     std::vector<double> Qi_sum_all_loc(nbr_indiv, 0);
 
     //Multilocus estimates are defined as the sum of locus-specific numerators divided by the sum of locus-specific denominators (Weir & Cockerham, 1984)
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         auto nomiss_indiv = data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus);
         auto save_value_itr = save_value.begin();
@@ -564,7 +576,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
     //nbr of pair use to calc sum_Qij (bijection with the number of indiv)
     std::vector<double> l_term_use_by_pair(nbr_of_pair, 0);
     //1 - sum_Qw_all_loc to match denom in cal er
-    std::vector<double> sum_Qw_use_by_pair(nbr_of_pair, data_plane_vec.nbr_of_locus() - sum_Qw_all_loc);
+    std::vector<double> sum_Qw_use_by_pair(nbr_of_pair, data_plane_vec.base_nbr_locus_per_indiv() - sum_Qw_all_loc);
 
     auto Qi_use_by_pair_itr = Qi_use_by_pair.begin();
     auto l_term_use_by_pair_itr = l_term_use_by_pair.begin();
@@ -576,7 +588,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
             //file Qi_use_by_pair with sum of Qi and Qj (if i or j have missing value, Qi or Qj = 0, just need to remove the other one)
             *Qi_use_by_pair_itr = Qi_sum_all_loc[indiv] + Qi_sum_all_loc[next_indiv];
             std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv(indiv), data_plane_vec.nomiss_data_indiv(next_indiv));
-            for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+            for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
                 if (!nomiss_data[locus])
@@ -635,7 +647,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("in Fstat_by_loc_with_probid : Can't calculate Fstat if ploidy was different than 2.");
+        throw std::logic_error("( In Fstat_by_loc_with_probid : Can't calculate Fstat if ploidy was different than 2. I exit. )");
     }
     //
     auto Qwi_frac = std::array<int, 2>{0, 0};
@@ -662,7 +674,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
             {
                 if (data_plane_vec[gene2] != 0)
                 {
-                    if (data_plane_vec.same_indiv(gene1, gene2))
+                    if (data_plane_vec.same_loc_in_indiv(gene1, gene2))
                     {
                         if (data_plane_vec[gene1] == data_plane_vec[gene2])
                         {
@@ -738,7 +750,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("in Fstat_by_loc_with_indic : Can't calculate Fstat if ploidy was different than 2.");
+        throw std::logic_error("( In Fstat_by_loc_with_indic : Can't calculate Fstat if ploidy was different than 2. I exit. )");
     }
 
     double S1 = 0;
@@ -829,7 +841,7 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
     std::array<double, 2> result{0, 0};
 
     double fis_num = 0, fis_denum = 0, fst_num = 0, fst_denum = 0;
-    for (int locus = 0; locus < data_plane_vec.nbr_of_locus(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
     {
         auto temp = Fstat_by_loc_with_indic(data_plane_vec, locus);
         fis_num += temp.at(0).at(0);

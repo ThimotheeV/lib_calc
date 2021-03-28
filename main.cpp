@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     genepop_input_c<2> input(file_in_name, 3);
     data_plane_vec_c data_plane_vec(input);
 
-    std::vector<double> Vec_value(data_plane_vec.nbr_of_locus());
+    std::vector<double> Vec_value(data_plane_vec.nbr_of_locus_tot());
     // double Hexp_moy = 0;
     // for (int loc = 0; loc < Vec_value.size(); ++loc)
     // {
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         F_moy += Vec_value[loc];
     }
 
-    F_moy /= data_plane_vec.nbr_of_locus();
+    F_moy /= data_plane_vec.nbr_of_locus_tot();
     // double F_V = var(Vec_value, F_moy);
 
     // /*******************************************/

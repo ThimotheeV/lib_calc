@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <tuple>
 #include <map>
 #include <cmath>
@@ -9,20 +10,22 @@
 
 struct feature_c
 {
-    int Pop{-1};
+    int Deme{-1};
 };
 
 class data_plane_vec_c
 {
 private:
+private:
     std::vector<int> Plane_vec;
     std::vector<feature_c> Indiv_feat;
     std::vector<std::vector<double>> Dist_btw_deme;
     std::vector<std::vector<int>> Dist_class_btw_deme;
-    int Nbr_dist_class = 10;
+    int Dist_class_nbr = 10;
 
     std::vector<std::vector<double>> Dist_btw_locus;
     //Locus, deme
+    
     int Nbr_of_deme{0};
     //Cumul sum of indiv for each deme
     int Nbr_of_indiv_tot{0};
@@ -58,12 +61,12 @@ public:
 
     int size() const;
     int nbr_of_deme() const;
-    int nbr_of_locus() const; //number of locus in a specifique indiv
-    int nbr_of_gene() const;
+    int base_nbr_locus_per_indiv() const; //number of locus in a specifique indiv
+    int nbr_of_locus_tot() const;
     int nbr_of_indiv() const;
     int nbr_of_indiv_per_deme(int nbr_of_deme) const; //deme size
     std::vector<int> const &cumul_nbr_of_indiv_per_deme() const;
-
+    
     int get_indiv(int gene) const;
     feature_c const &get_feature(int indiv);
 
@@ -91,7 +94,7 @@ public:
     int index_end_locus(int locus) const;
 
     // in the same locus => gene 1 & gene 2 : same deme, indiv ?
-    bool same_indiv(int dpv_gene_index1, int dpv_gene_index2) const;
+    bool same_loc_in_indiv(int dpv_gene_index1, int dpv_gene_index2) const;
     bool same_deme(int dpv_gene_index1, int dpv_gene_index2) const;
     bin_vec const &nomiss_data_indiv(int indiv) const;
     bool nomiss_data_indiv_per_loc(int indiv, int locus) const;

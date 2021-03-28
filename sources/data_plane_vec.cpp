@@ -9,7 +9,7 @@ void data_plane_vec_c::set_indiv_feature()
     {
         for (int indiv = 0; indiv < Nbr_of_indiv_per_deme[deme]; ++indiv)
         {
-            indiv_feat_itr->Pop = deme;
+            indiv_feat_itr->Deme = deme;
             ++indiv_feat_itr;
         }
     }
@@ -24,7 +24,7 @@ int data_plane_vec_c::size() const
 {
     return Plane_vec.size();
 }
-int data_plane_vec_c::nbr_of_locus() const
+int data_plane_vec_c::base_nbr_locus_per_indiv() const
 {
     return Locus_nbr;
 }
@@ -32,9 +32,9 @@ int data_plane_vec_c::nbr_of_deme() const
 {
     return Nbr_of_deme;
 }
-int data_plane_vec_c::nbr_of_gene() const
+int data_plane_vec_c::nbr_of_locus_tot() const
 {
-    return Nbr_of_indiv_tot * Ploidy;
+    return Nbr_of_indiv_tot * Ploidy * Locus_nbr;
 }
 int data_plane_vec_c::nbr_of_indiv() const
 {
@@ -155,7 +155,8 @@ int data_plane_vec_c::index_end_locus(int locus) const
     return Nbr_of_indiv_tot * (locus + 1) * Ploidy;
 }
 
-bool data_plane_vec_c::same_indiv(int dpv_gene_index1, int dpv_gene_index2) const
+//In same locus
+bool data_plane_vec_c::same_loc_in_indiv(int dpv_gene_index1, int dpv_gene_index2) const
 {
     if (dpv_gene_index1 == dpv_gene_index2)
     {
@@ -183,7 +184,7 @@ bool data_plane_vec_c::same_deme(int dpv_gene_index1, int dpv_gene_index2) const
         return true;
     }
 
-    return Indiv_feat[get_indiv(dpv_gene_index1)].Pop == Indiv_feat[get_indiv(dpv_gene_index2)].Pop;
+    return Indiv_feat[get_indiv(dpv_gene_index1)].Deme == Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 }
 
 bin_vec const &data_plane_vec_c::nomiss_data_indiv(int indiv) const
@@ -203,8 +204,8 @@ double data_plane_vec_c::dist_btw_deme(int dpv_gene_index1, int dpv_gene_index2)
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Pop;
-    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Pop;
+    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 
     return Dist_btw_deme[deme_gen1][deme_gen2];
 }
@@ -221,7 +222,7 @@ double data_plane_vec_c::dist_btw_deme_with_deme(int deme_index1, int deme_index
 
 int data_plane_vec_c::nbr_of_dist_class() const
 {
-    return Nbr_dist_class;
+    return Dist_class_nbr;
 }
 
 int data_plane_vec_c::dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_index2) const
@@ -230,8 +231,8 @@ int data_plane_vec_c::dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_inde
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Pop;
-    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Pop;
+    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 
     return Dist_class_btw_deme[deme_gen1][deme_gen2];
 }

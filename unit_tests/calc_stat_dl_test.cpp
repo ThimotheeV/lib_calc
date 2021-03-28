@@ -148,7 +148,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<double, 3> expect = {0.066666, 0.1625, 0.091666};
 
-        auto result = calc_phi_ij(data_plane_vec);
+        auto result = calc_phi_ij(data_plane_vec, 2);
 
         for (int index = 0; index < expect.size(); ++index)
         {

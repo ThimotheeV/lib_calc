@@ -251,17 +251,17 @@ TEST_CASE("qr_all_loc_calc_stat_test")
 
         data_plane_vec_c data_plane_vec(genepop_input);
         auto result = calc_qr_loc_by_loc(data_plane_vec, 0);
-        REQUIRE(result[0] == std::array<int, 2>{7, 18});
+        REQUIRE(result[0] == std::array<int, 2>{5, 12});
         REQUIRE(result[1] == std::array<int, 2>{8, 32});
         REQUIRE(result[2] == std::array<int, 2>{10, 16});
 
         result = calc_qr_loc_by_loc(data_plane_vec, 1);
-        REQUIRE(result[0] == std::array<int, 2>{7, 18});
+        REQUIRE(result[0] == std::array<int, 2>{5, 12});
         REQUIRE(result[1] == std::array<int, 2>{8, 32});
         REQUIRE(result[2] == std::array<int, 2>{6, 16});
 
         result = calc_qr_loc_by_loc(data_plane_vec, 2);
-        REQUIRE(result[0] == std::array<int, 2>{5, 18});
+        REQUIRE(result[0] == std::array<int, 2>{4, 12});
         REQUIRE(result[1] == std::array<int, 2>{11, 32});
         REQUIRE(result[2] == std::array<int, 2>{5, 16});
     }
@@ -280,7 +280,7 @@ TEST_CASE("qr_all_loc_calc_stat_test")
 
         data_plane_vec_c data_plane_vec(genepop_input);
         auto result = calc_qr_all_loc(data_plane_vec);
-        REQUIRE(result[0] == 19.0 / 54);
+        REQUIRE(result[0] == 14.0 / 36);
         REQUIRE(result[1] == 27.0 / 96);
         REQUIRE(result[2] == 21.0 / 48);
     }

@@ -34,3 +34,4 @@
 # VSCode specific
 /build
 .vscode/*
+/Funct_test_build

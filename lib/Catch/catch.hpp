@@ -4586,7 +4586,7 @@ namespace Catch {
 } // end namespace Catch
 
 // end catch_random_number_generator.h
-#include "random_cstl.hpp"
+#include <random>
 
 namespace Catch {
 namespace Generators {
@@ -4594,7 +4594,7 @@ namespace Generators {
 template <typename Float>
 class RandomFloatingGenerator final : public IGenerator<Float> {
     Catch::SimplePcg32& m_rng;
-    cstl::uniform_real_distribution<Float> m_dist;
+    std::uniform_real_distribution<Float> m_dist;
     Float m_current_number;
 public:
 
@@ -4616,7 +4616,7 @@ public:
 template <typename Integer>
 class RandomIntegerGenerator final : public IGenerator<Integer> {
     Catch::SimplePcg32& m_rng;
-    cstl::uniform_int_distribution<Integer> m_dist;
+    std::uniform_int_distribution<Integer> m_dist;
     Integer m_current_number;
 public:
 
@@ -6982,7 +6982,7 @@ namespace Catch {
             template <typename URng, typename Iterator, typename Estimator>
             sample resample(URng& rng, int resamples, Iterator first, Iterator last, Estimator& estimator) {
                 auto n = last - first;
-                cstl::uniform_int_distribution<decltype(n)> dist(0, n - 1);
+                std::uniform_int_distribution<decltype(n)> dist(0, n - 1);
 
                 sample out;
                 out.reserve(resamples);

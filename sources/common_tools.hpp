@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <stdexcept>
 
 template <typename value>
 double mean(std::vector<value> X_vec);
@@ -29,7 +30,7 @@ class bin_vec
     int Size;
 
 public:
-    bin_vec(int size);
+    explicit bin_vec(int size);
     int size();
 
     //Setter

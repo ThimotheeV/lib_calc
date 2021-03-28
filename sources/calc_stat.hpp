@@ -8,6 +8,7 @@ std::array<int, 2> calc_Q_intra_indiv_per_locus(data_plane_vec_c const &data_pla
 double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec);
 
 std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int locus, int deme);
+std::array<int, 2> calc_Q_inter_indiv_per_locus(data_plane_vec_c const &data_plane_vec, int locus);
 double calc_Q_inter_indiv_intra_deme(data_plane_vec_c const &data_plane_vec);
 
 std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plane_vec, int locus);

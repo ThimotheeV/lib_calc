@@ -7,7 +7,7 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
     Ploidy = ploidy;
     //size of different part
     Nbr_of_deme = genedeme_data.Genotype.size();
-    Nbr_dist_class = genedeme_data.Nbr_dist_class;
+    Dist_class_nbr = genedeme_data.Nbr_dist_class;
     if (genedeme_data.Dist_btw_deme.size() > 0)
     {
         Dist_btw_deme = genedeme_data.Dist_btw_deme;
