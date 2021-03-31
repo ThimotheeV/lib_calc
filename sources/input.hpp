@@ -3,14 +3,12 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <cmath>
 
-std::string remove_spaces_underscores(std::string str);
-std::string remove_spaces_in_range(std::string str, int pos_beg, int pos_end);
-std::string lower_case(std::string str);
-std::vector<std::string> sep_by_char(std::string const &str, char sep);
-std::vector<std::string> trim_unix_windows_file_by_line(std::string const &str);
-std::vector<std::vector<std::string>> trim_str_vec_by_string(std::vector<std::string> const &vec_str, std::string sep);
+#include "arg_parser.hpp"
+
 std::string const read_file(std::string const &filename);
+std::string read_write_cmdline(int argc, char **argv);
 
 template <std::size_t ploidy>
 struct genepop_input_c
@@ -33,4 +31,61 @@ struct genepop_input_c
     std::vector<std::vector<std::vector<std::array<int, ploidy>>>> Genotype;
 };
 
-#include "input.tpp" 
+//simple class to read file and chose
+struct selector_input_c
+{
+    selector_input_c(std::string path_to_file);
+
+    std::string Input_name;
+
+    bool Hobs{false};
+    bool Hexp{false};
+    bool Nb_allele{false};
+    bool Var{false};
+    bool MGW{false};
+
+    bool F_stat{false};
+    bool Q_stat{false};
+
+    bool Qr{false};
+    bool Ar{false};
+    bool Er{false};
+
+    bool Missing_data{false};
+    int Nbr_class{1};
+};
+
+struct result_c
+{
+    result_c(int nbr_class);
+
+    double Hobs_mean{-1};
+    double Hobs_var{-1};
+    double Hexp_mean{-1};
+    double Hexp_var{-1};
+    double Nb_allele_mean{-1};
+    double Nb_allele_var{-1};
+    double Var_mean{-1};
+    double Var_var{-1};
+    double MGW_mean{-1};
+    double MGW_var{-1};
+
+    double Fis_mean{-1};
+    double Fis_var{-1};
+    double Fst_mean{-1};
+    double Fst_var{-1};
+
+    double Qwi_mean{-1};
+    double Qwi_var{-1};
+    double Qwd_mean{-1};
+    double Qwd_var{-1};
+    double Qbd_mean{-1};
+    double Qbd_var{-1};
+
+    std::vector<double> Qr;
+
+    std::array<double, 3> Ar_reg{-1};
+    std::array<double, 3> Er_reg{-1};
+};
+
+#include "input.tpp"

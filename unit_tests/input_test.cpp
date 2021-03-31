@@ -5,26 +5,26 @@
 
 TEST_CASE("input_handler_test")
 {
-    SECTION("remove_spaces_in_range")
+    SECTION("remove_spaces_tab_in_range")
     {
         std::string str = "Grange des Peres  ";
-        auto result = remove_spaces_in_range(str, 15, str.size());
-        result = lower_case(result);
+        auto result = remove_spaces_tab_in_range(str, 15, str.size());
+        result = str_tolower(result);
 
         REQUIRE(result == "grange des peres");
     }
 
-    SECTION("remove_spaces_underscores_andlower")
+    SECTION("remove_spaces_tab_underscores_andlower")
     {
-        auto result = remove_spaces_underscores("Grange_des Peres  ");
-        result = lower_case(result);
+        auto result = remove_spaces_tab_underscores("Grange_des Peres  ");
+        result = str_tolower(result);
 
         REQUIRE(result == "grangedesperes");
     }
 
     SECTION("sep_by_space")
     {
-        auto result = sep_by_char(" 0201  003003 0102   0302 1011 01 ", ' ');
+        auto result = slice_by_char(" 0201  003003 0102   0302 1011 01 ", ' ');
 
         REQUIRE(result.size() == 6);
         REQUIRE(result[0] == "0201");
@@ -37,7 +37,7 @@ TEST_CASE("input_handler_test")
 
     SECTION("sep_by_comma")
     {
-        auto result = sep_by_char(" Grange des Peres  ,  0201 003003 0102 0302 1011 01", ',');
+        auto result = slice_by_char(" Grange des Peres  ,  0201 003003 0102 0302 1011 01", ',');
 
         REQUIRE(result.size() == 2);
         REQUIRE(result[0] == " Grange des Peres  ");
@@ -46,7 +46,7 @@ TEST_CASE("input_handler_test")
 
     SECTION("trim_unix_file")
     {
-        auto result = trim_unix_windows_file_by_line("line 1\n\nline 2\n\n");
+        auto result = slice_unix_windows_file_by_line("line 1\n\nline 2\n\n");
 
         REQUIRE(result.size() == 2);
         REQUIRE(result[0] == "line 1");
@@ -55,7 +55,7 @@ TEST_CASE("input_handler_test")
 
     SECTION("trim_windows_file")
     {
-        auto result = trim_unix_windows_file_by_line("line 1\r\rline 2\r\r");
+        auto result = slice_unix_windows_file_by_line("line 1\r\rline 2\r\r");
 
         REQUIRE(result.size() == 2);
         REQUIRE(result[0] == "line 1");
@@ -64,7 +64,7 @@ TEST_CASE("input_handler_test")
 
     SECTION("trim_by_string")
     {
-        auto result = trim_str_vec_by_string({"mtDNA", "Pop", "Grange des Peres  ,  0201 003003 0102 0302 1011 01"}, "Pop");
+        auto result = slice_str_vec_by_string({"mtDNA", "Pop", "Grange des Peres  ,  0201 003003 0102 0302 1011 01"}, "Pop");
 
         REQUIRE(result.size() == 2);
         REQUIRE(result[0][0] == "mtDNA");
@@ -100,7 +100,7 @@ TEST_CASE("genepop_input_test")
 
     SECTION("constructor")
     {
-        genepop_input_c<2> input("input_test.txt");
+        genepop_input_c<2> input("input_test.txt", 10);
         REQUIRE(input.Nbr_dist_class == 10);
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 6);
@@ -117,7 +117,7 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Indiv_name.size() == 4);
         REQUIRE(input.Indiv_name[0][0] == "grange des peres  ");
         REQUIRE(input.Indiv_name[2][1] == "bonneau 02   ");
-        REQUIRE(input.Indiv_name[3][2] == "    ");
+        REQUIRE(input.Indiv_name[3][2] == "NaN");
         //Number of deme
         REQUIRE(input.Genotype.size() == 4);
         //Pop size
@@ -145,7 +145,7 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Indiv_name.size() == 4);
         REQUIRE(input.Indiv_name[0][0] == "grange des peres  ");
         REQUIRE(input.Indiv_name[2][1] == "bonneau 02   ");
-        REQUIRE(input.Indiv_name[3][2] == "    ");
+        REQUIRE(input.Indiv_name[3][2] == "NaN");
         //Number of deme
         REQUIRE(input.Genotype.size() == 4);
         //Pop size
@@ -199,5 +199,31 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{0, 0, 1, 2});
         REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{2, 1, 0, 0});
         REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
+    }
+}
+
+TEST_CASE("selector_input_test")
+{
+    SECTION("constructor")
+    {
+        selector_input_c setting("test_selector.txt");
+
+        REQUIRE(setting.Input_name == "./test.txt");
+
+        REQUIRE(setting.Hobs == true);
+        REQUIRE(setting.Hexp == true);
+        REQUIRE(setting.Nb_allele == false);
+        REQUIRE(setting.Var == false);
+        REQUIRE(setting.MGW == false);
+
+        REQUIRE(setting.F_stat == true);
+        REQUIRE(setting.Q_stat == false);
+
+        REQUIRE(setting.Qr == true);
+        REQUIRE(setting.Ar == false);
+        REQUIRE(setting.Er == false);
+
+        REQUIRE(setting.Missing_data == false);
+        REQUIRE(setting.Nbr_class == 100);
     }
 }

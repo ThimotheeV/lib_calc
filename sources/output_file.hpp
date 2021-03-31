@@ -1,12 +1,11 @@
 #pragma once
 #include <string>
 
-struct output_file_c
-{
-    //for test
-    output_file_c() = default;
+#include <input.hpp>
 
-    output_file_c(std::string const &directory);
+void output_stat_files(selector_input_c const &selec, result_c const &result);
 
-    std::string Directory;
-};
+template <typename values>
+void print_output(std::string path_to_file, std::vector<values> vec_value, std::string open_file_mode);
+
+#include "output_file.tpp"
