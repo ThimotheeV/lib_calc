@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     std::string file_selector;
     if (argc == 1)
     {
-        file_selector = "./Selector";
+        file_selector = "./selector.txt";
     }
     else
     {
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         }
 
         result.Hobs_mean = Hobs_mean / data_plane_vec.base_nbr_locus_per_indiv();
-        result.Hobs_var = var(Vec_value, Hobs_mean);
+        result.Hobs_var = var(Vec_value, result.Hobs_mean);
     }
 
     /*******************************************/
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         }
 
         result.Hexp_mean = Hexp_mean / data_plane_vec.base_nbr_locus_per_indiv();
-        result.Hexp_var = var(Vec_value, Hexp_mean);
+        result.Hexp_var = var(Vec_value, result.Hexp_mean);
     }
 
     /*******************************************/
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             var_mean += Vec_value[loc];
         }
         result.Var_mean = var_mean / data_plane_vec.base_nbr_locus_per_indiv();
-        result.Var_var = var(Vec_value, var_mean);
+        result.Var_var = var(Vec_value, result.Var_mean);
     }
 
     /*******************************************/
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
         }
 
         result.Nb_allele_mean = nb_allele_mean / data_plane_vec.base_nbr_locus_per_indiv();
-        result.Nb_allele_var = var(Vec_value, nb_allele_mean);
+        result.Nb_allele_var = var(Vec_value, result.Nb_allele_mean);
     }
 
     /*******************************************/
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         }
 
         result.MGW_mean = MGW_mean / data_plane_vec.base_nbr_locus_per_indiv();
-        result.MGW_var = var(Vec_value, MGW_mean);
+        result.MGW_var = var(Vec_value, result.MGW_mean);
     }
 
     /*******************************************/
@@ -134,9 +134,9 @@ int main(int argc, char *argv[])
             Fst_mean += Vec_Fst[loc];
         }
         result.Fis_mean = Fis_mean / data_plane_vec.nbr_of_locus_tot();
-        result.Fis_var = var(Vec_Fis, Fis_mean);
+        result.Fis_var = var(Vec_Fis, result.Fis_mean);
         result.Fst_mean = Fst_mean / data_plane_vec.nbr_of_locus_tot();
-        result.Fst_var = var(Vec_Fst, Fst_mean);
+        result.Fst_var = var(Vec_Fst, result.Fst_mean);
     }
 
     /*******************************************/
