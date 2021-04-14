@@ -94,9 +94,20 @@ int data_plane_vec_c::nbr_allele_per_loc(int locus) const
     return Allele_state_per_loc[locus].size();
 }
 
-std::vector<std::array<int, 2>> const &data_plane_vec_c::allele_state_per_loc(int locus) const
+//map(state, nbr of allele in this state)
+std::map<int, int> const &data_plane_vec_c::allele_state_per_loc(int locus) const
 {
     return Allele_state_per_loc[locus];
+}
+
+int data_plane_vec_c::state_min() const
+{
+    return Allele_state_bound.at(0);
+}
+
+int data_plane_vec_c::state_max() const
+{
+    return Allele_state_bound.at(1);
 }
 
 std::vector<int> const &data_plane_vec_c::get_plane_vec()
@@ -212,7 +223,7 @@ double data_plane_vec_c::dist_btw_deme(int dpv_gene_index1, int dpv_gene_index2)
 
 double data_plane_vec_c::dist_btw_deme_with_deme(int deme_index1, int deme_index2) const
 {
-        if (deme_index1 == deme_index2)
+    if (deme_index1 == deme_index2)
     {
         return 0;
     }

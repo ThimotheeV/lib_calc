@@ -25,7 +25,7 @@ private:
 
     std::vector<std::vector<double>> Dist_btw_locus;
     //Locus, deme
-    
+
     int Nbr_of_deme{0};
     //Cumul sum of indiv for each deme
     int Nbr_of_indiv_tot{0};
@@ -41,8 +41,10 @@ private:
     //[locus][deme]
     std::vector<std::vector<int>> Nomiss_nbr_of_gene_per_loc_per_deme;
     std::vector<std::vector<int>> Nomiss_nbr_of_indiv_per_loc_per_deme;
-    //Allele state resum by loc (min, max, nbr of state)
-    std::vector<std::vector<std::array<int, 2>>> Allele_state_per_loc;
+    //Allele state resum by loc (state, nbr of allele in this state)
+    std::vector<std::map<int, int>> Allele_state_per_loc;
+    //Total allele bound(min, max)
+    std::array<int, 2> Allele_state_bound;
     int Ploidy{-1};
 
 public:
@@ -66,7 +68,7 @@ public:
     int nbr_of_indiv() const;
     int nbr_of_indiv_per_deme(int nbr_of_deme) const; //deme size
     std::vector<int> const &cumul_nbr_of_indiv_per_deme() const;
-    
+
     int get_indiv(int gene) const;
     feature_c const &get_feature(int indiv);
 
@@ -79,7 +81,9 @@ public:
     int nomiss_nbr_of_deme_per_loc(int locus) const;
 
     int nbr_allele_per_loc(int locus) const;
-    std::vector<std::array<int, 2>> const &allele_state_per_loc(int locus) const;
+    std::map<int, int> const &allele_state_per_loc(int locus) const;
+    int state_min() const;
+    int state_max() const;
 
     std::vector<int> const &get_plane_vec();
     int operator[](int i) const;

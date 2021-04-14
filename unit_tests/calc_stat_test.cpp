@@ -652,3 +652,66 @@ TEST_CASE("Fstat_genepop")
         REQUIRE(result.at(1) == Approx(0.0601).margin(0.0001));
     }
 }
+
+// TEST_CASE("SFS")
+// {
+//     SECTION("SFS 2 states without missing value")
+//     {
+//         genepop_input_c<2> genepop_input;
+//         genepop_input.Dist_btw_deme = {{0, 1, 2},
+//                                        {1, 0, 1},
+//                                        {2, 1, 0}};
+//         //1 deme, 6 indiv, 3 locus; 1 ancestry state, 2 derived state
+//         genepop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 2}}, 
+//                                    {{1, 2}, {1, 2}, {1, 2}}, {{2, 2}, {2, 2}, {2, 2}}, 
+//                                    {{1, 1}, {1, 2}, {1, 2}}, {{2, 1}, {2, 2}, {2, 2}}}};
+
+//         data_plane_vec_c data_plane_vec(genepop_input);
+
+//         auto result = SFS_calc(data_plane_vec, 0, 3);
+
+//         //for frequency : 5,7 /12
+//         std::vector<int> target{1, 2};
+
+//         auto target_itr = target.begin();
+//         for (auto const &map_state : result)
+//         {
+//             for (auto const &pair : map_state.second)
+//             {
+//                 std::cout << "Freq : " << pair.first << " ,nbr allele : " << pair.second << std::endl;
+//                 REQUIRE(pair.second == *target_itr);
+//                 ++target_itr;
+//             }
+//         }
+//     }
+
+//     SECTION("SFS 2 states with missing value")
+//     {
+//         genepop_input_c<2> genepop_input;
+//         genepop_input.Dist_btw_deme = {{0, 1, 2},
+//                                        {1, 0, 1},
+//                                        {2, 1, 0}};
+//         //1 deme, 6 indiv, 3 locus; 1 ancestry state, 2 derived state
+//         genepop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 0}}, 
+//                                    {{0, 2}, {1, 2}, {1, 2}}, {{2, 2}, {2, 2}, {2, 0}}, 
+//                                    {{1, 1}, {1, 2}, {1, 2}}, {{2, 1}, {2, 2}, {2, 2}}}};
+
+//         data_plane_vec_c data_plane_vec(genepop_input);
+
+//         auto result = SFS_calc(data_plane_vec, 0, 3);
+
+//         //for frequency : 5,7 /12
+//         std::vector<int> target{1, 2};
+
+//         auto target_itr = target.begin();
+//         for (auto const &map_state : result)
+//         {
+//             for (auto const &pair : map_state.second)
+//             {
+//                 std::cout << "Freq : " << pair.first << " ,nbr allele : " << pair.second << std::endl;
+//                 REQUIRE(pair.second == *target_itr);
+//                 ++target_itr;
+//             }
+//         }
+//     }
+// }

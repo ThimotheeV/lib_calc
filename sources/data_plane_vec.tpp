@@ -65,6 +65,8 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
     Nomiss_nbr_of_indiv_per_loc_per_deme.resize(Locus_nbr);
     Nomiss_indiv_bool_per_loc.resize(Nbr_of_indiv_tot, bin_vec(Locus_nbr));
 
+    //WARNING : Be sure than min state < 2 ^ 16
+    Allele_state_bound = std::array<int, 2>{1 << 16, 0};
     for (int locus = 0; locus < Locus_nbr; ++locus)
     {
         std::map<int, int> temp_count_allele_state;
@@ -89,6 +91,14 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
                     }
                     else
                     {
+                        if (value < Allele_state_bound.at(0))
+                        {
+                            Allele_state_bound.at(0) = value;
+                        }
+                        if (value > Allele_state_bound.at(1))
+                        {
+                            Allele_state_bound.at(1) = value;
+                        }
                         //emplace return a pair consisting of an iterator to the inserted element (or element already in place) and a bool denoting whether the insertion took place
                         auto pair = temp_count_allele_state.emplace(value, 1);
                         if (!pair.second)
@@ -117,11 +127,7 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
             }
         }
 
-        Allele_state_per_loc[locus].reserve(temp_count_allele_state.size());
-        for (auto const &pair : temp_count_allele_state)
-        {
-            Allele_state_per_loc[locus].push_back({pair.first, pair.second});
-        }
+        Allele_state_per_loc[locus] = std::move(temp_count_allele_state);
         //size = number of non void deme
         Nomiss_nbr_of_gene_per_loc_per_deme[locus].shrink_to_fit();
         Nomiss_nbr_of_indiv_per_loc_per_deme[locus].shrink_to_fit();

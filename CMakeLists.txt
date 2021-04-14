@@ -29,6 +29,6 @@ else()
 endif()
 
 # fait le .o
-add_executable(libstat main.cpp)
+add_executable(GSumStat main.cpp)
 # lie les .o/.a ...
-target_link_libraries(libstat libsources)
+target_link_libraries(GSumStat libsources)

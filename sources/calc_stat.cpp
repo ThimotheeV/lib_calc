@@ -1,6 +1,7 @@
 #include <tuple>
 #include <map>
 #include <cmath>
+#include <random>
 
 #include "calc_stat.hpp"
 
@@ -255,7 +256,7 @@ double calc_Hnei_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
     double result = 0;
     for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
     {
-        result += pow(freq_al.at(1), 2);
+        result += pow(freq_al.second, 2);
     }
     double nomiss_nbr_of_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
     result = (1 - (result / pow(nomiss_nbr_of_gene, 2))) * nomiss_nbr_of_gene / (nomiss_nbr_of_gene - 1);
@@ -281,15 +282,15 @@ double calc_Var_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
     int nbr_of_count = 0;
     for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
     {
-        //freq_al.at(0) = value of microsat ; freq_al.at(1) = number of microsat
-        moy += freq_al.at(0) * freq_al.at(1);
-        nbr_of_count += freq_al.at(1);
+        //freq_al.first = value of microsat ; freq_al.second = number of microsat
+        moy += freq_al.first * freq_al.second;
+        nbr_of_count += freq_al.second;
     }
     moy /= nbr_of_count;
     double result = 0;
     for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
     {
-        result += freq_al.at(1) * pow(freq_al.at(0) - moy, 2);
+        result += freq_al.second * pow(freq_al.first - moy, 2);
     }
     //Correction n/n-1
     double n = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
@@ -319,8 +320,8 @@ double calc_Hobs_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
 double calc_MGW_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
 {
     auto const &allele_state_per_loc = data_plane_vec.allele_state_per_loc(locus);
-    //nbr allele / rage allele
-    return static_cast<double>(allele_state_per_loc.size()) / (allele_state_per_loc[allele_state_per_loc.size() - 1].at(0) - allele_state_per_loc[0].at(0) + 1);
+    //nbr allele / allele range (last of the allele state map - first of the allele state map)
+    return static_cast<double>(allele_state_per_loc.size()) / (allele_state_per_loc.rbegin()->first - allele_state_per_loc.begin()->first + 1);
 }
 
 double calc_MGW(data_plane_vec_c const &data_plane_vec)
@@ -745,7 +746,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
 //esti Fis, Fst
 std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int locus)
 {
-    std::vector<std::array<int, 2>> const &allele_state = data_plane_vec.allele_state_per_loc(locus);
+    auto const &allele_state = data_plane_vec.allele_state_per_loc(locus);
 
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
@@ -782,7 +783,7 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
                 int count = 0;
                 for (auto const &state : allele_state)
                 {
-                    double temp = (static_cast<double>(indiv1_gene1 == state.at(0)) + static_cast<double>(indiv1_gene2 == state.at(0)));
+                    double temp = (static_cast<double>(indiv1_gene1 == state.first) + static_cast<double>(indiv1_gene2 == state.first));
                     deme_state_mean[deme][count] += (temp / gene_in_nomiss_nbr_of_indiv_per_deme);
                     state_mean_samp[count] += (temp / tot_gene_in_nomiss_nbr_of_indiv);
                     ++count;
@@ -805,8 +806,8 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
                 int count = 0;
                 for (auto const &state : allele_state)
                 {
-                    int Xij1 = (indiv1_gene1 == state.at(0));
-                    int Xij2 = (indiv1_gene2 == state.at(0));
+                    int Xij1 = (indiv1_gene1 == state.first);
+                    int Xij2 = (indiv1_gene2 == state.first);
                     double Xij = (Xij1 + Xij2) / 2.0;
                     SSg += pow(Xij1 - Xij, 2) + pow(Xij2 - Xij, 2);
                     SSi += (pow(Xij - deme_state_mean[deme][count], 2)) * 2;
@@ -854,3 +855,101 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
     result.at(1) = fst_num / fst_denum;
     return result;
 }
+
+// //Return <state, <frequence, nbr of locus>>
+// std::map<int, std::map<int, double>> SFS_calc(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus, int seed)
+// {
+//     std::mt19937_64 seed_gen(seed);
+//     std::vector<int> locus_usable_for_SFS;
+//     locus_usable_for_SFS.reserve(data_plane_vec.nbr_of_locus_tot());
+
+//     int nbr_of_locus = data_plane_vec.base_nbr_locus_per_indiv();
+//     int real_min_limit = data_plane_vec.base_nbr_locus_per_indiv();
+
+//     for (int locus = 0; locus < nbr_of_locus; ++locus)
+//     {
+//         int nbr_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
+//         if (nbr_gene >= limit_min_gene_per_locus)
+//         {
+//             locus_usable_for_SFS.push_back(locus);
+//             if (nbr_gene < real_min_limit)
+//             {
+//                 real_min_limit = nbr_gene;
+//             }
+//         }
+//     }
+
+//     locus_usable_for_SFS.shrink_to_fit();
+
+//     if (locus_usable_for_SFS.size() < 1)
+//     {
+//         throw std::logic_error("Can't calculate SFS, no locus with number of data > ... . I exit.");
+//     }
+
+//     std::map<int, std::map<int, double>> result;
+
+//     for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
+//     {
+//         result.emplace(state, std::map<int, double>{});
+//     }
+
+//     if (locus_usable_for_SFS.size() == nbr_of_locus)
+//     {
+//         for (int locus = 0; locus < nbr_of_locus; ++locus)
+//         {
+//             //map(state, nbr of allele in this state)
+//             auto temp_locus = data_plane_vec.allele_state_per_loc(locus);
+//             for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
+//             {
+//                 auto pair = result.at(state).emplace(temp_locus.at(state), 1.0);
+//                 if (!pair.second)
+//                 {
+//                     pair.first->second += 1.0;
+//                 }
+//             }
+//         }
+//     }
+//     else
+//     {
+//         int ploidy = data_plane_vec.get_Ploidy();
+//         //2 ^ (max - min), number of free arrangement, the other min value are constrainte by the draw without 
+//         int nbr_of_resampl = 100 * std::pow(2, nbr_of_locus - real_min_limit);
+//         std::uniform_int_distribution uni_distrib(0, data_plane_vec.nbr_of_indiv() * ploidy - 1);
+//         for (int locus : locus_usable_for_SFS)
+//         {
+//             std::map<int, int> allele_freq;
+//             //re-sampling
+//             for (int samp = 0; samp < nbr_of_resampl; ++samp)
+//             {
+//                 std::map<int, int> unique_value;
+//                 for (int samp = 0; samp < real_min_limit; ++real_min_limit)
+//                 {
+//                     int num_indiv = uni_distrib(seed_gen);
+//                     auto uniq = unique_value.emplace(num_indiv, 1);
+//                     int value = data_plane_vec(locus, num_indiv / ploidy, num_indiv % ploidy);
+//                     while (!uniq.second || value == 0)
+//                     {
+//                         num_indiv = uni_distrib(seed_gen);
+//                         uniq = unique_value.emplace(num_indiv, 1);
+//                         value = data_plane_vec(locus, num_indiv / ploidy, num_indiv % ploidy);
+//                     }
+//                     auto temp = allele_freq.emplace(value, 1);
+//                     if (!temp.second)
+//                     {
+//                         temp.first->second += 1;
+//                     }
+//                 }
+//             }
+//             for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
+//             {
+//                 auto pair = result.at(state).emplace(allele_freq.at(state), 1);
+//                 if (!pair.second)
+//                 {
+//                     pair.first->second += 1;
+//                 }
+//             }
+//         }
+//     }
+
+//     return result;
+// }

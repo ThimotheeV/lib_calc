@@ -4,7 +4,6 @@
 
 #include "output_file.hpp"
 #include "data_plane_vec.hpp"
-#include "input.hpp"
 
 //TODO : data_plane_vec_c => flat_data_vec
 //Coherance of display is handle by previous func => verification of calculus possibility

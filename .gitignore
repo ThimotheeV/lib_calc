@@ -35,3 +35,6 @@
 /build
 .vscode/*
 /Funct_test_build
+
+#test and other
+/temp
