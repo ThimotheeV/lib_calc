@@ -15,8 +15,8 @@ struct feature_c
 
 class data_plane_vec_c
 {
-private:
-private:
+    //Needed to have wrapper in GSpace
+protected:
     std::vector<int> Plane_vec;
     std::vector<feature_c> Indiv_feat;
     std::vector<std::vector<double>> Dist_btw_deme;
