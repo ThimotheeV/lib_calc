@@ -5,7 +5,7 @@
 #include <array>
 #include <cmath>
 
-#include "arg_parser.hpp"
+#include "arg_pars.hpp"
 
 std::string const read_file(std::string const &filename);
 std::string read_write_cmdline(int argc, char **argv);
