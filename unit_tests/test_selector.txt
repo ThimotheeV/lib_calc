@@ -8,3 +8,5 @@ F_stat =
 Nbr_class = 100
 
 Input_name = ./test.txt
+
+Eta =

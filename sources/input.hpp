@@ -51,6 +51,8 @@ struct selector_input_c
     bool Ar{false};
     bool Er{false};
 
+    bool Eta{false};
+
     bool Missing_data{false};
     int Nbr_class{1};
 };

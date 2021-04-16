@@ -223,6 +223,8 @@ TEST_CASE("selector_input_test")
         REQUIRE(setting.Ar == false);
         REQUIRE(setting.Er == false);
 
+        REQUIRE(setting.Eta == true);
+
         REQUIRE(setting.Missing_data == false);
         REQUIRE(setting.Nbr_class == 100);
     }

@@ -141,7 +141,7 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
         Dist_btw_locus[locus1].resize(Locus_nbr);
         for (auto locus2 = 0; locus2 < Locus_nbr; ++locus2)
         {
-            Dist_btw_locus[locus1][locus2] = (locus1 != locus2);
+            Dist_btw_locus[locus1][locus2] = std::abs(locus1 - locus2);
         }
     }
 }

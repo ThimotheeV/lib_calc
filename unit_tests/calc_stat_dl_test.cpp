@@ -71,7 +71,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
                 int locus_j_indiv2_gene1 = data_plane_vec(1, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(1, 1, indiv_other_deme, 1);
 
-                std::cout << ++debug << std::endl;
+
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
             }
@@ -98,7 +98,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
                 int locus_j_indiv2_gene1 = data_plane_vec(2, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(2, 1, indiv_other_deme, 1);
 
-                std::cout << ++debug << std::endl;
+
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
             }
@@ -125,7 +125,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
                 int locus_j_indiv2_gene1 = data_plane_vec(2, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(2, 1, indiv_other_deme, 1);
 
-                std::cout << ++debug << std::endl;
+
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
             }
@@ -173,14 +173,13 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.0505051}, {1, 1, -0.1135681}, {1, 1, 0.0600601}}};
+        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.0505051}, {1, 2, -0.1135681}, {1, 1, 0.0600601}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -204,14 +203,13 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0495151}, {1, 1, -0.0891272}, {1, 1, 0.0354858}, {1, 1, -0.0947932}, {1, 1, 0.0410162}, {1, 1, 0.0583342}, {1, 1, 0.0484066}, {1, 1, -0.0750302}, {1, 1, 0.0282371}}};
+        std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0495151}, {1, 1, -0.0891272}, {1, 1, 0.0354858}, {1, 2, -0.0947932}, {1, 2, 0.0410162}, {1, 2, 0.0583342}, {1, 1, 0.0484066}, {1, 1, -0.0750302}, {1, 1, 0.0282371}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -235,14 +233,13 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0666666}, {1, 1, -0.1028571}, {1, 1, 0.0285714}, {1, 1, -0.1434482}, {1, 1, 0.0416666}, {1, 1, 0.0494208}, {1, 1, 0.0574712}, {1, 1, -0.0738095}, {1, 1, 0.0219987}}};
+        std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0666666}, {1, 1, -0.1028571}, {1, 1, 0.0285714}, {1, 2, -0.1434482}, {1, 2, 0.0416666}, {1, 2, 0.0494208}, {1, 1, 0.0574712}, {1, 1, -0.0738095}, {1, 1, 0.0219987}}};
 
         auto result = calc_eta_q1_version(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -266,14 +263,13 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 9> expect = {{{1, 1, 1}, {1, 1, 0.5}, {1, 1, 0.5}, {1, 1, 0.222222}, {1, 1, 0}, {1, 1, 0.111111}, {1, 1, 1.111111}, {1, 1, -0.888888}, {1, 1, -0.388888}}};
+        std::array<std::array<double, 3>, 9> expect = {{{1, 1, 1}, {1, 1, 0.5}, {1, 1, 0.5}, {1, 2, 0.222222}, {1, 2, 0}, {1, 2, 0.111111}, {1, 1, 1.111111}, {1, 1, -0.888888}, {1, 1, -0.388888}}};
 
         auto result = calc_eta_1_indiv_deme_v(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -298,14 +294,13 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 3> expect = {{{1, 1, 0.3333333}, {1, 1, 1.7142857}, {1, 1, 0.1904761}}};
+        std::array<std::array<double, 3>, 3> expect = {{{1, 1, 0.3333333}, {1, 2, 1.7142857}, {1, 1, 0.1904761}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -330,14 +325,13 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
 
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 9> expect = {
-            {{1, 1, 0.1904761}, {1, 1, 0.0846560}, {1, 1, 0.2962962}, {1, 1, 0.6428571}, {1, 1, 0.1428571}, {1, 1, 0.5714285}, {1, 1, 0.125}, {1, 1, -0.0833333}, {1, 1, 0.0833333}}};
+            {{1, 1, 0.1904761}, {1, 1, 0.0846560}, {1, 1, 0.2962962}, {1, 2, 0.6428571}, {1, 2, 0.1428571}, {1, 2, 0.5714285}, {1, 1, 0.125}, {1, 1, -0.0833333}, {1, 1, 0.0833333}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -361,14 +355,13 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 9> expect = {{{1, 1, 2}, {1, 1, -0.25}, {1, 1, -0.25}, {1, 1, 2}, {1, 1, -0.25}, {1, 1, -0.25}, {1, 1, 2}, {1, 1, -0.25}, {1, 1, -0.25}}};
+        std::array<std::array<double, 3>, 9> expect = {{{1, 1, 2}, {1, 1, -0.25}, {1, 1, -0.25}, {1, 2, 2}, {1, 2, -0.25}, {1, 2, -0.25}, {1, 1, 2}, {1, 1, -0.25}, {1, 1, -0.25}}};
 
         auto result = calc_eta_1_indiv_deme_v(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
@@ -393,14 +386,13 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.1287030}, {1, 1, -0.1617969}, {1, 1, 0.0006974}}};
+        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.1287030}, {1, 2, -0.1617969}, {1, 1, 0.0006974}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
-        auto debug = 0;
+
         for (auto value : expect)
         {
-            std::cout << ++debug << std::endl;
             REQUIRE(result_itr->at(0) == value.at(0));
             REQUIRE(result_itr->at(1) == value.at(1));
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));

@@ -210,6 +210,7 @@ std::vector<std::array<double, 3>> calc_eta_ij(data_plane_vec_c const &data_plan
     return result;
 }
 
+//Haploide version with > 1 indiv/deme
 //<pair of deme * pair of locus,<dist-locus, dist-deme, value eta>>
 std::vector<std::array<double, 3>> calc_eta(data_plane_vec_c const &data_plane_vec)
 {
@@ -239,7 +240,7 @@ std::vector<std::array<double, 3>> calc_eta(data_plane_vec_c const &data_plane_v
     return result;
 }
 
-//Version diploide and +1 indiv/deme
+//Diploide version with > 1 indiv/deme
 std::vector<std::array<double, 3>> calc_eta_q1_version(data_plane_vec_c const &data_plane_vec)
 {
     int locus_pair_nbr = (data_plane_vec.base_nbr_locus_per_indiv() * (data_plane_vec.base_nbr_locus_per_indiv() - 1)) / 2;

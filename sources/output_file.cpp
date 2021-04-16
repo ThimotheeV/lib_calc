@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <algorithm>
 
 #include "output_file.hpp"
 #include "data_plane_vec.hpp"
@@ -84,7 +85,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
         head.emplace_back("Er_slop");
         head.emplace_back("Er_intersec");
     }
-    
+
     head.shrink_to_fit();
 
     print_output("./Stats.txt", head, "over");
@@ -169,4 +170,36 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     stats_run.shrink_to_fit();
     print_output("./Stats.txt", stats_run, "app");
+}
+
+void output_eta_stat_files(std::vector<std::array<double, 3>> result)
+{
+    //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
+    std::sort(result.begin(), result.end(),
+              [](auto const &a, auto const &b) {
+                  if (a.at(0) < b.at(0))
+                  {
+                      return true;
+                  }
+                  else
+                  {
+                      return a.at(1) < b.at(1);
+                  }
+              });
+
+    std::vector<std::string> head;
+    head.reserve(3);
+
+    head.emplace_back("Dist_btw_deme");
+    head.emplace_back("Dist_btw_locus_pb");
+    head.emplace_back("Eta");
+
+    print_output("./Stats_dl.txt", head, "over");
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++//
+
+    for (auto const &values : result)
+    {
+        print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2)}, "app");
+    }
 }

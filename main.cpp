@@ -3,7 +3,7 @@
 #include <fstream>
 #include <cassert>
 
-#include "exe.hpp"
+#include "run.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +22,5 @@ int main(int argc, char *argv[])
     genepop_input_c<2> input(selector.Input_name, selector.Nbr_class);
     data_plane_vec_c data_plane_vec(input);
 
-    result_c result = run(selector, data_plane_vec);
-
-    output_stat_files(selector, result);
+    run(selector, data_plane_vec);
 }

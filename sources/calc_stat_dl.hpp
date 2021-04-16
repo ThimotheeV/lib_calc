@@ -12,7 +12,7 @@ double calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int locus_i, doubl
 std::vector<std::array<double, 3>> calc_eta_ij(data_plane_vec_c const &data_plane_vec, int locus_i, double Q2_loc_i, int locus_j, double Q2_loc_j);
 //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
 std::vector<std::array<double, 3>> calc_eta(data_plane_vec_c const &data_plane_vec);
-//Version diploide and +1 indiv/deme
+//Diploide version with > 1 indiv/deme
 std::vector<std::array<double, 3>> calc_eta_q1_version(data_plane_vec_c const &data_plane_vec);
-
+//Continous habitat isolation by distance
 std::vector<std::array<double, 3>> calc_eta_1_indiv_deme_v(data_plane_vec_c const &data_plane_vec);

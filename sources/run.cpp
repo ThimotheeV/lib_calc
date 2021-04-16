@@ -1,10 +1,12 @@
-#include "exe.hpp"
+#include "run.hpp"
 
 result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plane_vec)
 {
     result_c result(selector.Nbr_class);
+    bool stat = false;
     if (selector.Hobs)
     {
+        stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double Hobs_mean = 0;
         for (int loc = 0; loc < Vec_value.size(); ++loc)
@@ -21,6 +23,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Hexp)
     {
+        stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double Hexp_mean = 0;
         for (int loc = 0; loc < Vec_value.size(); ++loc)
@@ -37,6 +40,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Var)
     {
+        stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double var_mean = 0;
         for (int loc = 0; loc < Vec_value.size(); ++loc)
@@ -52,6 +56,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Nb_allele)
     {
+        stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double nb_allele_mean = 0;
         for (int loc = 0; loc < Vec_value.size(); ++loc)
@@ -68,6 +73,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.MGW)
     {
+        stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double MGW_mean = 0;
         for (int loc = 0; loc < Vec_value.size(); ++loc)
@@ -84,6 +90,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.F_stat)
     {
+        stat = true;
         std::vector<double> Vec_Fis(data_plane_vec.base_nbr_locus_per_indiv());
         std::vector<double> Vec_Fst(data_plane_vec.base_nbr_locus_per_indiv());
         //Fis or Fst
@@ -121,6 +128,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Qr)
     {
+        stat = true;
         result.Qr = calc_qr_all_loc(data_plane_vec);
     }
 
@@ -128,6 +136,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Ar)
     {
+        stat = true;
         auto Ar = ar_by_pair(data_plane_vec);
         result.Ar_reg = linear_regres_X_Y(Ar);
     }
@@ -136,8 +145,28 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Er)
     {
+        stat = true;
         auto er = er_by_pair(data_plane_vec);
         result.Er_reg = linear_regres_X_Y(er);
+    }
+
+    /*******************************************/
+
+    if (selector.Eta)
+    {
+        if (data_plane_vec.get_Ploidy() == 2)
+        {
+            output_eta_stat_files(calc_eta(data_plane_vec));
+        }
+        else
+        {
+            output_eta_stat_files(calc_eta_q1_version(data_plane_vec));
+        }
+    }
+
+    if(stat)
+    {
+        output_stat_files(selector, result);
     }
 
     return result;

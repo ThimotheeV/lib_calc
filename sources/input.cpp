@@ -76,7 +76,7 @@ selector_input_c::selector_input_c(std::string path_to_file)
         const auto &clean_line = remove_spaces_tab_in_range(line, 0, static_cast<int>(line.size()));
         auto line_pair_key_value = slice_by_char(clean_line, '=');
         const auto &stat_name = remove_underscores(str_tolower(line_pair_key_value[0]));
-        
+
         if (stat_name == "inputname")
         {
             Input_name = line_pair_key_value[1];
@@ -131,6 +131,11 @@ selector_input_c::selector_input_c(std::string path_to_file)
         if (stat_name == "er")
         {
             Er = true;
+            continue;
+        }
+        if (stat_name == "eta")
+        {
+            Eta = true;
             continue;
         }
         if (stat_name == "missingdata")
