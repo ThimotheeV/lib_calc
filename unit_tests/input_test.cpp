@@ -3,6 +3,7 @@
 
 #include "input.hpp"
 
+using namespace gss;
 TEST_CASE("input_handler_test")
 {
     SECTION("remove_spaces_tab_in_range")

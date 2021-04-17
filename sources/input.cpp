@@ -8,7 +8,7 @@
 
 #include "input.hpp"
 
-std::string const read_file(std::string const &filename)
+std::string const gss::read_file(std::string const &filename)
 {
     //Put filename in a stream
     //ifstream constructor
@@ -37,7 +37,7 @@ std::string const read_file(std::string const &filename)
  * 
  */
 
-std::string read_write_cmdline(int argc, char **argv)
+std::string gss::read_write_cmdline(int argc, char **argv)
 {
     std::string result;
     if (argc > 1)
@@ -67,15 +67,15 @@ std::string read_write_cmdline(int argc, char **argv)
 
 selector_input_c::selector_input_c(std::string path_to_file)
 {
-    const auto &file_str = read_file(path_to_file);
-    const auto &str_vec = slice_unix_windows_file_by_line(file_str);
+    const auto &file_str = gss::read_file(path_to_file);
+    const auto &str_vec = gss::slice_unix_windows_file_by_line(file_str);
 
     for (auto const &line : str_vec)
     {
         //Clean and parse key=value in a vector[key, value]
-        const auto &clean_line = remove_spaces_tab_in_range(line, 0, static_cast<int>(line.size()));
-        auto line_pair_key_value = slice_by_char(clean_line, '=');
-        const auto &stat_name = remove_underscores(str_tolower(line_pair_key_value[0]));
+        const auto &clean_line = gss::remove_spaces_tab_in_range(line, 0, static_cast<int>(line.size()));
+        auto line_pair_key_value = gss::slice_by_char(clean_line, '=');
+        const auto &stat_name = gss::remove_underscores(gss::str_tolower(line_pair_key_value[0]));
 
         if (stat_name == "inputname")
         {

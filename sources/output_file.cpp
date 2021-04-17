@@ -88,7 +88,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     head.shrink_to_fit();
 
-    print_output("./Stats.txt", head, "over");
+    gss::print_output("./Stats.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
@@ -169,7 +169,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
     }
 
     stats_run.shrink_to_fit();
-    print_output("./Stats.txt", stats_run, "app");
+    gss::print_output("./Stats.txt", stats_run, "app");
 }
 
 void output_eta_stat_files(std::vector<std::array<double, 3>> result)
@@ -194,12 +194,12 @@ void output_eta_stat_files(std::vector<std::array<double, 3>> result)
     head.emplace_back("Dist_btw_locus_pb");
     head.emplace_back("Eta");
 
-    print_output("./Stats_dl.txt", head, "over");
+    gss::print_output("./Stats_dl.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
     for (auto const &values : result)
     {
-        print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2)}, "app");
+        gss::print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2)}, "app");
     }
 }

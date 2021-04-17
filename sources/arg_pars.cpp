@@ -5,7 +5,7 @@
 
 //TRIMMING
 
-std::string remove_underscores(std::string str)
+std::string gss::remove_underscores(std::string str)
 {
     auto underscore = std::find(str.begin(), str.end(), '_');
 
@@ -19,14 +19,14 @@ std::string remove_underscores(std::string str)
 }
 
 // Remove if char is space, tabulation or "_"
-std::string remove_spaces_tab_underscores(std::string str)
+std::string gss::remove_spaces_tab_underscores(std::string str)
 {
-    str = remove_spaces_tab_in_range(str, 0, static_cast<int>(str.size()));
+    str = gss::remove_spaces_tab_in_range(str, 0, static_cast<int>(str.size()));
 
-    return remove_underscores(str);
+    return gss::remove_underscores(str);
 }
 
-std::string remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end)
+std::string gss::remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end)
 {
     auto beg_itr = str.begin();
     auto space = std::find(beg_itr + pos_beg, beg_itr + pos_end, ' ');
@@ -51,7 +51,7 @@ std::string remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end
     return str;
 }
 
-std::string remove_comma_semicolons_in_range(std::string str, int pos_beg, int pos_end)
+std::string gss::remove_comma_semicolons_in_range(std::string str, int pos_beg, int pos_end)
 {
     auto beg_itr = str.begin();
     auto space = std::find(beg_itr + pos_beg, beg_itr + pos_end, ',');
@@ -76,7 +76,7 @@ std::string remove_comma_semicolons_in_range(std::string str, int pos_beg, int p
     return str;
 }
 
-std::string replace_spaces_tab_in_range_by_comma(std::string str, int pos_beg, int pos_end)
+std::string gss::replace_spaces_tab_in_range_by_comma(std::string str, int pos_beg, int pos_end)
 {
     auto beg_itr = str.begin();
     auto space = std::find(beg_itr + pos_beg, beg_itr + pos_end, ' ');
@@ -101,9 +101,9 @@ std::string replace_spaces_tab_in_range_by_comma(std::string str, int pos_beg, i
     return str;
 }
 
-std::string replace_spaces_tab_underscores_by_comma(std::string str)
+std::string gss::replace_spaces_tab_underscores_by_comma(std::string str)
 {
-    str = replace_spaces_tab_in_range_by_comma(str, 0, static_cast<int>(str.size()));
+    str = gss::replace_spaces_tab_in_range_by_comma(str, 0, static_cast<int>(str.size()));
 
     auto underscore = std::find(str.begin(), str.end(), '_');
 
@@ -116,7 +116,7 @@ std::string replace_spaces_tab_underscores_by_comma(std::string str)
     return str;
 }
 
-std::string str_tolower(std::string str)
+std::string gss::str_tolower(std::string str)
 {
     for (auto &chara : str)
     {
@@ -126,7 +126,7 @@ std::string str_tolower(std::string str)
     return str;
 }
 
-std::vector<std::string> slice_by_char(std::string const &str, char sep)
+std::vector<std::string> gss::slice_by_char(std::string const &str, char sep)
 {
     std::vector<std::string> result;
     result.reserve(str.size());
@@ -159,7 +159,7 @@ std::vector<std::string> slice_by_char(std::string const &str, char sep)
     return result;
 }
 
-std::vector<std::string> slice_by_comma_semicolon(std::string const &str)
+std::vector<std::string> gss::slice_by_comma_semicolon(std::string const &str)
 {
     std::vector<std::string> result;
     result.reserve(str.size());
@@ -187,7 +187,7 @@ std::vector<std::string> slice_by_comma_semicolon(std::string const &str)
     return result;
 }
 
-std::vector<std::string> slice_unix_windows_file_by_line(std::string const &str)
+std::vector<std::string> gss::slice_unix_windows_file_by_line(std::string const &str)
 {
     std::vector<std::string> result;
     result.reserve(str.size());
@@ -220,7 +220,7 @@ std::vector<std::string> slice_unix_windows_file_by_line(std::string const &str)
     return result;
 }
 
-std::vector<std::vector<std::string>> slice_str_vec_by_string(std::vector<std::string> const &vec_str, std::string const &sep)
+std::vector<std::vector<std::string>> gss::slice_str_vec_by_string(std::vector<std::string> const &vec_str, std::string const &sep)
 {
     std::vector<std::vector<std::string>> result;
     result.reserve(vec_str.size());
@@ -248,9 +248,9 @@ std::vector<std::vector<std::string>> slice_str_vec_by_string(std::vector<std::s
 }
 
 //TODO : an be template
-std::vector<int> int_vector_parse_by_comma(std::string const &str)
+std::vector<int> gss::int_vector_parse_by_comma(std::string const &str)
 {
-    std::vector<std::string> temp_result = slice_by_char(str, ',');
+    std::vector<std::string> temp_result = gss::slice_by_char(str, ',');
 
     std::vector<int> result(temp_result.size());
     auto result_itr = result.begin();
@@ -262,9 +262,9 @@ std::vector<int> int_vector_parse_by_comma(std::string const &str)
     return result;
 }
 
-std::vector<double> double_vector_parse_by_comma(std::string const &str)
+std::vector<double> gss::double_vector_parse_by_comma(std::string const &str)
 {
-    std::vector<std::string> temp_result = slice_by_char(str, ',');
+    std::vector<std::string> temp_result = gss::slice_by_char(str, ',');
 
     std::vector<double> result(temp_result.size());
     auto result_itr = result.begin();
@@ -276,30 +276,30 @@ std::vector<double> double_vector_parse_by_comma(std::string const &str)
     return result;
 }
 
-std::vector<std::string> str_vector_parse_by_comma(std::string const &str)
+std::vector<std::string> gss::str_vector_parse_by_comma(std::string const &str)
 {
-    std::vector<std::string> result = slice_by_char(str, ',');
+    std::vector<std::string> result = gss::slice_by_char(str, ',');
 
     return result;
 }
 
-std::vector<std::string> str_vector_parse_by_comma_semicolon(std::string const &str)
+std::vector<std::string> gss::str_vector_parse_by_comma_semicolon(std::string const &str)
 {
-    std::vector<std::string> result = slice_by_comma_semicolon(str);
+    std::vector<std::string> result = gss::slice_by_comma_semicolon(str);
 
     return result;
 }
 
-bool convert_str_bool(std::string const &str)
+bool gss::convert_str_bool(std::string const &str)
 {
 
-    if (str_tolower(str) == "true" || str_tolower(str) == "t" || str_tolower(str) == "yes" || str_tolower(str) == "y")
+    if (gss::str_tolower(str) == "true" || gss::str_tolower(str) == "t" || gss::str_tolower(str) == "yes" || gss::str_tolower(str) == "y")
     {
         return true;
     }
     else
     {
-        if (str_tolower(str) == "false" || str_tolower(str) == "f" || str_tolower(str) == "no" || str_tolower(str) == "n")
+        if (gss::str_tolower(str) == "false" || gss::str_tolower(str) == "f" || gss::str_tolower(str) == "no" || gss::str_tolower(str) == "n")
         {
             return false;
         }
@@ -310,7 +310,7 @@ bool convert_str_bool(std::string const &str)
     }
 }
 
-bool str_has_only_digits(std::string const &str)
+bool gss::str_has_only_digits(std::string const &str)
 {
     return str.find_first_not_of("0123456789") == std::string::npos;
 }

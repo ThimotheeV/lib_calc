@@ -6,10 +6,10 @@
 #include <cmath>
 
 #include "arg_pars.hpp"
-
+namespace gss{
 std::string const read_file(std::string const &filename);
 std::string read_write_cmdline(int argc, char **argv);
-
+}
 template <std::size_t ploidy>
 struct genepop_input_c
 {
@@ -34,6 +34,7 @@ struct genepop_input_c
 //simple class to read file and chose
 struct selector_input_c
 {
+    selector_input_c() = default;
     selector_input_c(std::string path_to_file);
 
     std::string Input_name;

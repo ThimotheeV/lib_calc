@@ -9,7 +9,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double Hobs_mean = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_value.size(); ++loc)
         {
             Vec_value[loc] = calc_Hobs_per_loc(data_plane_vec, loc);
             Hobs_mean += Vec_value[loc];
@@ -26,7 +26,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double Hexp_mean = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_value.size(); ++loc)
         {
             Vec_value[loc] = calc_Hnei_per_loc(data_plane_vec, loc);
             Hexp_mean += Vec_value[loc];
@@ -43,7 +43,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double var_mean = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_value.size(); ++loc)
         {
             Vec_value[loc] = calc_Var_per_loc(data_plane_vec, loc);
             var_mean += Vec_value[loc];
@@ -59,7 +59,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double nb_allele_mean = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_value.size(); ++loc)
         {
             Vec_value[loc] = data_plane_vec.nbr_allele_per_loc(loc);
             nb_allele_mean += Vec_value[loc];
@@ -76,7 +76,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.base_nbr_locus_per_indiv());
         double MGW_mean = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_value.size(); ++loc)
         {
             Vec_value[loc] = calc_MGW_per_loc(data_plane_vec, loc);
             MGW_mean += Vec_value[loc];
@@ -96,7 +96,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         //Fis or Fst
         double Fis_mean = 0;
         double Fst_mean = 0;
-        for (int loc = 0; loc < Vec_Fis.size(); ++loc)
+        for (std::size_t loc = 0; loc < Vec_Fis.size(); ++loc)
         {
             //    //WARNING : Array <Fis, Fst> => <.at(0), .at(1)>
             std::array<double, 2> fract_Fis;

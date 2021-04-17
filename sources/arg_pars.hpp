@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 
+namespace gss {
 std::string remove_underscores(std::string str);
 std::string remove_spaces_tab_underscores(std::string str);
 std::string remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end);
@@ -42,3 +43,4 @@ std::vector<std::string> str_vector_parse_by_comma_semicolon(std::string const &
 //TODO : temp place
 bool convert_str_bool(std::string const &str);
 bool str_has_only_digits(std::string const &str);
+}

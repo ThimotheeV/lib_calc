@@ -3,7 +3,7 @@
 #include <fstream>
 
 template <typename values>
-void print_output(std::string path_to_file, std::vector<values> vec_value, std::string open_file_mode)
+void gss::print_output(std::string path_to_file, std::vector<values> vec_value, std::string open_file_mode)
 {
     std::ofstream file;
     if (open_file_mode == "over")
