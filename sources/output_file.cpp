@@ -172,7 +172,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
     gss::print_output("./Stats.txt", stats_run, "app");
 }
 
-void output_eta_stat_files(std::vector<std::array<double, 3>> result)
+void output_eta_stat_files(std::vector<std::array<double, 4>> result)
 {
     //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
     std::sort(result.begin(), result.end(),
@@ -188,11 +188,12 @@ void output_eta_stat_files(std::vector<std::array<double, 3>> result)
               });
 
     std::vector<std::string> head;
-    head.reserve(3);
+    head.reserve(4);
 
     head.emplace_back("Dist_btw_deme");
     head.emplace_back("Dist_btw_locus_pb");
     head.emplace_back("Eta");
+    head.emplace_back("Eta_denum");
 
     gss::print_output("./Stats_dl.txt", head, "over");
 
@@ -200,6 +201,6 @@ void output_eta_stat_files(std::vector<std::array<double, 3>> result)
 
     for (auto const &values : result)
     {
-        gss::print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2)}, "app");
+        gss::print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2), values.at(3)}, "app");
     }
 }

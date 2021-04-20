@@ -43,6 +43,8 @@ protected:
     std::vector<std::vector<int>> Nomiss_nbr_of_indiv_per_loc_per_deme;
     //Allele state resum by loc (state, nbr of allele in this state)
     std::vector<std::map<int, int>> Allele_state_per_loc;
+    //Indent of polymorphic locus
+    std::vector<int> Polymorph_locus;
     //Total allele bound(min, max)
     std::array<int, 2> Allele_state_bound;
     int Ploidy{-1};
@@ -84,6 +86,7 @@ public:
     std::map<int, int> const &allele_state_per_loc(int locus) const;
     int state_min() const;
     int state_max() const;
+    std::vector<int> const &polymorph_locus() const;
 
     std::vector<int> const &get_plane_vec();
     int operator[](int i) const;

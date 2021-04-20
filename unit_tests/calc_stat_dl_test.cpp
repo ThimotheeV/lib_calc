@@ -71,7 +71,6 @@ TEST_CASE("calc_phi_calc_stat_dl")
                 int locus_j_indiv2_gene1 = data_plane_vec(1, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(1, 1, indiv_other_deme, 1);
 
-
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
             }
@@ -98,7 +97,6 @@ TEST_CASE("calc_phi_calc_stat_dl")
                 int locus_j_indiv2_gene1 = data_plane_vec(2, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(2, 1, indiv_other_deme, 1);
 
-
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
             }
@@ -124,7 +122,6 @@ TEST_CASE("calc_phi_calc_stat_dl")
 
                 int locus_j_indiv2_gene1 = data_plane_vec(2, 1, indiv_other_deme, 0);
                 int locus_j_indiv2_gene2 = data_plane_vec(2, 1, indiv_other_deme, 1);
-
 
                 REQUIRE(calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2}, {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}}) == *expect_itr);
                 ++expect_itr;
@@ -398,5 +395,24 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
             REQUIRE(result_itr->at(2) == Approx(value.at(2)).margin(0.0000001));
             ++result_itr;
         }
+    }
+}
+
+TEST_CASE("calc_eta corner case calc_stat_dl")
+{
+    SECTION("eta without difference")
+    {
+        genepop_input_c<2> genepop_input;
+        genepop_input.Dist_btw_deme = {{0, 1},
+                                       {1, 0}};
+
+        //2 deme, 1 indiv, 2 locus
+        genepop_input.Genotype = {
+            {{{7, 7}, {1, 1}}},
+            {{{6, 6}, {1, 1}}}};
+
+        data_plane_vec_c data_plane_vec(genepop_input);
+
+        REQUIRE_THROWS(calc_eta(data_plane_vec));
     }
 }

@@ -67,6 +67,8 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
 
     //WARNING : Be sure than min state < 2 ^ 16
     Allele_state_bound = std::array<int, 2>{1 << 16, 0};
+    Polymorph_locus.reserve(Locus_nbr);
+
     for (int locus = 0; locus < Locus_nbr; ++locus)
     {
         std::map<int, int> temp_count_allele_state;
@@ -126,13 +128,17 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data)
                 Nomiss_nbr_of_indiv_per_loc_per_deme[locus].push_back(nomiss_nbr_of_indiv_in_deme);
             }
         }
+        if (temp_count_allele_state.size() > 1)
+        {
+            Polymorph_locus.push_back(locus);
+        }
 
         Allele_state_per_loc[locus] = std::move(temp_count_allele_state);
         //size = number of non void deme
         Nomiss_nbr_of_gene_per_loc_per_deme[locus].shrink_to_fit();
         Nomiss_nbr_of_indiv_per_loc_per_deme[locus].shrink_to_fit();
     }
-
+    Polymorph_locus.shrink_to_fit();
     //Genetic map
 
     Dist_btw_locus.resize(Locus_nbr);

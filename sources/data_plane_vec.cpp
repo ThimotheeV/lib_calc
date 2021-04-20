@@ -110,6 +110,11 @@ int data_plane_vec_c::state_max() const
     return Allele_state_bound.at(1);
 }
 
+std::vector<int> const &data_plane_vec_c::polymorph_locus() const
+{
+    return Polymorph_locus;
+}
+
 std::vector<int> const &data_plane_vec_c::get_plane_vec()
 {
     return Plane_vec;
