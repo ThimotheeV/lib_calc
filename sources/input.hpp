@@ -45,6 +45,9 @@ struct selector_input_c
     bool Var{false};
     bool MGW{false};
 
+    bool SFS{false};
+    int min_gene_for_SFS{-1};
+
     bool F_stat{false};
     bool Q_stat{false};
 

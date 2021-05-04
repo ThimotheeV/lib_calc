@@ -88,6 +88,34 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     /*******************************************/
 
+    if (selector.SFS)
+    {
+        if (selector.min_gene_for_SFS < 0)
+        {
+            throw std::logic_error("( Can't calculate sfs if min_gene not set. I exit. )");
+        }
+        auto result = calc_SFS(data_plane_vec, selector.min_gene_for_SFS);
+        std::map<int, double> output_map;
+        auto result_itr = result.begin();
+        //all state in result, need to take the n-1 state
+        for (auto state_order = 1; state_order < result.size(); ++state_order)
+        {
+            for (auto count_freq : result_itr->second)
+            {
+                auto pair = output_map.emplace(count_freq.first, count_freq.second);
+                if (!pair.second)
+                {
+                    pair.first->second += count_freq.second;
+                }
+            }
+            ++result_itr;
+        }
+
+        output_sfs_stat_files(output_map);
+    }
+
+    /*******************************************/
+
     if (selector.F_stat)
     {
         stat = true;
@@ -164,7 +192,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         }
     }
 
-    if(stat)
+    if (stat)
     {
         output_stat_files(selector, result);
     }

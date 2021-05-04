@@ -204,3 +204,21 @@ void output_eta_stat_files(std::vector<std::array<double, 4>> result)
         gss::print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2), values.at(3)}, "app");
     }
 }
+
+void output_sfs_stat_files(std::map<int, double> const &result)
+{
+    std::vector<std::string> head;
+    head.reserve(2);
+
+    head.emplace_back("Count");
+    head.emplace_back("Frequencies");
+
+    gss::print_output("./SFS.txt", head, "over");
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++//
+
+    for (auto const &values : result)
+    {
+        gss::print_output<double>("./SFS.txt", {static_cast<double>(values.first), values.second}, "app");
+    }
+}

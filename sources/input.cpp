@@ -108,6 +108,16 @@ selector_input_c::selector_input_c(std::string path_to_file)
             MGW = true;
             continue;
         }
+        if (stat_name == "sfs")
+        {
+            SFS = true;
+            continue;
+        }
+        if (stat_name == "mingene")
+        {
+            min_gene_for_SFS = static_cast<int>(std::stod(line_pair_key_value[1]));;
+            continue;
+        }
         if (stat_name == "fstat")
         {
             F_stat = true;

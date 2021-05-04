@@ -37,5 +37,5 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
 std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int locus);
 std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec);
 
-// //Return <state, <frequence, nbr of locus>>
-// std::map<int, std::map<int, double>> SFS_calc(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus, int seed);
+//Return <state, <frequence, nbr of locus>>
+std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus);

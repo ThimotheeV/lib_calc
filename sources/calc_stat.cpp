@@ -856,100 +856,87 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
     return result;
 }
 
-// //Return <state, <frequence, nbr of locus>>
-// std::map<int, std::map<int, double>> SFS_calc(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus, int seed)
-// {
-//     std::mt19937_64 seed_gen(seed);
-//     std::vector<int> locus_usable_for_SFS;
-//     locus_usable_for_SFS.reserve(data_plane_vec.nbr_of_locus_tot());
+//Return <state, <frequence, nbr of locus>>
+std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus)
+{
+    std::vector<int> locus_usable_for_SFS;
+    locus_usable_for_SFS.reserve(data_plane_vec.nbr_of_locus_tot());
 
-//     int nbr_of_locus = data_plane_vec.base_nbr_locus_per_indiv();
-//     int real_min_limit = data_plane_vec.base_nbr_locus_per_indiv();
+    int nbr_of_locus = data_plane_vec.base_nbr_locus_per_indiv();
+    int real_min_limit = data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy();
 
-//     for (int locus = 0; locus < nbr_of_locus; ++locus)
-//     {
-//         int nbr_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
-//         if (nbr_gene >= limit_min_gene_per_locus)
-//         {
-//             locus_usable_for_SFS.push_back(locus);
-//             if (nbr_gene < real_min_limit)
-//             {
-//                 real_min_limit = nbr_gene;
-//             }
-//         }
-//     }
+    for (int locus = 0; locus < nbr_of_locus; ++locus)
+    {
+        int nbr_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
+        if (nbr_gene >= limit_min_gene_per_locus)
+        {
+            locus_usable_for_SFS.push_back(locus);
+            if (nbr_gene < real_min_limit)
+            {
+                real_min_limit = nbr_gene;
+            }
+        }
+    }
 
-//     locus_usable_for_SFS.shrink_to_fit();
+    locus_usable_for_SFS.shrink_to_fit();
 
-//     if (locus_usable_for_SFS.size() < 1)
-//     {
-//         throw std::logic_error("Can't calculate SFS, no locus with number of data > ... . I exit.");
-//     }
+    if (locus_usable_for_SFS.size() < 1)
+    {
+        throw std::logic_error("Can't calculate SFS, no locus with number of data > ... . I exit.");
+    }
 
-//     std::map<int, std::map<int, double>> result;
+    std::map<int, std::map<int, double>> result;
 
-//     for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
-//     {
-//         result.emplace(state, std::map<int, double>{});
-//     }
+    for (int locus = 0; locus < nbr_of_locus; ++locus)
+    {
+        for (auto state : data_plane_vec.allele_state_per_loc(locus))
+        {
+            result.emplace(state.first, std::map<int, double>{});
+        }
+    }
 
-//     if (locus_usable_for_SFS.size() == nbr_of_locus)
-//     {
-//         for (int locus = 0; locus < nbr_of_locus; ++locus)
-//         {
-//             //map(state, nbr of allele in this state)
-//             auto temp_locus = data_plane_vec.allele_state_per_loc(locus);
-//             for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
-//             {
-//                 auto pair = result.at(state).emplace(temp_locus.at(state), 1.0);
-//                 if (!pair.second)
-//                 {
-//                     pair.first->second += 1.0;
-//                 }
-//             }
-//         }
-//     }
-//     else
-//     {
-//         int ploidy = data_plane_vec.get_Ploidy();
-//         //2 ^ (max - min), number of free arrangement, the other min value are constrainte by the draw without 
-//         int nbr_of_resampl = 100 * std::pow(2, nbr_of_locus - real_min_limit);
-//         std::uniform_int_distribution uni_distrib(0, data_plane_vec.nbr_of_indiv() * ploidy - 1);
-//         for (int locus : locus_usable_for_SFS)
-//         {
-//             std::map<int, int> allele_freq;
-//             //re-sampling
-//             for (int samp = 0; samp < nbr_of_resampl; ++samp)
-//             {
-//                 std::map<int, int> unique_value;
-//                 for (int samp = 0; samp < real_min_limit; ++real_min_limit)
-//                 {
-//                     int num_indiv = uni_distrib(seed_gen);
-//                     auto uniq = unique_value.emplace(num_indiv, 1);
-//                     int value = data_plane_vec(locus, num_indiv / ploidy, num_indiv % ploidy);
-//                     while (!uniq.second || value == 0)
-//                     {
-//                         num_indiv = uni_distrib(seed_gen);
-//                         uniq = unique_value.emplace(num_indiv, 1);
-//                         value = data_plane_vec(locus, num_indiv / ploidy, num_indiv % ploidy);
-//                     }
-//                     auto temp = allele_freq.emplace(value, 1);
-//                     if (!temp.second)
-//                     {
-//                         temp.first->second += 1;
-//                     }
-//                 }
-//             }
-//             for (int state = data_plane_vec.state_min() + 1; state <= data_plane_vec.state_max(); ++state)
-//             {
-//                 auto pair = result.at(state).emplace(allele_freq.at(state), 1);
-//                 if (!pair.second)
-//                 {
-//                     pair.first->second += 1;
-//                 }
-//             }
-//         }
-//     }
+    if (real_min_limit == data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy())
+    {
+        for (int locus = 0; locus < nbr_of_locus; ++locus)
+        {
+            //map(state, nbr of allele in this state)
+            auto temp_locus = data_plane_vec.allele_state_per_loc(locus);
+            for (auto state : data_plane_vec.allele_state_per_loc(locus))
+            {
+                auto pair = result.at(state.first).emplace(state.second, 1.0);
+                if (!pair.second)
+                {
+                    pair.first->second += 1.0;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (auto locus : locus_usable_for_SFS)
+        {
+            //map(state, nbr of allele in this state)
+            int n = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
+            for (auto state : data_plane_vec.allele_state_per_loc(locus))
+            {
+                // k = real_min_limit; n = nomiss_nbr_of_gene_per_loc ; nb = state.second ; b = state
+                int nb = state.second;
+                double total_comb = combination(real_min_limit, n);
+                int max_count_stat = min(real_min_limit, nb);
+                int min_count_stat = max(0, real_min_limit + nb - n); // k-na : na = n-nb
 
-//     return result;
-// }
+                for (int count = min_count_stat; count <= max_count_stat; ++count)
+                {
+                    double freq = combination(count, nb) * combination(real_min_limit - count, n - nb) / total_comb;
+                    auto pair = result.at(state.first).emplace(count, freq);
+                    if (!pair.second)
+                    {
+                        pair.first->second += freq;
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
+}

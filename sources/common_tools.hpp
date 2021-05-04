@@ -20,6 +20,12 @@ double calc_r2(double a, double b, std::vector<value> const &X_vec, std::vector<
 template <typename value>
 std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const &X_Y_vec);
 
+template <typename value>
+value min(value x1, value x2);
+
+template <typename value>
+value max(value x1, value x2);
+
 #include "common_tools.tpp"
 
 int combination(int k_element, int n_element);

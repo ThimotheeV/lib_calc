@@ -88,3 +88,29 @@ std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const 
 
     return {a, b, r2};
 }
+
+template <typename value>
+value min(value x1, value x2)
+{
+    if(x1 <= x2)
+    {
+        return x1;
+    }
+    else
+    {
+        return x2;
+    }
+}
+
+template <typename value>
+value max(value x1, value x2)
+{
+    if(x1 >= x2)
+    {
+        return x1;
+    }
+    else
+    {
+        return x2;
+    }
+}
