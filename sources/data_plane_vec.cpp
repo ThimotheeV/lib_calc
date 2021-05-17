@@ -24,17 +24,25 @@ int data_plane_vec_c::size() const
 {
     return Plane_vec.size();
 }
-int data_plane_vec_c::base_nbr_locus_per_indiv() const
+int data_plane_vec_c::nbr_locus() const
 {
-    return Locus_nbr;
+    return Nbr_of_locus;
+}
+int data_plane_vec_c::nbr_locus(int chr) const
+{
+    return Nbr_of_loc_per_chr[chr];
 }
 int data_plane_vec_c::nbr_of_deme() const
 {
     return Nbr_of_deme;
 }
-int data_plane_vec_c::nbr_of_locus_tot() const
+int data_plane_vec_c::nbr_of_gene() const
 {
-    return Nbr_of_indiv_tot * Ploidy * Locus_nbr;
+    return Nbr_of_indiv_tot * Nbr_of_locus * Ploidy;
+}
+int data_plane_vec_c::nbr_of_chr() const
+{
+    return Chr_nbr;
 }
 int data_plane_vec_c::nbr_of_indiv() const
 {
@@ -60,44 +68,48 @@ feature_c const &data_plane_vec_c::get_feature(int indiv)
     return Indiv_feat[indiv];
 }
 
-int data_plane_vec_c::nomiss_nbr_of_gene_per_loc(int locus) const
+int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus) const
 {
-    return Nomiss_nbr_of_gene_per_loc[locus];
+    return Nomiss_nbr_of_gene_per_chr_per_loc[chr][locus];
 }
-int data_plane_vec_c::nomiss_nbr_of_indiv_per_loc(int locus) const
+int data_plane_vec_c::nomiss_nbr_of_indiv(int locus) const
 {
     return Nomiss_nbr_of_indiv_per_loc[locus];
 }
-std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_gene_per_loc_per_deme(int locus) const
+int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus) const
 {
-    return Nomiss_nbr_of_gene_per_loc_per_deme[locus];
+    return Nomiss_nbr_of_indiv_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
 }
-int data_plane_vec_c::nomiss_nbr_of_gene_per_loc_per_deme(int locus, int deme) const
+std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_gene_per_deme(int chr, int locus) const
 {
-    return Nomiss_nbr_of_gene_per_loc_per_deme[locus][deme];
+    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus];
 }
-std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_indiv_per_loc_per_deme(int locus) const
+int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus, int deme) const
 {
-    return Nomiss_nbr_of_indiv_per_loc_per_deme[locus];
+    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus][deme];
 }
-int data_plane_vec_c::nomiss_nbr_of_indiv_per_loc_per_deme(int locus, int deme) const
+std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_indiv_per_deme(int chr, int locus) const
 {
-    return Nomiss_nbr_of_indiv_per_loc_per_deme[locus][deme];
+    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus];
 }
-int data_plane_vec_c::nomiss_nbr_of_deme_per_loc(int locus) const
+int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus, int deme) const
 {
-    return Nomiss_nbr_of_deme_per_loc[locus];
+    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus][deme];
+}
+int data_plane_vec_c::nomiss_nbr_of_deme(int chr, int locus) const
+{
+    return Nomiss_nbr_of_deme_per_chr_per_loc[chr][locus];
 }
 
-int data_plane_vec_c::nbr_allele_per_loc(int locus) const
+int data_plane_vec_c::nbr_allele(int chr, int locus) const
 {
-    return Allele_state_per_loc[locus].size();
+    return Allele_state_per_chr_per_loc[chr][locus].size();
 }
 
 //map(state, nbr of allele in this state)
-std::map<int, int> const &data_plane_vec_c::allele_state_per_loc(int locus) const
+std::map<int, int> const &data_plane_vec_c::allele_state(int chr, int locus) const
 {
-    return Allele_state_per_loc[locus];
+    return Allele_state_per_chr_per_loc[chr][locus];
 }
 
 int data_plane_vec_c::state_min() const
@@ -110,9 +122,9 @@ int data_plane_vec_c::state_max() const
     return Allele_state_bound.at(1);
 }
 
-std::vector<int> const &data_plane_vec_c::polymorph_locus() const
+std::vector<int> const &data_plane_vec_c::polymorph_locus(int chr) const
 {
-    return Polymorph_locus;
+    return Polymorph_locus_per_chr[chr];
 }
 
 std::vector<int> const &data_plane_vec_c::get_plane_vec()
@@ -135,14 +147,36 @@ std::vector<int>::const_iterator data_plane_vec_c::end() const
     return Plane_vec.cend();
 }
 
-int const &data_plane_vec_c::operator()(int locus, int deme, int indiv, int gene) const
+int const &data_plane_vec_c::operator()(int chr, int locus, int deme, int indiv, int gene) const
 {
     if (gene > Ploidy - 1)
     {
         ++gene;
         throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
     }
-    return Plane_vec[(Nbr_of_indiv_tot * locus + Cumul_nbr_of_indiv_per_deme[deme] + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
+
+    if (indiv > Nbr_of_indiv_tot - 1)
+    {
+        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
+    }
+    //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + Cumul_nbr_of_indiv_per_deme[deme] * Ploidy + indiv(deme relative index) * Ploidy + gene
+    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot + Cumul_nbr_of_indiv_per_deme[deme] + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
+}
+
+int const &data_plane_vec_c::operator()(int chr, int locus, int indiv, int gene) const
+{
+    if (gene > Ploidy - 1)
+    {
+        ++gene;
+        throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
+    }
+
+    if (indiv > Nbr_of_indiv_tot - 1)
+    {
+        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
+    }
+    //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + indiv(absolute index) * Ploidy + gene
+    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
 }
 
 int const &data_plane_vec_c::operator()(int locus, int indiv, int gene) const
@@ -157,18 +191,18 @@ int const &data_plane_vec_c::operator()(int locus, int indiv, int gene) const
     {
         throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
     }
-
-    return Plane_vec[(Nbr_of_indiv_tot * locus + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
+    //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + indiv(absolute index) * Ploidy + gene
+    return Plane_vec[(locus * Nbr_of_indiv_tot + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
 }
 
-int data_plane_vec_c::index_begin_locus(int locus) const
+int data_plane_vec_c::index_begin_locus(int chr, int locus) const
 {
-    return Nbr_of_indiv_tot * locus * Ploidy;
+    return (Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot * Ploidy;
 }
 
-int data_plane_vec_c::index_end_locus(int locus) const
+int data_plane_vec_c::index_end_locus(int chr, int locus) const
 {
-    return Nbr_of_indiv_tot * (locus + 1) * Ploidy;
+    return (Cumul_nbr_of_loc_per_chr[chr] + locus + 1) * Nbr_of_indiv_tot * Ploidy;
 }
 
 //In same locus
@@ -203,12 +237,12 @@ bool data_plane_vec_c::same_deme(int dpv_gene_index1, int dpv_gene_index2) const
     return Indiv_feat[get_indiv(dpv_gene_index1)].Deme == Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 }
 
-bin_vec const &data_plane_vec_c::nomiss_data_indiv(int indiv) const
+bin_vec const &data_plane_vec_c::nomiss_data_indiv_per_loc(int indiv) const
 {
     return Nomiss_indiv_bool_per_loc[indiv];
 }
 
-bool data_plane_vec_c::nomiss_data_indiv_per_loc(int indiv, int locus) const
+bool data_plane_vec_c::nomiss_data_indiv(int locus, int indiv) const
 {
     return Nomiss_indiv_bool_per_loc[indiv].at(locus);
 }
@@ -253,12 +287,12 @@ int data_plane_vec_c::dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_inde
     return Dist_class_btw_deme[deme_gen1][deme_gen2];
 }
 
-double data_plane_vec_c::dist_btw_locus(int locus_index1, int locus_index2) const
+double data_plane_vec_c::dist_btw_locus(int chr, int locus_index1, int locus_index2) const
 {
     if (locus_index1 == locus_index2)
     {
         return 0;
     }
 
-    return Dist_btw_locus[locus_index1][locus_index2];
+    return Dist_btw_loc[chr][locus_index1][locus_index2];
 }

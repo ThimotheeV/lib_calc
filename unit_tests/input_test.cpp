@@ -103,6 +103,9 @@ TEST_CASE("genepop_input_test")
     {
         genepop_input_c<2> input("input_test.txt", 10);
         REQUIRE(input.Nbr_dist_class == 10);
+        REQUIRE(input.Nbr_chr_dist_class == 0);
+        REQUIRE(input.Dist_btw_loc == std::vector<std::vector<std::vector<double>>>{});
+        REQUIRE(input.Dist_class_btw_loc == std::vector<std::vector<std::vector<int>>>{});
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 6);
         REQUIRE(input.Locus_name[0] == "adhlocus1");
@@ -200,6 +203,39 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{0, 0, 1, 2});
         REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{2, 1, 0, 0});
         REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
+    }
+
+    SECTION("Dist_btw_loc")
+    {
+        genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 0);
+
+        REQUIRE(input.Dist_btw_loc[0][0] == std::vector<double>{0, 1, 2, 3});
+        REQUIRE(input.Dist_btw_loc[0][1] == std::vector<double>{1, 0, 1, 2});
+        REQUIRE(input.Dist_btw_loc[0][2] == std::vector<double>{2, 1, 0, 1});
+        REQUIRE(input.Dist_btw_loc[0][3] == std::vector<double>{3, 2, 1, 0});
+        REQUIRE(input.Dist_btw_loc[1][0] == std::vector<double>{0, 1});
+        REQUIRE(input.Dist_btw_loc[1][1] == std::vector<double>{1, 0});
+    }
+
+    SECTION("Dist_class_btw_loc")
+    {
+        genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 4);
+
+        REQUIRE(input.Dist_class_btw_loc[0][0] == std::vector<int>{0, 1, 2, 3});
+        REQUIRE(input.Dist_class_btw_loc[0][1] == std::vector<int>{1, 0, 1, 2});
+        REQUIRE(input.Dist_class_btw_loc[0][2] == std::vector<int>{2, 1, 0, 1});
+        REQUIRE(input.Dist_class_btw_loc[0][3] == std::vector<int>{3, 2, 1, 0});
+        REQUIRE(input.Dist_class_btw_loc[1][0] == std::vector<int>{0, 1});
+        REQUIRE(input.Dist_class_btw_loc[1][1] == std::vector<int>{1, 0});
+
+        genepop_input_c<2> input1("input_test.txt", 0, "input_test.map", 2);
+
+        REQUIRE(input1.Dist_class_btw_loc[0][0] == std::vector<int>{0, 0, 1, 1});
+        REQUIRE(input1.Dist_class_btw_loc[0][1] == std::vector<int>{0, 0, 0, 1});
+        REQUIRE(input1.Dist_class_btw_loc[0][2] == std::vector<int>{1, 0, 0, 0});
+        REQUIRE(input1.Dist_class_btw_loc[0][3] == std::vector<int>{1, 1, 0, 0});
+        REQUIRE(input1.Dist_class_btw_loc[1][0] == std::vector<int>{0, 0});
+        REQUIRE(input1.Dist_class_btw_loc[1][1] == std::vector<int>{0, 0});
     }
 }
 

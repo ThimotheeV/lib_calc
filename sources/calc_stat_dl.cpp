@@ -13,66 +13,69 @@ double calc_phi_ij_xy(std::array<std::array<int, 4>, 2> const &locus_chr)
 //Phi for all indiv, calc without missing data
 std::vector<double> calc_phi_ij(data_plane_vec_c const &data_plane_vec, int ploidy)
 {
-    int locus_pair_nbr = (data_plane_vec.base_nbr_locus_per_indiv() * (data_plane_vec.base_nbr_locus_per_indiv() - 1)) / 2;
+    int locus_pair_nbr = (data_plane_vec.nbr_locus() * (data_plane_vec.nbr_locus() - 1)) / 2;
 
     std::vector<double> result;
     result.reserve(locus_pair_nbr);
 
-    for (int locus_i = 0; locus_i < data_plane_vec.base_nbr_locus_per_indiv(); ++locus_i)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        for (int locus_j = locus_i + 1; locus_j < data_plane_vec.base_nbr_locus_per_indiv(); ++locus_j)
+        for (int locus_i = 0; locus_i < data_plane_vec.nbr_locus(); ++locus_i)
         {
-            int indiv_pair_nbr = 0;
-            double value = 0;
-            if (ploidy == 2)
+            for (int locus_j = locus_i + 1; locus_j < data_plane_vec.nbr_locus(); ++locus_j)
             {
-                for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(); ++indiv)
+                int indiv_pair_nbr = 0;
+                double value = 0;
+                if (ploidy == 2)
                 {
-                    int locus_i_indiv1_gene1 = data_plane_vec(locus_i, indiv, 0);
-                    int locus_i_indiv1_gene2 = data_plane_vec(locus_i, indiv, 1);
-
-                    int locus_j_indiv1_gene1 = data_plane_vec(locus_j, indiv, 0);
-                    int locus_j_indiv1_gene2 = data_plane_vec(locus_j, indiv, 1);
-
-                    for (int other_indiv = indiv + 1; other_indiv < data_plane_vec.nbr_of_indiv(); ++other_indiv)
+                    for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(); ++indiv)
                     {
-                        int locus_i_indiv2_gene1 = data_plane_vec(locus_i, other_indiv, 0);
-                        int locus_i_indiv2_gene2 = data_plane_vec(locus_i, other_indiv, 1);
+                        int locus_i_indiv1_gene1 = data_plane_vec(chr, locus_i, indiv, 0);
+                        int locus_i_indiv1_gene2 = data_plane_vec(chr, locus_i, indiv, 1);
 
-                        int locus_j_indiv2_gene1 = data_plane_vec(locus_j, other_indiv, 0);
-                        int locus_j_indiv2_gene2 = data_plane_vec(locus_j, other_indiv, 1);
+                        int locus_j_indiv1_gene1 = data_plane_vec(chr, locus_j, indiv, 0);
+                        int locus_j_indiv1_gene2 = data_plane_vec(chr, locus_j, indiv, 1);
 
-                        value += calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2},
-                                                  {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}});
-                        ++indiv_pair_nbr;
+                        for (int other_indiv = indiv + 1; other_indiv < data_plane_vec.nbr_of_indiv(); ++other_indiv)
+                        {
+                            int locus_i_indiv2_gene1 = data_plane_vec(chr, locus_i, other_indiv, 0);
+                            int locus_i_indiv2_gene2 = data_plane_vec(chr, locus_i, other_indiv, 1);
+
+                            int locus_j_indiv2_gene1 = data_plane_vec(chr, locus_j, other_indiv, 0);
+                            int locus_j_indiv2_gene2 = data_plane_vec(chr, locus_j, other_indiv, 1);
+
+                            value += calc_phi_ij_xy({{{locus_i_indiv1_gene1, locus_i_indiv1_gene2, locus_i_indiv2_gene1, locus_i_indiv2_gene2},
+                                                      {locus_j_indiv1_gene1, locus_j_indiv1_gene2, locus_j_indiv2_gene1, locus_j_indiv2_gene2}}});
+                            ++indiv_pair_nbr;
+                        }
                     }
                 }
-            }
-            else
-            {
-                for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(); ++indiv)
+                else
                 {
-                    int locus_i_indiv1 = data_plane_vec(locus_i, indiv, 0);
-                    int locus_j_indiv1 = data_plane_vec(locus_j, indiv, 0);
-
-                    for (int other_indiv = indiv + 1; other_indiv < data_plane_vec.nbr_of_indiv(); ++other_indiv)
+                    for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(); ++indiv)
                     {
-                        int locus_i_indiv2 = data_plane_vec(locus_i, other_indiv, 0);
-                        int locus_j_indiv2 = data_plane_vec(locus_j, other_indiv, 0);
+                        int locus_i_indiv1 = data_plane_vec(chr, locus_i, indiv, 0);
+                        int locus_j_indiv1 = data_plane_vec(chr, locus_j, indiv, 0);
 
-                        value += (locus_i_indiv1 == locus_i_indiv2) && (locus_j_indiv1 == locus_j_indiv2);
-                        ++indiv_pair_nbr;
+                        for (int other_indiv = indiv + 1; other_indiv < data_plane_vec.nbr_of_indiv(); ++other_indiv)
+                        {
+                            int locus_i_indiv2 = data_plane_vec(chr, locus_i, other_indiv, 0);
+                            int locus_j_indiv2 = data_plane_vec(chr, locus_j, other_indiv, 0);
+
+                            value += (locus_i_indiv1 == locus_i_indiv2) && (locus_j_indiv1 == locus_j_indiv2);
+                            ++indiv_pair_nbr;
+                        }
                     }
                 }
+                result.push_back(value / indiv_pair_nbr);
             }
-            result.push_back(value / indiv_pair_nbr);
         }
     }
     return result;
 }
 
 //<locus_pair_nbr<value eta>>
-std::array<double, 2> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int locus_i, double Q2_loc_i, double Q1_loc_i, int locus_j, double Q2_loc_j, double Q1_loc_j, int deme_x, int deme_y)
+std::array<double, 2> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, double Q1_loc_i, int locus_j, double Q2_loc_j, double Q1_loc_j, int deme_x, int deme_y)
 {
     double phi = 0;
     double div = 0;
@@ -80,21 +83,21 @@ std::array<double, 2> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int
     {
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme_x); ++indiv)
         {
-            int locus_i_indiv1_gene1 = data_plane_vec(locus_i, deme_x, indiv, 0);
-            int locus_i_indiv1_gene2 = data_plane_vec(locus_i, deme_x, indiv, 1);
+            int locus_i_indiv1_gene1 = data_plane_vec(chr, locus_i, deme_x, indiv, 0);
+            int locus_i_indiv1_gene2 = data_plane_vec(chr, locus_i, deme_x, indiv, 1);
 
-            int locus_j_indiv1_gene1 = data_plane_vec(locus_j, deme_x, indiv, 0);
-            int locus_j_indiv1_gene2 = data_plane_vec(locus_j, deme_x, indiv, 1);
+            int locus_j_indiv1_gene1 = data_plane_vec(chr, locus_j, deme_x, indiv, 0);
+            int locus_j_indiv1_gene2 = data_plane_vec(chr, locus_j, deme_x, indiv, 1);
             //In AAaaBBbb if A&B missing => phi = 0, etc
             if (((locus_i_indiv1_gene1 != 0) || (locus_i_indiv1_gene2 != 0)) && ((locus_j_indiv1_gene1 != 0) || (locus_j_indiv1_gene2 != 0)))
             {
                 for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(deme_y); ++indiv_other_deme)
                 {
-                    int locus_i_indiv2_gene1 = data_plane_vec(locus_i, deme_y, indiv_other_deme, 0);
-                    int locus_i_indiv2_gene2 = data_plane_vec(locus_i, deme_y, indiv_other_deme, 1);
+                    int locus_i_indiv2_gene1 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 0);
+                    int locus_i_indiv2_gene2 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 1);
 
-                    int locus_j_indiv2_gene1 = data_plane_vec(locus_j, deme_y, indiv_other_deme, 0);
-                    int locus_j_indiv2_gene2 = data_plane_vec(locus_j, deme_y, indiv_other_deme, 1);
+                    int locus_j_indiv2_gene1 = data_plane_vec(chr, locus_j, deme_y, indiv_other_deme, 0);
+                    int locus_j_indiv2_gene2 = data_plane_vec(chr, locus_j, deme_y, indiv_other_deme, 1);
                     if (((locus_i_indiv2_gene1 != 0) || (locus_i_indiv2_gene2 != 0)) && ((locus_j_indiv2_gene1 != 0) || (locus_j_indiv2_gene2 != 0)))
                     {
                         int miss = 0;
@@ -154,14 +157,14 @@ std::array<double, 2> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int
     {
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme_x); ++indiv)
         {
-            int locus_i_indiv1 = data_plane_vec(locus_i, deme_x, indiv, 0);
-            int locus_j_indiv1 = data_plane_vec(locus_j, deme_x, indiv, 0);
+            int locus_i_indiv1 = data_plane_vec(chr, locus_i, deme_x, indiv, 0);
+            int locus_j_indiv1 = data_plane_vec(chr, locus_j, deme_x, indiv, 0);
             if ((locus_i_indiv1 != 0) && (locus_j_indiv1 != 0))
             {
                 for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(deme_y); ++indiv_other_deme)
                 {
-                    int locus_i_indiv2 = data_plane_vec(locus_i, deme_y, indiv_other_deme, 0);
-                    int locus_j_indiv2 = data_plane_vec(locus_j, deme_y, indiv_other_deme, 0);
+                    int locus_i_indiv2 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 0);
+                    int locus_j_indiv2 = data_plane_vec(chr, locus_j, deme_y, indiv_other_deme, 0);
                     if ((locus_i_indiv2 != 0) && (locus_j_indiv2 != 0))
                     {
                         phi += (locus_i_indiv1 == locus_i_indiv2) && (locus_j_indiv1 == locus_j_indiv2);
@@ -176,7 +179,7 @@ std::array<double, 2> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int
 }
 
 //<deme_pair_nbr,<dist-deme, dist-locus, value eta, value eta denom>>
-std::vector<std::array<double, 4>> calc_eta_ij(data_plane_vec_c const &data_plane_vec, int locus_i, double Q2_loc_i, int locus_j, double Q2_loc_j)
+std::vector<std::array<double, 4>> calc_eta_ij(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, int locus_j, double Q2_loc_j)
 {
     int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
     std::vector<std::array<double, 4>> result;
@@ -190,21 +193,21 @@ std::vector<std::array<double, 4>> calc_eta_ij(data_plane_vec_c const &data_plan
 
     for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
-        Q1_locus_i_deme.push_back(calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus_i, deme));
+        Q1_locus_i_deme.push_back(calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, locus_i, deme));
 
-        Q1_locus_j_deme.push_back(calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus_j, deme));
+        Q1_locus_j_deme.push_back(calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, locus_j, deme));
     }
 
-    double dist_locus = data_plane_vec.dist_btw_locus(locus_i, locus_j);
+    double dist_locus = data_plane_vec.dist_btw_locus(chr, locus_i, locus_j);
     for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
     {
         for (int deme_y = deme_x + 1; deme_y < data_plane_vec.nbr_of_deme(); ++deme_y)
         {
             auto Q1_loc_i_xy = static_cast<double>(Q1_locus_i_deme[deme_x].at(0) + Q1_locus_i_deme[deme_y].at(0)) / (Q1_locus_i_deme[deme_x].at(1) + Q1_locus_i_deme[deme_y].at(1));
             auto Q1_loc_j_xy = static_cast<double>(Q1_locus_j_deme[deme_x].at(0) + Q1_locus_j_deme[deme_y].at(0)) / (Q1_locus_j_deme[deme_x].at(1) + Q1_locus_j_deme[deme_y].at(1));
-            auto eta = calc_eta_ij_xy(data_plane_vec, locus_i, Q2_loc_i, Q1_loc_i_xy, locus_j, Q2_loc_j, Q1_loc_j_xy, deme_x, deme_y);
+            auto eta = calc_eta_ij_xy(data_plane_vec, chr, locus_i, Q2_loc_i, Q1_loc_i_xy, locus_j, Q2_loc_j, Q1_loc_j_xy, deme_x, deme_y);
             //dist-deme, dist-locus, value eta
-            result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0)/eta.at(1), eta.at(1)}});
+            result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0) / eta.at(1), eta.at(1)}});
         }
     }
 
@@ -215,33 +218,36 @@ std::vector<std::array<double, 4>> calc_eta_ij(data_plane_vec_c const &data_plan
 //<pair of deme * pair of locus,<dist-locus, dist-deme, value eta>>
 std::vector<std::array<double, 4>> calc_eta(data_plane_vec_c const &data_plane_vec)
 {
-    std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus();
-    //TODO : Need to be handle up to avoid general throws
-    if (poly_loc.size() < 2)
-    {
-        throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
-    }
-
-    int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
-    int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
-
     std::vector<std::array<double, 4>> result;
-    result.reserve(locus_pair_nbr * deme_pair_nbr);
-
-    std::vector<double> Q2_locus;
-    Q2_locus.reserve(poly_loc.size());
-    for (int locus : poly_loc)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = calc_Q_inter_deme_per_locus(data_plane_vec, locus);
-        Q2_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
-    }
-
-    for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
-    {
-        for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        //TODO : Need to be handle up to avoid general throws
+        if (poly_loc.size() < 2)
         {
-            auto temp_vec = calc_eta_ij(data_plane_vec, *locus_i, Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j]);
-            result.insert(result.end(), temp_vec.begin(), temp_vec.end());
+            throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
+        }
+
+        int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
+        int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
+
+        result.reserve(result.size() + locus_pair_nbr * deme_pair_nbr);
+
+        std::vector<double> Q2_locus;
+        Q2_locus.reserve(poly_loc.size());
+        for (int locus : poly_loc)
+        {
+            auto temp = calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
+            Q2_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
+        }
+
+        for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
+        {
+            for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
+            {
+                auto temp_vec = calc_eta_ij(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j]);
+                result.insert(result.end(), temp_vec.begin(), temp_vec.end());
+            }
         }
     }
 
@@ -251,47 +257,50 @@ std::vector<std::array<double, 4>> calc_eta(data_plane_vec_c const &data_plane_v
 //Diploide version with > 1 indiv/deme
 std::vector<std::array<double, 4>> calc_eta_q1_version(data_plane_vec_c const &data_plane_vec)
 {
-    std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus();
-    //TODO : Need to be handle up to avoid general throws
-    if (poly_loc.size() < 2)
-    {
-        throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
-    }
-
-    int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
-    int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
-
     std::vector<std::array<double, 4>> result;
-    result.reserve(locus_pair_nbr * deme_pair_nbr);
-
-    for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        //TODO : Need to be handle up to avoid general throws
+        if (poly_loc.size() < 2)
         {
-            std::vector<std::array<int, 2>> Q1_locus_i_deme;
-            Q1_locus_i_deme.reserve(data_plane_vec.nbr_of_deme());
+            throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
+        }
 
-            std::vector<std::array<int, 2>> Q1_locus_j_deme;
-            Q1_locus_j_deme.reserve(data_plane_vec.nbr_of_deme());
+        int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
+        int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
 
-            for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
+        result.reserve(result.size() + locus_pair_nbr * deme_pair_nbr);
+
+        for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
+        {
+            for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
             {
-                Q1_locus_i_deme.push_back(calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, *locus_i, deme));
+                std::vector<std::array<int, 2>> Q1_locus_i_deme;
+                Q1_locus_i_deme.reserve(data_plane_vec.nbr_of_deme());
 
-                Q1_locus_j_deme.push_back(calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, *locus_j, deme));
-            }
+                std::vector<std::array<int, 2>> Q1_locus_j_deme;
+                Q1_locus_j_deme.reserve(data_plane_vec.nbr_of_deme());
 
-            double dist_locus = data_plane_vec.dist_btw_locus(*locus_i, *locus_j);
-
-            for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
-            {
-                for (int deme_y = deme_x + 1; deme_y < data_plane_vec.nbr_of_deme(); ++deme_y)
+                for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
                 {
-                    auto Q1_loc_i_xy = static_cast<double>(Q1_locus_i_deme[deme_x].at(0) + Q1_locus_i_deme[deme_y].at(0)) / (Q1_locus_i_deme[deme_x].at(1) + Q1_locus_i_deme[deme_y].at(1));
-                    auto Q1_loc_j_xy = static_cast<double>(Q1_locus_j_deme[deme_x].at(0) + Q1_locus_j_deme[deme_y].at(0)) / (Q1_locus_j_deme[deme_x].at(1) + Q1_locus_j_deme[deme_y].at(1));
-                    auto eta = calc_eta_ij_xy(data_plane_vec, *locus_i, Q1_loc_i_xy, Q1_loc_i_xy, *locus_j, Q1_loc_j_xy, Q1_loc_j_xy, deme_x, deme_y);
-                    //dist-deme, dist-locus, value eta
-                    result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0)/eta.at(1), eta.at(1)}});
+                    Q1_locus_i_deme.push_back(calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, *locus_i, deme));
+
+                    Q1_locus_j_deme.push_back(calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, *locus_j, deme));
+                }
+
+                double dist_locus = data_plane_vec.dist_btw_locus(chr, *locus_i, *locus_j);
+
+                for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
+                {
+                    for (int deme_y = deme_x + 1; deme_y < data_plane_vec.nbr_of_deme(); ++deme_y)
+                    {
+                        auto Q1_loc_i_xy = static_cast<double>(Q1_locus_i_deme[deme_x].at(0) + Q1_locus_i_deme[deme_y].at(0)) / (Q1_locus_i_deme[deme_x].at(1) + Q1_locus_i_deme[deme_y].at(1));
+                        auto Q1_loc_j_xy = static_cast<double>(Q1_locus_j_deme[deme_x].at(0) + Q1_locus_j_deme[deme_y].at(0)) / (Q1_locus_j_deme[deme_x].at(1) + Q1_locus_j_deme[deme_y].at(1));
+                        auto eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q1_loc_i_xy, Q1_loc_i_xy, *locus_j, Q1_loc_j_xy, Q1_loc_j_xy, deme_x, deme_y);
+                        //dist-deme, dist-locus, value eta
+                        result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0) / eta.at(1), eta.at(1)}});
+                    }
                 }
             }
         }
@@ -301,59 +310,62 @@ std::vector<std::array<double, 4>> calc_eta_q1_version(data_plane_vec_c const &d
 //Continous habitat isolation by distance
 std::vector<std::array<double, 4>> calc_eta_1_indiv_deme_v(data_plane_vec_c const &data_plane_vec)
 {
-    std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus();
-    //TODO : Need to be handle up to avoid general throws
-    if (poly_loc.size() < 2)
-    {
-        throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
-    }
-
-    int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
-    int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
-
     std::vector<std::array<double, 4>> result;
-    result.reserve(locus_pair_nbr * deme_pair_nbr);
-
-    std::vector<double> Q2_locus;
-    Q2_locus.reserve(poly_loc.size());
-    std::vector<double> Q0_locus;
-    Q0_locus.reserve(poly_loc.size());
-    for (int locus : poly_loc)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = calc_Q_inter_deme_per_locus(data_plane_vec, locus);
-        Q2_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
-        if (data_plane_vec.get_Ploidy() == 2)
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        //TODO : Need to be handle up to avoid general throws
+        if (poly_loc.size() < 2)
         {
-            temp = calc_Q_intra_indiv_per_locus(data_plane_vec, locus);
-            Q0_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
+            throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
         }
-    }
 
-    for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
-    {
-        for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
+        int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
+        int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
+
+        std::vector<std::array<double, 4>> result;
+        result.reserve(locus_pair_nbr * deme_pair_nbr);
+
+        std::vector<double> Q2_locus;
+        Q2_locus.reserve(poly_loc.size());
+        std::vector<double> Q0_locus;
+        Q0_locus.reserve(poly_loc.size());
+        for (int locus : poly_loc)
         {
-            double dist_locus = data_plane_vec.dist_btw_locus(*locus_i, *locus_j);
-
-            for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
+            auto temp = calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus);
+            Q2_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
+            if (data_plane_vec.get_Ploidy() == 2)
             {
-                for (int deme_y = deme_x + 1; deme_y < data_plane_vec.nbr_of_deme(); ++deme_y)
+                temp = calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
+                Q0_locus.push_back(static_cast<double>(temp.at(0)) / temp.at(1));
+            }
+        }
+
+        for (auto locus_i = poly_loc.begin(); locus_i < poly_loc.end(); ++locus_i)
+        {
+            for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
+            {
+                double dist_locus = data_plane_vec.dist_btw_locus(chr, *locus_i, *locus_j);
+
+                for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
                 {
-                    std::array<double, 2> eta;
-                    if (data_plane_vec.get_Ploidy() == 2)
+                    for (int deme_y = deme_x + 1; deme_y < data_plane_vec.nbr_of_deme(); ++deme_y)
                     {
-                        eta = calc_eta_ij_xy(data_plane_vec, *locus_i, Q2_locus[*locus_i], Q0_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q0_locus[*locus_j], deme_x, deme_y);
+                        std::array<double, 2> eta;
+                        if (data_plane_vec.get_Ploidy() == 2)
+                        {
+                            eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q0_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q0_locus[*locus_j], deme_x, deme_y);
+                        }
+                        if (data_plane_vec.get_Ploidy() == 1)
+                        {
+                            eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q2_locus[*locus_j], deme_x, deme_y);
+                        }
+                        //dist-deme, dist-locus, value eta
+                        result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0) / eta.at(1), eta.at(1)}});
                     }
-                    if (data_plane_vec.get_Ploidy() == 1)
-                    {
-                        eta = calc_eta_ij_xy(data_plane_vec, *locus_i, Q2_locus[*locus_i], Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q2_locus[*locus_j], deme_x, deme_y);
-                    }
-                    //dist-deme, dist-locus, value eta
-                    result.push_back({{data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y), dist_locus, eta.at(0)/eta.at(1), eta.at(1)}});
                 }
             }
         }
     }
-
     return result;
 }

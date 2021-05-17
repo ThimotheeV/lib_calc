@@ -6,13 +6,13 @@
 #include "calc_stat.hpp"
 
 //calc_Q_intra_indiv => calc_Qwi_frac
-std::array<int, 2> calc_Q_intra_indiv_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
+std::array<int, 2> calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q0 = std::array<int, 2>{0, 0};
-    for (int indiv = 0; indiv < data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus); ++indiv)
+    for (int indiv = 0; indiv < data_plane_vec.nomiss_nbr_of_indiv(chr, locus); ++indiv)
     {
-        int indiv1_gene1 = data_plane_vec(locus, indiv, 0);
-        int indiv1_gene2 = data_plane_vec(locus, indiv, 1);
+        int indiv1_gene1 = data_plane_vec(chr, locus, indiv, 0);
+        int indiv1_gene2 = data_plane_vec(chr, locus, indiv, 1);
         if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
         {
             if (indiv1_gene1 == indiv1_gene2)
@@ -28,11 +28,11 @@ std::array<int, 2> calc_Q_intra_indiv_per_locus(data_plane_vec_c const &data_pla
 double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
 {
     auto Q0 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            auto temp = calc_Q_intra_indiv_per_locus(data_plane_vec, locus);
+            auto temp = calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
             Q0.at(0) += temp.at(0);
             Q0.at(1) += temp.at(1);
         }
@@ -40,7 +40,7 @@ double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
     return static_cast<double>(Q0.at(0)) / Q0.at(1);
 }
 
-std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int locus, int deme)
+std::array<int, 2> calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int chr, int locus, int deme)
 {
     auto Q1 = std::array<int, 2>{0, 0};
 
@@ -48,11 +48,11 @@ std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const 
     {
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme) - 1; ++indiv)
         {
-            int indiv1_gene = data_plane_vec(locus, deme, indiv, 0);
+            int indiv1_gene = data_plane_vec(chr, locus, deme, indiv, 0);
 
             for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++next_indiv)
             {
-                int indiv2_gene = data_plane_vec(locus, deme, next_indiv, 0);
+                int indiv2_gene = data_plane_vec(chr, locus, deme, next_indiv, 0);
                 if ((indiv1_gene != 0) && (indiv2_gene != 0))
                 {
                     if (indiv1_gene == indiv2_gene)
@@ -68,13 +68,13 @@ std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const 
     {
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme) - 1; ++indiv)
         {
-            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
-            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
+            int indiv1_gene1 = data_plane_vec(chr, locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(chr, locus, deme, indiv, 1);
 
             for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++next_indiv)
             {
-                int indiv2_gene1 = data_plane_vec(locus, deme, next_indiv, 0);
-                int indiv2_gene2 = data_plane_vec(locus, deme, next_indiv, 1);
+                int indiv2_gene1 = data_plane_vec(chr, locus, deme, next_indiv, 0);
+                int indiv2_gene2 = data_plane_vec(chr, locus, deme, next_indiv, 1);
                 if ((indiv1_gene1 != 0))
                 {
                     if ((indiv2_gene1 != 0))
@@ -119,33 +119,36 @@ std::array<int, 2> calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec_c const 
     return Q1;
 }
 
-std::array<int, 2> calc_Q_inter_indiv_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
+std::array<int, 2> calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q1 = std::array<int, 2>{0, 0};
 
     for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
-        auto temp = calc_Q_inter_indiv_per_locus_per_deme(data_plane_vec, locus, deme);
+        auto temp = calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, locus, deme);
         Q1.at(0) += temp.at(0);
         Q1.at(1) += temp.at(1);
     }
-
     return Q1;
 }
 
 double calc_Q_inter_indiv_intra_deme(data_plane_vec_c const &data_plane_vec)
 {
     auto Q1 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = calc_Q_inter_indiv_per_locus(data_plane_vec, locus);
-        Q1.at(0) += temp.at(0);
-        Q1.at(1) += temp.at(1);
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
+        {
+            auto temp = calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
+            Q1.at(0) += temp.at(0);
+            Q1.at(1) += temp.at(1);
+        }
     }
     return static_cast<double>(Q1.at(0)) / Q1.at(1);
 }
 
-std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plane_vec, int locus)
+std::array<int, 2> calc_Q_inter_deme_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q2 = std::array<int, 2>{0, 0};
 
@@ -157,11 +160,11 @@ std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plan
             {
                 for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
                 {
-                    int indiv1_gene = data_plane_vec(locus, deme, indiv, 0);
+                    int indiv1_gene = data_plane_vec(chr, locus, deme, indiv, 0);
 
                     for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
                     {
-                        int indiv2_gene = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
+                        int indiv2_gene = data_plane_vec(chr, locus, other_deme, indiv_other_deme, 0);
                         if ((indiv1_gene != 0) && (indiv2_gene != 0))
                         {
                             if (indiv1_gene == indiv2_gene)
@@ -184,13 +187,13 @@ std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plan
             {
                 for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
                 {
-                    int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
-                    int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
+                    int indiv1_gene1 = data_plane_vec(chr, locus, deme, indiv, 0);
+                    int indiv1_gene2 = data_plane_vec(chr, locus, deme, indiv, 1);
 
                     for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(other_deme); ++indiv_other_deme)
                     {
-                        int indiv2_gene1 = data_plane_vec(locus, other_deme, indiv_other_deme, 0);
-                        int indiv2_gene2 = data_plane_vec(locus, other_deme, indiv_other_deme, 1);
+                        int indiv2_gene1 = data_plane_vec(chr, locus, other_deme, indiv_other_deme, 0);
+                        int indiv2_gene2 = data_plane_vec(chr, locus, other_deme, indiv_other_deme, 1);
                         if ((indiv1_gene1 != 0))
                         {
                             if ((indiv2_gene1 != 0))
@@ -242,23 +245,26 @@ std::array<int, 2> calc_Q_inter_deme_per_locus(data_plane_vec_c const &data_plan
 double calc_Q_inter_deme(data_plane_vec_c const &data_plane_vec)
 {
     auto Q2 = std::array<int, 2>{0, 0};
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = calc_Q_inter_deme_per_locus(data_plane_vec, locus);
-        Q2.at(0) += temp.at(0);
-        Q2.at(1) += temp.at(1);
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
+        {
+            auto temp = calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus);
+            Q2.at(0) += temp.at(0);
+            Q2.at(1) += temp.at(1);
+        }
     }
     return static_cast<double>(Q2.at(0)) / Q2.at(1);
 }
 
-double calc_Hnei_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
+double calc_Hnei_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     double result = 0;
-    for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
+    for (auto freq_al : data_plane_vec.allele_state(chr, locus))
     {
         result += pow(freq_al.second, 2);
     }
-    double nomiss_nbr_of_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
+    double nomiss_nbr_of_gene = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
     result = (1 - (result / pow(nomiss_nbr_of_gene, 2))) * nomiss_nbr_of_gene / (nomiss_nbr_of_gene - 1);
     return result;
 }
@@ -266,21 +272,25 @@ double calc_Hnei_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
 double calc_Hnei(data_plane_vec_c const &data_plane_vec)
 {
     double result = 0;
-    int base_nbr_locus_per_indiv = data_plane_vec.base_nbr_locus_per_indiv();
-    for (auto locus = 0; locus < base_nbr_locus_per_indiv; ++locus)
+    int nbr_value = 0;
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        result += calc_Hnei_per_loc(data_plane_vec, locus);
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
+        {
+            result += calc_Hnei_per_chr_per_loc(data_plane_vec, chr, locus);
+            ++nbr_value;
+        }
     }
 
-    return result / base_nbr_locus_per_indiv;
+    return result / nbr_value;
 }
 
 //WARNING : For microsat only
-double calc_Var_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
+double calc_Var_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     double moy = 0;
     int nbr_of_count = 0;
-    for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
+    for (auto freq_al : data_plane_vec.allele_state(chr, locus))
     {
         //freq_al.first = value of microsat ; freq_al.second = number of microsat
         moy += freq_al.first * freq_al.second;
@@ -288,23 +298,23 @@ double calc_Var_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
     }
     moy /= nbr_of_count;
     double result = 0;
-    for (auto freq_al : data_plane_vec.allele_state_per_loc(locus))
+    for (auto freq_al : data_plane_vec.allele_state(chr, locus))
     {
         result += freq_al.second * pow(freq_al.first - moy, 2);
     }
     //Correction n/n-1
-    double n = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
+    double n = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
     return (result / nbr_of_count) * (n / (n - 1));
 }
 //calc_Q_intra_indiv => calc_Qwi_frac
-double calc_Hobs_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
+double calc_Hobs_per_loc_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q0 = std::array<int, 2>{0, 0};
 
     for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(); ++indiv)
     {
-        int indiv1_gene1 = data_plane_vec(locus, indiv, 0);
-        int indiv1_gene2 = data_plane_vec(locus, indiv, 1);
+        int indiv1_gene1 = data_plane_vec(chr, locus, indiv, 0);
+        int indiv1_gene2 = data_plane_vec(chr, locus, indiv, 1);
         if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
         {
             if (indiv1_gene1 != indiv1_gene2)
@@ -317,33 +327,36 @@ double calc_Hobs_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
     return static_cast<double>(Q0.at(0)) / Q0.at(1);
 }
 
-double calc_MGW_per_loc(data_plane_vec_c const &data_plane_vec, int locus)
+double calc_MGW_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
-    auto const &allele_state_per_loc = data_plane_vec.allele_state_per_loc(locus);
+    auto const &allele_state = data_plane_vec.allele_state(chr, locus);
     //nbr allele / allele range (last of the allele state map - first of the allele state map)
-    return static_cast<double>(allele_state_per_loc.size()) / (allele_state_per_loc.rbegin()->first - allele_state_per_loc.begin()->first + 1);
+    return static_cast<double>(allele_state.size()) / (allele_state.rbegin()->first - allele_state.begin()->first + 1);
 }
 
 double calc_MGW(data_plane_vec_c const &data_plane_vec)
 {
     double result = 0;
-    int base_nbr_locus_per_indiv = data_plane_vec.base_nbr_locus_per_indiv();
-    for (auto locus = 0; locus < base_nbr_locus_per_indiv; ++locus)
+    int nbr_value = data_plane_vec.nbr_locus();
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        result += calc_MGW_per_loc(data_plane_vec, locus);
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
+        {
+            result += calc_MGW_per_chr_per_loc(data_plane_vec, chr, locus);
+        }
     }
 
-    return result / base_nbr_locus_per_indiv;
+    return result / nbr_value;
 }
 
 #include <iostream>
 // std::vector<qr_num, qr_denum>
-std::vector<std::array<int, 2>> calc_qr_loc_by_loc(data_plane_vec_c const &data_plane_vec, int locus)
+std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     std::map<double, std::array<int, 2>> result_fract;
     int ploidy = data_plane_vec.get_Ploidy();
-    int locus_end = data_plane_vec.index_end_locus(locus);
-    for (int gene1 = data_plane_vec.index_begin_locus(locus); gene1 < locus_end - 1; ++gene1)
+    int locus_end = data_plane_vec.index_end_locus(chr, locus);
+    for (int gene1 = data_plane_vec.index_begin_locus(chr, locus); gene1 < locus_end - 1; ++gene1)
     {
         // gene1 + ploidy - (gene1 % ploidy) haploid case = gene1 + 1
         //gene1 + ploidy - (gene1 % ploidy) diploid case = gene1 + 1 (impair) or + 2 (pair)
@@ -373,14 +386,17 @@ std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
 {
     std::vector<std::array<int, 2>> result_frac(data_plane_vec.nbr_of_dist_class());
 
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = calc_qr_loc_by_loc(data_plane_vec, locus);
-
-        for (std::size_t i = 0; i < temp.size(); ++i)
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            result_frac[i].at(0) += temp[i].at(0);
-            result_frac[i].at(1) += temp[i].at(1);
+            auto temp = calc_qr_per_chr_by_loc(data_plane_vec, chr, locus);
+
+            for (std::size_t i = 0; i < temp.size(); ++i)
+            {
+                result_frac[i].at(0) += temp[i].at(0);
+                result_frac[i].at(1) += temp[i].at(1);
+            }
         }
     }
 
@@ -408,12 +424,12 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
     //numerator and denominator
     std::vector<std::array<double, 2>> result(nbr_of_pair, {0, 0});
     //In prob_id case Qw with a missing value = 0; Denom by locus will be the same for all pair
-    std::vector<double> Qw_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
+    std::vector<double> Qw_by_locus(data_plane_vec.nbr_locus(), 0);
     //
     double sum_Qw_all_loc = 0;
 
     //Multilocus estimates are defined as the sum of locus-specific numerators divided by the sum of locus-specific denominators (Weir & Cockerham, 1984)
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
     {
         auto result_itr = result.begin();
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv() - 1; ++indiv)
@@ -452,21 +468,21 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
         }
         //HAndle last indiv
         Qw_by_locus[locus] += (data_plane_vec(locus, data_plane_vec.nbr_of_indiv() - 1, 0) == data_plane_vec(locus, data_plane_vec.nbr_of_indiv() - 1, 1));
-        Qw_by_locus[locus] /= data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus);
+        Qw_by_locus[locus] /= data_plane_vec.nomiss_nbr_of_indiv(locus);
         sum_Qw_all_loc += Qw_by_locus[locus];
     }
 
     //compute denom because in missing value denom will be diff between pair (When the data_plane_vec is unknown for some locus in one individual from a pair, this locus is not included in the sum over loci Rousset, 2000)
     //compute by remove Qw from sum_Qw_all_loc
-    std::vector<std::array<double, 2>> sum_Qw_use_by_pair(nbr_of_pair, {sum_Qw_all_loc, static_cast<double>(data_plane_vec.base_nbr_locus_per_indiv())});
+    std::vector<std::array<double, 2>> sum_Qw_use_by_pair(nbr_of_pair, {sum_Qw_all_loc, static_cast<double>(data_plane_vec.nbr_locus())});
 
     auto sum_Qw_use_by_pair_itr = sum_Qw_use_by_pair.begin();
     for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv() - 1; ++indiv)
     {
         for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv(); ++next_indiv)
         {
-            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv(indiv), data_plane_vec.nomiss_data_indiv(next_indiv));
-            for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv_per_loc(indiv), data_plane_vec.nomiss_data_indiv_per_loc(next_indiv));
+            for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
                 if (!nomiss_data[locus])
@@ -504,19 +520,19 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
     //numerator and denominator
     std::vector<std::array<double, 2>> save_value(nbr_of_pair, {0, 0});
     //To calculate e_r like Genedeme (Rousset, ...) with Loiselle F statistic equivalent d_k^2 terme
-    std::vector<double> sum_Qij_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
+    std::vector<double> sum_Qij_by_locus(data_plane_vec.nbr_locus(), 0);
     //In prob_id case Qw with a missing value = 0; Denom by locus will be the same for all pair
-    std::vector<double> Qw_by_locus(data_plane_vec.base_nbr_locus_per_indiv(), 0);
+    std::vector<double> Qw_by_locus(data_plane_vec.nbr_locus(), 0);
     double sum_Qw_all_loc = 0;
 
     //All Qi need to be stored for later correction
-    std::vector<std::vector<double>> Qi_by_indiv_by_locus(nbr_indiv, std::vector<double>(data_plane_vec.base_nbr_locus_per_indiv(), 0));
+    std::vector<std::vector<double>> Qi_by_indiv_by_locus(nbr_indiv, std::vector<double>(data_plane_vec.nbr_locus(), 0));
     std::vector<double> Qi_sum_all_loc(nbr_indiv, 0);
 
     //Multilocus estimates are defined as the sum of locus-specific numerators divided by the sum of locus-specific denominators (Weir & Cockerham, 1984)
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
     {
-        auto nomiss_indiv = data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus);
+        auto nomiss_indiv = data_plane_vec.nomiss_nbr_of_indiv(locus);
         auto save_value_itr = save_value.begin();
         //Handle all indiv
         for (int indiv = 0; indiv < nbr_indiv; ++indiv)
@@ -567,7 +583,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
                 save_value_itr = save_value_itr + (nbr_indiv - indiv - 1);
             }
         }
-        Qw_by_locus[locus] /= data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus);
+        Qw_by_locus[locus] /= data_plane_vec.nomiss_nbr_of_indiv(locus);
         sum_Qw_all_loc += Qw_by_locus[locus];
     }
 
@@ -577,7 +593,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
     //nbr of pair use to calc sum_Qij (bijection with the number of indiv)
     std::vector<double> l_term_use_by_pair(nbr_of_pair, 0);
     //1 - sum_Qw_all_loc to match denom in cal er
-    std::vector<double> sum_Qw_use_by_pair(nbr_of_pair, data_plane_vec.base_nbr_locus_per_indiv() - sum_Qw_all_loc);
+    std::vector<double> sum_Qw_use_by_pair(nbr_of_pair, data_plane_vec.nbr_locus() - sum_Qw_all_loc);
 
     auto Qi_use_by_pair_itr = Qi_use_by_pair.begin();
     auto l_term_use_by_pair_itr = l_term_use_by_pair.begin();
@@ -588,8 +604,8 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
         {
             //file Qi_use_by_pair with sum of Qi and Qj (if i or j have missing value, Qi or Qj = 0, just need to remove the other one)
             *Qi_use_by_pair_itr = Qi_sum_all_loc[indiv] + Qi_sum_all_loc[next_indiv];
-            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv(indiv), data_plane_vec.nomiss_data_indiv(next_indiv));
-            for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv_per_loc(indiv), data_plane_vec.nomiss_data_indiv_per_loc(next_indiv));
+            for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
                 if (!nomiss_data[locus])
@@ -602,7 +618,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
                 {
                     //TODO : Essayer de faire les calculs par décroissance
                     //Loiselle F statistic equivalent d_k^2 terme
-                    int nomiss_nbr_indiv = data_plane_vec.nomiss_nbr_of_indiv_per_loc(locus);
+                    int nomiss_nbr_indiv = data_plane_vec.nomiss_nbr_of_indiv(locus);
                     int nomiss_nbr_pair_indiv = combination(2, nomiss_nbr_indiv);
                     *l_term_use_by_pair_itr += (sum_Qij_by_locus[locus] + nomiss_nbr_indiv * ((1 + Qw_by_locus[locus]) / 2.0)) / (nomiss_nbr_indiv + nomiss_nbr_pair_indiv);
                 }
@@ -641,14 +657,14 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
 
 //esti Fis, Fst
 //WARNING : Not know pertinence if missing value
-std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c const &data_plane_vec, int locus)
+std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     std::array<std::array<double, 2>, 2> result{{{0}, {0}}};
 
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("( In Fstat_by_loc_with_probid : Can't calculate Fstat if ploidy was different than 2. I exit. )");
+        throw std::logic_error("( In Fstat_per_chr_by_loc_with_probid : Can't calculate Fstat if ploidy was different than 2. I exit. )");
     }
     //
     auto Qwi_frac = std::array<int, 2>{0, 0};
@@ -656,12 +672,12 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
     auto Qwp_frac_v = std::vector<std::array<int, 2>>(data_plane_vec.nbr_of_deme(), {0, 0});
     auto Qbp_frac = std::array<int, 2>{0, 0};
 
-    int locus_end = data_plane_vec.index_end_locus(locus);
+    int locus_end = data_plane_vec.index_end_locus(chr, locus);
     auto Qwp_frac_v_itr = Qwp_frac_v.begin();
     auto cumul_deme_size_itr = data_plane_vec.cumul_nbr_of_indiv_per_deme().begin() + 1;
     int indiv_relatif_nbr = -1;
 
-    for (int gene1 = data_plane_vec.index_begin_locus(locus); gene1 < locus_end - 1; ++gene1)
+    for (int gene1 = data_plane_vec.index_begin_locus(chr, locus); gene1 < locus_end - 1; ++gene1)
     {
         ++indiv_relatif_nbr;
         if (indiv_relatif_nbr == (*cumul_deme_size_itr) * data_plane_vec.get_Ploidy())
@@ -720,9 +736,9 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
 
     double S1 = 0;
     double S2 = 0;
-    double ns = data_plane_vec.nomiss_nbr_of_deme_per_loc(locus);
+    double ns = data_plane_vec.nomiss_nbr_of_deme(chr, locus);
 
-    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus))
+    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_deme(chr, locus))
     {
         S1 += deme_size;
         S2 += pow(deme_size, 2);
@@ -744,21 +760,21 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_probid(data_plane_vec_c c
 }
 
 //esti Fis, Fst
-std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int locus)
+std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
-    auto const &allele_state = data_plane_vec.allele_state_per_loc(locus);
+    auto const &allele_state = data_plane_vec.allele_state(chr, locus);
 
     int Ploidy = data_plane_vec.get_Ploidy();
     if (Ploidy != 2)
     {
-        throw std::logic_error("( In Fstat_by_loc_with_indic : Can't calculate Fstat if ploidy was different than 2. I exit. )");
+        throw std::logic_error("( In Fstat_per_chr_by_loc_with_indic : Can't calculate Fstat if ploidy was different than 2. I exit. )");
     }
 
     double S1 = 0;
     double S2 = 0;
-    double ns = data_plane_vec.nomiss_nbr_of_deme_per_loc(locus);
+    double ns = data_plane_vec.nomiss_nbr_of_deme(chr, locus);
 
-    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus))
+    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_deme(chr, locus))
     {
         S1 += deme_size;
         S2 += pow(deme_size, 2);
@@ -771,12 +787,12 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
     for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
         //for handle missing value need to remove all indiv with missing value
-        int gene_in_nomiss_nbr_of_indiv_per_deme = data_plane_vec.nomiss_nbr_of_indiv_per_loc_per_deme(locus, deme) * 2;
+        int gene_in_nomiss_nbr_of_indiv_per_deme = data_plane_vec.nomiss_nbr_of_indiv(chr, locus, deme) * 2;
         int tot_gene_in_nomiss_nbr_of_indiv = (S1 * 2);
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
         {
-            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
-            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
+            int indiv1_gene1 = data_plane_vec(chr, locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(chr, locus, deme, indiv, 1);
 
             if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
             {
@@ -798,8 +814,8 @@ std::array<std::array<double, 2>, 2> Fstat_by_loc_with_indic(data_plane_vec_c co
     {
         for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme); ++indiv)
         {
-            int indiv1_gene1 = data_plane_vec(locus, deme, indiv, 0);
-            int indiv1_gene2 = data_plane_vec(locus, deme, indiv, 1);
+            int indiv1_gene1 = data_plane_vec(chr, locus, deme, indiv, 0);
+            int indiv1_gene2 = data_plane_vec(chr, locus, deme, indiv, 1);
 
             if ((indiv1_gene1 != 0) && (indiv1_gene2 != 0))
             {
@@ -842,13 +858,16 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
     std::array<double, 2> result{0, 0};
 
     double fis_num = 0, fis_denum = 0, fst_num = 0, fst_denum = 0;
-    for (int locus = 0; locus < data_plane_vec.base_nbr_locus_per_indiv(); ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        auto temp = Fstat_by_loc_with_indic(data_plane_vec, locus);
-        fis_num += temp.at(0).at(0);
-        fis_denum += temp.at(0).at(1);
-        fst_num += temp.at(1).at(0);
-        fst_denum += temp.at(1).at(1);
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
+        {
+            auto temp = Fstat_per_chr_by_loc_with_indic(data_plane_vec, chr, locus);
+            fis_num += temp.at(0).at(0);
+            fis_denum += temp.at(0).at(1);
+            fst_num += temp.at(1).at(0);
+            fst_denum += temp.at(1).at(1);
+        }
     }
 
     result.at(0) = fis_num / fis_denum;
@@ -859,79 +878,96 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
 //Return <state, <frequence, nbr of locus>>
 std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus)
 {
-    std::vector<int> locus_usable_for_SFS;
-    locus_usable_for_SFS.reserve(data_plane_vec.nbr_of_locus_tot());
+    //chr<>
+    std::vector<std::vector<int>> locus_usable_for_SFS;
+    locus_usable_for_SFS.resize(data_plane_vec.nbr_of_chr());
 
-    int nbr_of_locus = data_plane_vec.base_nbr_locus_per_indiv();
     int real_min_limit = data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy();
+    bool can_calc_SFS = false;
 
-    for (int locus = 0; locus < nbr_of_locus; ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        int nbr_gene = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
-        if (nbr_gene >= limit_min_gene_per_locus)
+        locus_usable_for_SFS[chr].reserve(data_plane_vec.nbr_locus(chr));
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            locus_usable_for_SFS.push_back(locus);
-            if (nbr_gene < real_min_limit)
+            int nbr_gene = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
+            if (nbr_gene >= limit_min_gene_per_locus)
             {
-                real_min_limit = nbr_gene;
+                locus_usable_for_SFS[chr].push_back(locus);
+                if (nbr_gene < real_min_limit)
+                {
+                    real_min_limit = nbr_gene;
+                }
             }
+        }
+        locus_usable_for_SFS[chr].shrink_to_fit();
+        if (locus_usable_for_SFS[chr].size() > 0)
+        {
+            can_calc_SFS = true;
         }
     }
 
-    locus_usable_for_SFS.shrink_to_fit();
-
-    if (locus_usable_for_SFS.size() < 1)
+    if (!can_calc_SFS)
     {
-        throw std::logic_error("Can't calculate SFS, no locus with number of data > ... . I exit.");
+        throw std::logic_error("Can't calculate SFS, no locus with number of non missing gene > 'min gene'. I exit.");
     }
 
     std::map<int, std::map<int, double>> result;
 
-    for (int locus = 0; locus < nbr_of_locus; ++locus)
+    for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        for (auto state : data_plane_vec.allele_state_per_loc(locus))
+        for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            result.emplace(state.first, std::map<int, double>{});
+            for (auto state : data_plane_vec.allele_state(chr, locus))
+            {
+                result.emplace(state.first, std::map<int, double>{});
+            }
         }
     }
 
     if (real_min_limit == data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy())
     {
-        for (int locus = 0; locus < nbr_of_locus; ++locus)
+        for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            //map(state, nbr of allele in this state)
-            auto temp_locus = data_plane_vec.allele_state_per_loc(locus);
-            for (auto state : data_plane_vec.allele_state_per_loc(locus))
+            for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
             {
-                auto pair = result.at(state.first).emplace(state.second, 1.0);
-                if (!pair.second)
+                //map(state, nbr of allele in this state)
+                auto temp_locus = data_plane_vec.allele_state(chr, locus);
+                for (auto state : data_plane_vec.allele_state(chr, locus))
                 {
-                    pair.first->second += 1.0;
+                    auto pair = result.at(state.first).emplace(state.second, 1.0);
+                    if (!pair.second)
+                    {
+                        pair.first->second += 1.0;
+                    }
                 }
             }
         }
     }
     else
     {
-        for (auto locus : locus_usable_for_SFS)
+        for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            //map(state, nbr of allele in this state)
-            int n = data_plane_vec.nomiss_nbr_of_gene_per_loc(locus);
-            for (auto state : data_plane_vec.allele_state_per_loc(locus))
+            for (auto locus : locus_usable_for_SFS.at(chr))
             {
-                // k = real_min_limit; n = nomiss_nbr_of_gene_per_loc ; nb = state.second ; b = state
-                int nb = state.second;
-                double total_comb = combination(real_min_limit, n);
-                int max_count_stat = min(real_min_limit, nb);
-                int min_count_stat = max(0, real_min_limit + nb - n); // k-na : na = n-nb
-
-                for (int count = min_count_stat; count <= max_count_stat; ++count)
+                //map(state, nbr of allele in this state)
+                int n = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
+                for (auto state : data_plane_vec.allele_state(chr, locus))
                 {
-                    double freq = combination(count, nb) * combination(real_min_limit - count, n - nb) / total_comb;
-                    auto pair = result.at(state.first).emplace(count, freq);
-                    if (!pair.second)
+                    // k = real_min_limit; n = nomiss_nbr_of_gene_per_loc ; nb = state.second ; b = state
+                    int nb = state.second;
+                    double total_comb = combination(real_min_limit, n);
+                    int max_count_stat = min(real_min_limit, nb);
+                    int min_count_stat = max(0, real_min_limit + nb - n); // k-na : na = n-nb
+
+                    for (int count = min_count_stat; count <= max_count_stat; ++count)
                     {
-                        pair.first->second += freq;
+                        double freq = combination(count, nb) * combination(real_min_limit - count, n - nb) / total_comb;
+                        auto pair = result.at(state.first).emplace(count, freq);
+                        if (!pair.second)
+                        {
+                            pair.first->second += freq;
+                        }
                     }
                 }
             }

@@ -6,26 +6,35 @@
 #include <cmath>
 
 #include "arg_pars.hpp"
-namespace gss{
-std::string const read_file(std::string const &filename);
-std::string read_write_cmdline(int argc, char **argv);
+namespace gss
+{
+    std::string const read_file(std::string const &filename);
+    std::string read_write_cmdline(int argc, char **argv);
 }
 template <std::size_t ploidy>
 struct genepop_input_c
 {
     genepop_input_c(){};
     //10 class => 11 limits
-    genepop_input_c(std::string path_to_file, int nbr_class = 10);
+    genepop_input_c(std::string path_to_genepop_file, int nbr_dist_class = 10, std::string path_to_chr_map_file = "", int nbr_chr_dist_class = 0);
 
     std::array<int, ploidy> trim_locus(std::string locus);
-    void calc_dist_class_btw_deme(int nbr_class);
+    void calc_dist_class_btw_deme(int nbr_dist_class);
+    void calc_dist_btw_loc(std::vector<std::tuple<int, std::string, double, int>> const &map_vec, int chr, int nbr_chr_dist_class);
 
     std::string Header;
     std::vector<std::string> Locus_name;
+    //Chr<loc1, loc2>
+    std::vector<std::vector<std::vector<double>>> Dist_btw_loc;
+    int Nbr_chr_dist_class;
+    //Chr<loc1, loc2>
+    std::vector<std::vector<std::vector<int>>> Dist_class_btw_loc;
+
     std::vector<std::vector<std::string>> Pop_name;
     std::vector<std::vector<double>> Dist_btw_deme;
     int Nbr_dist_class;
     std::vector<std::vector<int>> Dist_class_btw_deme;
+
     std::vector<std::vector<std::string>> Indiv_name;
     //Pop<Indiv<Name, Locus>
     std::vector<std::vector<std::vector<std::array<int, ploidy>>>> Genotype;
