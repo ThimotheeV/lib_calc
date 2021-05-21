@@ -16,7 +16,7 @@ struct genepop_input_c
 {
     genepop_input_c(){};
     //10 class => 11 limits
-    genepop_input_c(std::string path_to_genepop_file, int nbr_dist_class = 10, std::string path_to_chr_map_file = "", int nbr_chr_dist_class = 0);
+    genepop_input_c(std::string path_to_genepop_file, int nbr_dist_class = 0, std::string path_to_chr_map_file = "", int nbr_chr_dist_class = 0);
 
     std::array<int, ploidy> trim_locus(std::string locus);
     void calc_dist_class_btw_deme(int nbr_dist_class);
@@ -26,13 +26,13 @@ struct genepop_input_c
     std::vector<std::string> Locus_name;
     //Chr<loc1, loc2>
     std::vector<std::vector<std::vector<double>>> Dist_btw_loc;
-    int Nbr_chr_dist_class;
+    int Nbr_chr_dist_class{0};
     //Chr<loc1, loc2>
     std::vector<std::vector<std::vector<int>>> Dist_class_btw_loc;
 
     std::vector<std::vector<std::string>> Pop_name;
     std::vector<std::vector<double>> Dist_btw_deme;
-    int Nbr_dist_class;
+    int Nbr_dist_class{0};
     std::vector<std::vector<int>> Dist_class_btw_deme;
 
     std::vector<std::vector<std::string>> Indiv_name;

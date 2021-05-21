@@ -163,7 +163,7 @@ TEST_CASE("genepop_input_test")
     }
     SECTION("dist_btw_deme for int dist")
     {
-        genepop_input_c<2> input("input_test.txt");
+        genepop_input_c<2> input("input_test.txt", 10);
         REQUIRE(input.Dist_btw_deme[0] == std::vector<double>{0, 1, 2, 3});
         REQUIRE(input.Dist_btw_deme[1] == std::vector<double>{1, 0, 1, 2});
         REQUIRE(input.Dist_btw_deme[2] == std::vector<double>{2, 1, 0, 1});

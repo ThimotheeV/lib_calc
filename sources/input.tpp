@@ -72,11 +72,6 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
         Genotype[nbr_deme - 1] = temp_deme;
     }
 
-    if (nbr_dist_class == 0)
-    {
-        nbr_dist_class = Pop_name.size();
-    }
-
     calc_dist_class_btw_deme(nbr_dist_class);
 
     //Handle chr dist
@@ -208,20 +203,23 @@ void genepop_input_c<ploidy>::calc_dist_class_btw_deme(int nbr_dist_class)
         }
     }
 
-    double dist_btw_class = max_dist / nbr_dist_class;
-    Dist_class_btw_deme = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
+    if (nbr_dist_class > 0)
     {
-        for (auto deme1 = 0; deme1 < Dist_btw_deme.size(); ++deme1)
+        double dist_btw_class = max_dist / nbr_dist_class;
+        Dist_class_btw_deme = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
         {
-            for (auto deme2 = 0; deme2 < Dist_btw_deme.size(); ++deme2)
+            for (auto deme1 = 0; deme1 < Dist_btw_deme.size(); ++deme1)
             {
-                //if Dist_btw_deme  =  0 class 0 else floor(Dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
-                //
-                Dist_class_btw_deme[deme1][deme2] = (Dist_btw_deme[deme1][deme2] ? ceil(Dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
-                //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
-                if (Dist_class_btw_deme[deme1][deme2] == nbr_dist_class)
+                for (auto deme2 = 0; deme2 < Dist_btw_deme.size(); ++deme2)
                 {
-                    --Dist_class_btw_deme[deme1][deme2];
+                    //if Dist_btw_deme  =  0 class 0 else floor(Dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
+                    //
+                    Dist_class_btw_deme[deme1][deme2] = (Dist_btw_deme[deme1][deme2] ? ceil(Dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
+                    //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
+                    if (Dist_class_btw_deme[deme1][deme2] == nbr_dist_class)
+                    {
+                        --Dist_class_btw_deme[deme1][deme2];
+                    }
                 }
             }
         }

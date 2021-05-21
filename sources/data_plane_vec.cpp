@@ -287,6 +287,21 @@ int data_plane_vec_c::dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_inde
     return Dist_class_btw_deme[deme_gen1][deme_gen2];
 }
 
+int data_plane_vec_c::dist_class_btw_deme_with_deme(int deme1, int deme2) const
+{
+    if (deme1 == deme2)
+    {
+        return 0;
+    }
+
+    return Dist_class_btw_deme[deme1][deme2];
+}
+
+int data_plane_vec_c::nbr_of_chr_dist_class() const
+{
+    return Nbr_chr_dist_class;
+}
+
 double data_plane_vec_c::dist_btw_locus(int chr, int locus_index1, int locus_index2) const
 {
     if (locus_index1 == locus_index2)
@@ -295,4 +310,14 @@ double data_plane_vec_c::dist_btw_locus(int chr, int locus_index1, int locus_ind
     }
 
     return Dist_btw_loc[chr][locus_index1][locus_index2];
+}
+
+int data_plane_vec_c::dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const
+{
+    if (locus_index1 == locus_index2)
+    {
+        return 0;
+    }
+
+    return Dist_class_btw_loc[chr][locus_index1][locus_index2];
 }

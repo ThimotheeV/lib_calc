@@ -21,13 +21,13 @@ protected:
     std::vector<feature_c> Indiv_feat;
     std::vector<std::vector<double>> Dist_btw_deme;
     std::vector<std::vector<int>> Dist_class_btw_deme;
-    int Dist_class_nbr = 10;
+    int Dist_class_nbr = 0;
 
     //Chr<matrix(loc_i, loc_j)>
     std::vector<std::vector<std::vector<double>>> Dist_btw_loc;
     std::vector<std::vector<std::vector<int>>> Dist_class_btw_loc;
     int Nbr_chr_dist_class = 0;
-    
+
     //Locus, deme
     int Nbr_of_deme{0};
     //Cumul sum of indiv for each deme
@@ -73,7 +73,7 @@ public:
 
     int size() const;
     int nbr_of_deme() const;
-    int nbr_locus() const; //number of locus in a specifique indiv
+    int nbr_locus() const;        //number of locus in a specifique indiv
     int nbr_locus(int chr) const; //number of locus in a specifique indiv
     int nbr_of_gene() const;
     int nbr_of_chr() const;
@@ -85,7 +85,7 @@ public:
     feature_c const &get_feature(int indiv);
 
     int nomiss_nbr_of_gene(int chr, int locus) const;
-    //in haploid data, indiv = gene ; in diploid data, indiv = 2 genes 
+    //in haploid data, indiv = gene ; in diploid data, indiv = 2 genes
     //absolute locus index
     int nomiss_nbr_of_indiv(int locus) const;
     // chr relative locus index
@@ -124,8 +124,11 @@ public:
     double dist_btw_deme_with_deme(int deme_index1, int deme_index2) const;
     int nbr_of_dist_class() const;
     int dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_index2) const;
+    int dist_class_btw_deme_with_deme(int deme1, int deme2) const;
 
+    int nbr_of_chr_dist_class() const;
     double dist_btw_locus(int chr, int locus_index1, int locus_index2) const;
+    int dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const;
 };
 
 #include "data_plane_vec.tpp"
