@@ -5,8 +5,9 @@ Hexp =
 
 F_stat =
 
-Nbr_class = 100
+Nbr_geo_dist_class = 100
 
-Input_name = ./test.txt
+Data_filename = ./test.txt
+Genetic_map_name = ./test.map
 
 Eta =

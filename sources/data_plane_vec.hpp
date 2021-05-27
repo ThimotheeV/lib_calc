@@ -34,7 +34,7 @@ protected:
     int Nbr_of_indiv_tot{0};
     std::vector<int> Nbr_of_indiv_per_deme;
     std::vector<int> Cumul_nbr_of_indiv_per_deme;
-    int Chr_nbr{0};
+    int Nbr_of_chr{0};
     //Each chr can have a heterogene number of locus, each loc have the same number of deme and each deme can have a heterogene number of indiv
     int Nbr_of_locus{0};
     std::vector<int> Nbr_of_loc_per_chr;
@@ -45,7 +45,7 @@ protected:
     std::vector<int> Nomiss_nbr_of_indiv_per_loc;
     std::vector<std::vector<int>> Nomiss_nbr_of_deme_per_chr_per_loc;
     //for each indiv => if locus have (ploidy) data present (absolute locus index)
-    std::vector<bin_vec> Nomiss_indiv_bool_per_loc;
+    std::vector<bin_vec> Nomiss_per_indiv_per_loc;
     //[chr][locus][deme]
     std::vector<std::vector<std::vector<int>>> Nomiss_nbr_of_gene_per_chr_per_loc_per_deme;
     std::vector<std::vector<std::vector<int>>> Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme;
@@ -63,7 +63,7 @@ public:
     //Pop, indiv, locus => chr, locus, deme, indiv
     //locus, deme, indiv
     template <std::size_t ploidy>
-    data_plane_vec_c(genepop_input_c<ploidy> const &genedeme_data);
+    data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data);
 
     //Setter
     void set_indiv_feature();
@@ -116,19 +116,18 @@ public:
     int index_end_locus(int chr, int locus) const;
 
     // in the same locus => gene 1 & gene 2 : same deme, indiv ?
-    bool same_loc_in_indiv(int dpv_gene_index1, int dpv_gene_index2) const;
+    bool same_indiv(int dpv_gene_index1, int dpv_gene_index2) const;
     bool same_deme(int dpv_gene_index1, int dpv_gene_index2) const;
-    bin_vec const &nomiss_data_indiv_per_loc(int indiv) const;
-    bool nomiss_data_indiv(int locus, int indiv) const;
-    double dist_btw_deme(int dpv_gene_index1, int dpv_gene_index2) const;
-    double dist_btw_deme_with_deme(int deme_index1, int deme_index2) const;
-    int nbr_of_dist_class() const;
-    int dist_class_btw_deme(int dpv_gene_index1, int dpv_gene_index2) const;
-    int dist_class_btw_deme_with_deme(int deme1, int deme2) const;
+    bin_vec const &nomiss_data(int indiv) const;
+    double geo_dist_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const;
+    double geo_dist_btw_deme(int deme_index1, int deme_index2) const;
+    int nbr_geo_dist_class() const;
+    int geo_dist_class_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const;
+    int geo_dist_class_btw_deme(int deme1, int deme2) const;
 
-    int nbr_of_chr_dist_class() const;
-    double dist_btw_locus(int chr, int locus_index1, int locus_index2) const;
-    int dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const;
+    int nbr_chr_dist_class() const;
+    double chr_dist_btw_locus(int chr, int locus_index1, int locus_index2) const;
+    int chr_dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const;
 };
 
 #include "data_plane_vec.tpp"

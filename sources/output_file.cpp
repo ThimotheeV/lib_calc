@@ -11,7 +11,7 @@
 void output_stat_files(selector_input_c const &selec, result_c const &result)
 {
     std::vector<std::string> head;
-    head.reserve(20 + selec.Nbr_class + 2 + 2);
+    head.reserve(20 + selec.Nbr_geo_dist_class + 2 + 2);
 
     if (selec.Hobs)
     {
@@ -67,7 +67,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.Qr)
     {
-        for (int dist = 0; dist < selec.Nbr_class; ++dist)
+        for (int dist = 0; dist < selec.Nbr_geo_dist_class; ++dist)
         {
             std::string temp = "Q" + std::to_string(dist);
             head.emplace_back(temp);
@@ -94,7 +94,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     //for output
     std::vector<double> stats_run;
-    stats_run.reserve(20 + selec.Nbr_class + 2 + 2);
+    stats_run.reserve(20 + selec.Nbr_geo_dist_class + 2 + 2);
 
     if (selec.Hobs)
     {
@@ -150,7 +150,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.Qr)
     {
-        for (int dist = 0; dist < selec.Nbr_class; ++dist)
+        for (int dist = 0; dist < selec.Nbr_geo_dist_class; ++dist)
         {
             stats_run.emplace_back(result.Qr.at(dist));
         }
@@ -172,36 +172,113 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
     gss::print_output("./Stats.txt", stats_run, "app");
 }
 
-void output_eta_stat_files(std::vector<std::array<double, 4>> result)
+void output_eta_stat_files(std::vector<std::array<double, 5>> result)
 {
     //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
     std::sort(result.begin(), result.end(),
-              [](auto const &a, auto const &b) {
+              [](auto const &a, auto const &b)
+              {
                   if (a.at(0) < b.at(0))
                   {
                       return true;
                   }
                   else
                   {
-                      return a.at(1) < b.at(1);
+                      if (a.at(0) == b.at(0))
+                      {
+                          return a.at(1) < b.at(1);
+                      }
+                      else
+                      {
+                          return false;
+                      }
                   }
               });
 
     std::vector<std::string> head;
-    head.reserve(4);
+    head.reserve(6);
 
     head.emplace_back("Dist_btw_deme");
     head.emplace_back("Dist_btw_locus_pb");
-    head.emplace_back("Eta");
-    head.emplace_back("Eta_denum");
+    head.emplace_back("Sum_Phi");
+    head.emplace_back("Sum_Q1_join");
+    head.emplace_back("Sum_Eta_denum");
+    head.emplace_back("Num_pt");
 
     gss::print_output("./Stats_dl.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
+    double dist_geo = result[0].at(0);
+    double dist_chr = result[0].at(1);
+    double phi = 0;
+    double q1_join = 0;
+    double eta_denum = 0;
+    double num_pt = 0;
     for (auto const &values : result)
     {
-        gss::print_output<double>("./Stats_dl.txt", {values.at(0), values.at(1), values.at(2), values.at(3)}, "app");
+        if ((dist_geo == values.at(0)) && (dist_chr == values.at(1)))
+        {
+            phi += values.at(2);
+            q1_join += values.at(3);
+            eta_denum += values.at(4);
+            num_pt += 1;
+        }
+        else
+        {
+            gss::print_output<double>("./Stats_dl.txt", {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
+                                      "app");
+            dist_geo = values.at(0);
+            dist_chr = values.at(1);
+            num_pt = 0;
+            phi = 0;
+            q1_join = 0;
+            eta_denum = 0;
+        }
+    }
+}
+
+#include "calc_stat_dl.hpp"
+void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
+{
+    //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
+    //sort by dist-locus
+    std::sort(result.begin(), result.end(),
+              [](auto const &a, auto const &b)
+              {
+                  return (a.at(1) < b.at(1));
+              });
+
+    std::vector<std::string> head;
+    head.reserve(4);
+
+    head.emplace_back("Dist_btw_locus_pb");
+    head.emplace_back("a");
+    head.emplace_back("b");
+    head.emplace_back("b_g");
+
+    gss::print_output("./eta_exp_regr.txt", head, "over");
+
+    auto eta_by_chr_dist = std::vector<std::array<double, 2>>{};
+    int num_pt = 0;
+    double dist_chr = result[0].at(1);
+
+    for (auto const &values : result)
+    {
+        if (dist_chr == values.at(1))
+        {
+            num_pt += 1;
+            auto eta = (values.at(2) - values.at(3)) / values.at(4);
+            eta_by_chr_dist.push_back({values.at(0), eta});
+        }
+        else
+        {
+            auto temp = exp_regr(eta_by_chr_dist);
+            std::cout << dist_chr << " " << temp.at(0) << " " << temp.at(1) << " " << temp.at(2) << std::endl;
+            gss::print_output<double>("./eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
+            dist_chr = values.at(1);
+            eta_by_chr_dist.resize(0);
+        }
     }
 }
 
@@ -210,8 +287,8 @@ void output_sfs_stat_files(std::map<int, double> const &result)
     std::vector<std::string> head;
     head.reserve(2);
 
-    head.emplace_back("Count");
-    head.emplace_back("Frequencies");
+    head.emplace_back("Locis count");
+    head.emplace_back("Allele count class");
 
     gss::print_output("./SFS.txt", head, "over");
 

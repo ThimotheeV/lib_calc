@@ -199,13 +199,13 @@ std::vector<std::array<double, 5>> calc_eta_ij(data_plane_vec_c const &data_plan
     }
 
     double dist_locus;
-    if (data_plane_vec.nbr_of_chr_dist_class() == 0)
+    if (data_plane_vec.nbr_chr_dist_class() == 0)
     {
-        dist_locus = data_plane_vec.dist_btw_locus(chr, locus_i, locus_j);
+        dist_locus = data_plane_vec.chr_dist_btw_locus(chr, locus_i, locus_j);
     }
     else
     {
-        dist_locus = data_plane_vec.dist_class_btw_locus(chr, locus_i, locus_j);
+        dist_locus = data_plane_vec.chr_dist_class_btw_locus(chr, locus_i, locus_j);
     }
 
     for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
@@ -217,13 +217,13 @@ std::vector<std::array<double, 5>> calc_eta_ij(data_plane_vec_c const &data_plan
             auto eta = calc_eta_ij_xy(data_plane_vec, chr, locus_i, Q2_loc_i, Q1_loc_i_xy, locus_j, Q2_loc_j, Q1_loc_j_xy, deme_x, deme_y);
             //dist-deme, dist-locus, value eta
             double dist_deme;
-            if (data_plane_vec.nbr_of_dist_class() > 1)
+            if (data_plane_vec.nbr_geo_dist_class() > 1)
             {
-                dist_deme = data_plane_vec.dist_class_btw_deme_with_deme(deme_x, deme_y);
+                dist_deme = data_plane_vec.geo_dist_class_btw_deme(deme_x, deme_y);
             }
             else
             {
-                dist_deme = data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y);
+                dist_deme = data_plane_vec.geo_dist_btw_deme(deme_x, deme_y);
             }
             result.push_back({{dist_deme, dist_locus, eta.at(0), eta.at(1), eta.at(2)}});
         }
@@ -309,13 +309,13 @@ std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &d
 
                 double dist_locus;
 
-                if (data_plane_vec.nbr_of_chr_dist_class() == 0)
+                if (data_plane_vec.nbr_chr_dist_class() == 0)
                 {
-                    dist_locus = data_plane_vec.dist_btw_locus(chr, *locus_i, *locus_j);
+                    dist_locus = data_plane_vec.chr_dist_btw_locus(chr, *locus_i, *locus_j);
                 }
                 else
                 {
-                    dist_locus = data_plane_vec.dist_class_btw_locus(chr, *locus_i, *locus_j);
+                    dist_locus = data_plane_vec.chr_dist_class_btw_locus(chr, *locus_i, *locus_j);
                 }
 
                 for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
@@ -327,13 +327,13 @@ std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &d
                         auto eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q1_loc_i_xy, Q1_loc_i_xy, *locus_j, Q1_loc_j_xy, Q1_loc_j_xy, deme_x, deme_y);
                         //dist-deme, dist-locus, value eta
                         double dist_deme;
-                        if (data_plane_vec.nbr_of_dist_class() > 1)
+                        if (data_plane_vec.nbr_geo_dist_class() > 1)
                         {
-                            dist_deme = data_plane_vec.dist_class_btw_deme_with_deme(deme_x, deme_y);
+                            dist_deme = data_plane_vec.geo_dist_class_btw_deme(deme_x, deme_y);
                         }
                         else
                         {
-                            dist_deme = data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y);
+                            dist_deme = data_plane_vec.geo_dist_btw_deme(deme_x, deme_y);
                         }
                         result.push_back({{dist_deme, dist_locus, eta.at(0), eta.at(1), eta.at(2)}});
                     }
@@ -383,13 +383,13 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
 
                 double dist_locus;
 
-                if (data_plane_vec.nbr_of_chr_dist_class() == 0)
+                if (data_plane_vec.nbr_chr_dist_class() == 0)
                 {
-                    dist_locus = data_plane_vec.dist_btw_locus(chr, *locus_i, *locus_j);
+                    dist_locus = data_plane_vec.chr_dist_btw_locus(chr, *locus_i, *locus_j);
                 }
                 else
                 {
-                    dist_locus = data_plane_vec.dist_class_btw_locus(chr, *locus_i, *locus_j);
+                    dist_locus = data_plane_vec.chr_dist_class_btw_locus(chr, *locus_i, *locus_j);
                 }
 
                 for (int deme_x = 0; deme_x < data_plane_vec.nbr_of_deme(); ++deme_x)
@@ -407,13 +407,13 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
                         }
                         //dist-deme, dist-locus, value eta
                         double dist_deme;
-                        if (data_plane_vec.nbr_of_dist_class() > 1)
+                        if (data_plane_vec.nbr_geo_dist_class() > 1)
                         {
-                            dist_deme = data_plane_vec.dist_class_btw_deme_with_deme(deme_x, deme_y);
+                            dist_deme = data_plane_vec.geo_dist_class_btw_deme(deme_x, deme_y);
                         }
                         else
                         {
-                            dist_deme = data_plane_vec.dist_btw_deme_with_deme(deme_x, deme_y);
+                            dist_deme = data_plane_vec.geo_dist_btw_deme(deme_x, deme_y);
                         }
                         result.push_back({{dist_deme, dist_locus, eta.at(0), eta.at(1), eta.at(2)}});
                     }
@@ -422,4 +422,123 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
         }
     }
     return result;
+}
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+#include "stdafx.h"
+#include "interpolation.h"
+using namespace alglib;
+std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_geo_eta)
+{
+    //a+ b * (1-exp(-b_g * Dist_btw_deme))
+    //c[0] a ; c[1] = b ; c[2] = b_g ; x[0] = Dist_btw_deme
+    auto function_cx_1_func = [](const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+    {
+        // this callback calculates f(c,x)=c[0]+ c[1] * (1-exp(-c[2] *x)
+        // where x = Dist_btw_locus_pb and c are adjustables parameters
+        func = c[0] + c[1] * (1 - exp(-c[2] * x[0]));
+    };
+    auto function_cx_1_grad = [](const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *ptr)
+    {
+        // this callback calculates f(c,x)=c[0]+ c[1] * (1-exp(-c[2] *x) and gradient G={df/dc[i]}
+        // where x = Dist_btw_locus_pb and c are adjustables parameters
+        // IMPORTANT: gradient is calculated with respect to C, not to X
+        func = c[0] + c[1] * (1 - exp(-c[2] * x[0]));
+        grad[0] = 1;
+        grad[1] = (1 - exp(-c[2] * x[0]));
+        grad[2] = (c[1] * x[0] * exp(-c[2] * x[0]));
+    };
+    auto function_cx_1_hess = [](const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *ptr)
+    {
+        // this callback calculates f(c,x)=c[0]+ c[1] * (1-exp(-c[2] *x), gradient G={df/dc[i]} and Hessian H={d2f/(dc[i]*dc[j])}
+        // where x = Dist_btw_locus_pb and c are adjustables parameters
+        // IMPORTANT: gradient/Hessian are calculated with respect to C, not to X
+        func = c[0] + c[1] * (1 - exp(-c[2] * x[0]));
+
+        grad[0] = 1;
+        grad[1] = 1 - exp(-c[2] * x[0]);
+        grad[2] = c[1] * x[0] * exp(-c[2] * x[0]);
+
+        // Hessian
+        //                     a               b               b_g
+        // a    [              0               0               0]
+        // b    [              0               0      x*e^(-c*x)]
+        // b_g  [              0      x*e^(-c*x) -b*x^2*e^(-c*x)]
+
+        hess[0][0] = 0;
+        hess[0][1] = 0;
+        hess[0][2] = 0;
+
+        hess[1][0] = 0;
+        hess[1][1] = 0;
+        hess[1][2] = x[0] * exp(-c[2] * x[0]);
+
+        hess[2][0] = 0;
+        hess[2][1] = x[0] * exp(-c[2] * x[0]);
+        hess[2][2] = -c[1] * pow(x[0], 2) * exp(-c[2] * x[0]);
+    };
+
+    // In this example we demonstrate exponential fitting
+    // by f(x) = a+ b * (1-exp(-c *x)
+    // using function value, gradient and Hessian (with respect to a, b, c)
+    std::string param_str = "[0, ";
+    double min = dist_geo_eta[0].at(1);
+    double max = dist_geo_eta[0].at(1);
+
+    for (auto value : dist_geo_eta)
+    {
+        if (value.at(1) > max)
+        {
+            max = value.at(1);
+        }
+        if (value.at(1) < min)
+        {
+            min = value.at(1);
+        }
+    }
+    double range = max - min;
+    param_str += std::to_string(range);
+    param_str += ", ";
+    param_str += std::to_string(log(2) / dist_geo_eta.size());
+    param_str += "]";
+
+    real_1d_array param = param_str.c_str();
+
+    std::string dist_geo_str = "[[";
+    std::string eta_str = "[";
+
+    for (int i = 0; i < dist_geo_eta.size() - 1; ++i)
+    {
+        dist_geo_str += std::to_string(dist_geo_eta[i].at(0));
+        dist_geo_str += "],[";
+        eta_str += std::to_string(dist_geo_eta[i].at(1));
+        eta_str += ", ";
+    }
+
+    dist_geo_str += std::to_string(dist_geo_eta[dist_geo_eta.size() - 1].at(0));
+    dist_geo_str += "]]";
+    eta_str += std::to_string(dist_geo_eta[dist_geo_eta.size() - 1].at(1));
+    eta_str += "]";
+
+    real_2d_array dist_geo = dist_geo_str.c_str();
+    real_1d_array eta = eta_str.c_str();
+
+    double epsx = 0.000001;
+    ae_int_t maxits = 0;
+    ae_int_t info;
+    lsfitstate state;
+    lsfitreport rep;
+
+    // Fitting without weights
+    lsfitcreatefgh(dist_geo, eta, param, state);
+    lsfitsetcond(state, epsx, maxits);
+    alglib::lsfitfit(state, function_cx_1_func, function_cx_1_grad, function_cx_1_hess);
+    lsfitresults(state, info, param, rep);
+    printf("%d\n", int(info));
+
+    //return a, b, b_g
+    return std::array<double, 3>{param[0], param[1], param[2]};
 }

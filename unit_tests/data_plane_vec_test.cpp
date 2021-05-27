@@ -163,7 +163,7 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.index_end_locus(2, 0) == 18);
     }
 
-    SECTION("same_loc_in_indiv(int gene_index1, int gene_index2) with same size deme")
+    SECTION("same_indiv(int gene_index1, int gene_index2) with same size deme")
     {
         genepop_input_c<1> genepop_input;
         //3 deme, 2 indiv, 3 locus, 3 chr
@@ -177,15 +177,15 @@ TEST_CASE("haploid_data_plane_vec_test")
         // {{{{1}, {2}}, {{1}, {2}}, {{2}, {2}}}},
         // {{{{1}, {3}}, {{3}, {2}}, {{3}, {2}}}}};
         //Same locus && same indiv ?
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 2) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 4) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 12) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 2) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 4) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 12) == false);
 
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 5) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 6) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 16) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 5) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 6) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 16) == false);
     }
 
     SECTION("deme_at_dist(int gene_index1, int gene_index2, int dist) with same size deme")
@@ -221,7 +221,7 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(12, 15) == false);
     }
 
-    SECTION("same_loc_in_indiv(int gene_index1, int gene_index2) with dif size deme")
+    SECTION("same_indiv(int gene_index1, int gene_index2) with dif size deme")
     {
         genepop_input_c<1> genepop_input;
         //3 deme, 2-1-3 indiv, 3 locus, 3 chr
@@ -235,15 +235,15 @@ TEST_CASE("haploid_data_plane_vec_test")
         // {{{1}, {2}}, {{1}}, {{2}, {2}, {2}}},
         // {{{1}, {3}}, {{3}}, {{3}, {2}, {2}}}};
         //Same locus && same indiv ?
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 2) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 4) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 12) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 2) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 4) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 12) == false);
 
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 5) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 6) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 16) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 5) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 6) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 16) == false);
     }
 
     SECTION("bool same_deme(int gene_index1, int gene_index2) with dif size deme")
@@ -278,24 +278,24 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(3, 16) == true);
     }
 
-    SECTION("bool nomiss_data_indiv_per_loc(int indiv, int locus) with missing data")
-    {
-        genepop_input_c<1> genepop_input;
-        //3 deme, 2-1-3 indiv, 3 locus, 3 chr
-        genepop_input.Genotype = {{{{1}, {1}, {1}}, {{1}, {2}, {3}}},
-                                  {{{0}, {1}, {3}}},
-                                  {{{1}, {2}, {3}}, {{2}, {2}, {2}}, {{3}, {2}, {0}}}};
+    // SECTION("bool nomiss_data(int indiv, int locus) with missing data")
+    // {
+    //     genepop_input_c<1> genepop_input;
+    //     //3 deme, 2-1-3 indiv, 3 locus, 3 chr
+    //     genepop_input.Genotype = {{{{1}, {1}, {1}}, {{1}, {2}, {3}}},
+    //                               {{{0}, {1}, {3}}},
+    //                               {{{1}, {2}, {3}}, {{2}, {2}, {2}}, {{3}, {2}, {0}}}};
 
-        data_plane_vec_c plane_3d_vec(genepop_input);
-        //3chr, 1 locus/chr, 3 deme, 2-1-3 indiv
-        //{{{{1}, {1}}, {{0}}, {{1}, {2}, {3}}},
-        // {{{1}, {2}}, {{1}}, {{2}, {2}, {2}}},
-        // {{{1}, {3}}, {{3}}, {{3}, {2}, {0}}}};
+    //     data_plane_vec_c plane_3d_vec(genepop_input);
+    //     //3chr, 1 locus/chr, 3 deme, 2-1-3 indiv
+    //     //{{{{1}, {1}}, {{0}}, {{1}, {2}, {3}}},
+    //     // {{{1}, {2}}, {{1}}, {{2}, {2}, {2}}},
+    //     // {{{1}, {3}}, {{3}}, {{3}, {2}, {0}}}};
 
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == true);
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == false);
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
-    }
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == true);
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == false);
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
+    // }
 }
 
 TEST_CASE("diploid_data_plane_vec_test")
@@ -456,7 +456,7 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.index_end_locus(2, 0) == 36);
     }
 
-    SECTION("same_loc_in_indiv(int gene_index1, int gene_index2) with same size deme")
+    SECTION("same_indiv(int gene_index1, int gene_index2) with same size deme")
     {
         genepop_input_c<2> genepop_input;
         //3 deme, 2 indiv, 3 locus, 3 chr
@@ -470,15 +470,15 @@ TEST_CASE("diploid_data_plane_vec_test")
         // {{{1, 1}, {1, 2}}, {{1, 3}, {2, 3}}, {{1, 2}, {2, 2}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}, {2, 3}}, {{1, 3}, {2, 3}}}};
         //Same locus && same indiv ?
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 1) == true);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 2) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 4) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 12) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 1) == true);
+        REQUIRE(plane_3d_vec.same_indiv(0, 2) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 4) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 12) == false);
 
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 5) == true);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 6) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 16) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 5) == true);
+        REQUIRE(plane_3d_vec.same_indiv(4, 6) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 16) == false);
     }
     SECTION("bool same_deme(int gene_index1, int gene_index2) with same size deme")
     {
@@ -514,7 +514,7 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(12, 16) == false);
     }
 
-    SECTION("same_loc_in_indiv(int gene_index1, int gene_index2) with dif size deme")
+    SECTION("same_indiv(int gene_index1, int gene_index2) with dif size deme")
     {
         genepop_input_c<2> genepop_input;
         //3 deme, 2-1-3 indiv, 3 locus, 3 chr
@@ -528,15 +528,15 @@ TEST_CASE("diploid_data_plane_vec_test")
         // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 3}}}};
         //Same locus && same indiv ?
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 1) == true);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 2) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 4) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(0, 12) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 1) == true);
+        REQUIRE(plane_3d_vec.same_indiv(0, 2) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 4) == false);
+        REQUIRE(plane_3d_vec.same_indiv(0, 12) == false);
 
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 1) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 5) == true);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 6) == false);
-        REQUIRE(plane_3d_vec.same_loc_in_indiv(4, 16) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 1) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 5) == true);
+        REQUIRE(plane_3d_vec.same_indiv(4, 6) == false);
+        REQUIRE(plane_3d_vec.same_indiv(4, 16) == false);
     }
 
     SECTION("bool same_deme(int gene_index1, int gene_index2) with dif size deme")
@@ -573,32 +573,32 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(12, 16) == false);
     }
 
-    SECTION("bool nomiss_data_indiv(int locus, int indiv) with missing data")
-    {
-        genepop_input_c<2> genepop_input;
-        //3 deme, 2-1-3 indiv, 3 locus, 3 chr
-        genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
-                                  {{{1, 3}, {1, 3}, {1, 3}}},
-                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 0}}}};
+    // SECTION("bool nomiss_data_indiv(int locus, int indiv) with missing data")
+    // {
+    //     genepop_input_c<2> genepop_input;
+    //     //3 deme, 2-1-3 indiv, 3 locus, 3 chr
+    //     genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+    //                               {{{1, 3}, {1, 3}, {1, 3}}},
+    //                               {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 0}}}};
 
-        data_plane_vec_c plane_3d_vec(genepop_input);
-        //3 locus, 3 deme, 2-1-3 indiv
-        //{{{{0, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
-        // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
-        // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 0}}}};
+    //     data_plane_vec_c plane_3d_vec(genepop_input);
+    //     //3 locus, 3 deme, 2-1-3 indiv
+    //     //{{{{0, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
+    //     // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
+    //     // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 0}}}};
 
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == false);
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == true);
-        REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
-    }
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == false);
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == true);
+    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
+    // }
 }
 
 TEST_CASE("Indiv_feat_test")
 {
-    SECTION("double dist_btw_deme(int gene_index1, int gene_index2)")
+    SECTION("double geo_dist_btw_gene(int gene_index1, int gene_index2)")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
@@ -613,32 +613,32 @@ TEST_CASE("Indiv_feat_test")
         // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 3}}}};
 
-        REQUIRE(plane_3d_vec.nbr_of_dist_class() == 3);
+        REQUIRE(plane_3d_vec.nbr_geo_dist_class() == 3);
 
-        REQUIRE(plane_3d_vec.dist_btw_deme(0, 1) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(0, 2) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(0, 4) == 1);
-        REQUIRE(plane_3d_vec.dist_btw_deme(0, 7) == 2);
-        REQUIRE(plane_3d_vec.dist_btw_deme(0, 12) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(0, 1) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(0, 2) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(0, 4) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(0, 7) == 2);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(0, 12) == 0);
 
-        REQUIRE(plane_3d_vec.dist_btw_deme(4, 1) == 1);
-        REQUIRE(plane_3d_vec.dist_btw_deme(4, 5) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(4, 6) == 1);
-        REQUIRE(plane_3d_vec.dist_btw_deme(4, 8) == 1);
-        REQUIRE(plane_3d_vec.dist_btw_deme(4, 16) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(4, 1) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(4, 5) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(4, 6) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(4, 8) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(4, 16) == 0);
 
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 1) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 5) == 1);
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 6) == 2);
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 14) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 15) == 0);
-        REQUIRE(plane_3d_vec.dist_btw_deme(12, 16) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 1) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 5) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 6) == 2);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 14) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 15) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_btw_gene(12, 16) == 1);
     }
 
-    SECTION("int dist_class_btw_deme(int gene_index1, int gene_index2)")
+    SECTION("int geo_dist_class_btw_gene(int gene_index1, int gene_index2)")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
@@ -652,25 +652,25 @@ TEST_CASE("Indiv_feat_test")
         //{{{{1, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
         // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 3}}}};
-        REQUIRE(plane_3d_vec.nbr_of_dist_class() == 3);
+        REQUIRE(plane_3d_vec.nbr_geo_dist_class() == 3);
 
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(0, 1) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(0, 2) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(0, 4) == 1);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(0, 7) == 2);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(0, 12) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(0, 1) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(0, 2) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(0, 4) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(0, 7) == 2);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(0, 12) == 0);
 
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(4, 1) == 1);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(4, 5) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(4, 6) == 1);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(4, 8) == 1);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(4, 16) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(4, 1) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(4, 5) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(4, 6) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(4, 8) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(4, 16) == 0);
 
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 1) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 5) == 1);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 6) == 2);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 14) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 15) == 0);
-        REQUIRE(plane_3d_vec.dist_class_btw_deme(12, 16) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 1) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 5) == 1);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 6) == 2);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 14) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 15) == 0);
+        REQUIRE(plane_3d_vec.geo_dist_class_btw_gene(12, 16) == 1);
     }
 }

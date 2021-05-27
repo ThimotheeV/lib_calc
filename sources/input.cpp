@@ -65,9 +65,9 @@ std::string gss::read_write_cmdline(int argc, char **argv)
     return result;
 }
 
-selector_input_c::selector_input_c(std::string path_to_file)
+selector_input_c::selector_input_c(std::string path_to_settings_file)
 {
-    const auto &file_str = gss::read_file(path_to_file);
+    const auto &file_str = gss::read_file(path_to_settings_file);
     const auto &str_vec = gss::slice_unix_windows_file_by_line(file_str);
 
     for (auto const &line : str_vec)
@@ -77,12 +77,16 @@ selector_input_c::selector_input_c(std::string path_to_file)
         auto line_pair_key_value = gss::slice_by_char(clean_line, '=');
         const auto &stat_name = gss::remove_underscores(gss::str_tolower(line_pair_key_value[0]));
 
-        if (stat_name == "inputname")
+        if (stat_name == "datafilename")
         {
-            Input_name = line_pair_key_value[1];
+            Data_filename = line_pair_key_value[1];
             continue;
         }
-
+        if (stat_name == "geneticmapname")
+        {
+            Genetic_map_name = line_pair_key_value[1];
+            continue;
+        }
         if (stat_name == "hobs")
         {
             Hobs = true;
@@ -115,7 +119,8 @@ selector_input_c::selector_input_c(std::string path_to_file)
         }
         if (stat_name == "mingene")
         {
-            min_gene_for_SFS = static_cast<int>(std::stod(line_pair_key_value[1]));;
+            //Needed to read integer in scientific format
+            min_gene_for_SFS = static_cast<int>(std::stod(line_pair_key_value[1]));
             continue;
         }
         if (stat_name == "fstat")
@@ -153,16 +158,21 @@ selector_input_c::selector_input_c(std::string path_to_file)
             Missing_data = true;
             continue;
         }
-        if (stat_name == "nbrclass")
+        if (stat_name == "nbrgeodistclass")
         {
-            Nbr_class = static_cast<int>(std::stod(line_pair_key_value[1]));
+            Nbr_geo_dist_class = static_cast<int>(std::stod(line_pair_key_value[1]));
+            continue;
+        }
+        if (stat_name == "nbrchrdistclass")
+        {
+            Nbr_chr_dist_class = static_cast<int>(std::stod(line_pair_key_value[1]));
             continue;
         }
         throw std::invalid_argument("( Unknown keyworld : " + line + " from cmdline_settings.txt or glib_settings.txt. I exit. )");
     }
 }
 
-result_c::result_c(int nbr_class)
+result_c::result_c(int nbr_geo_dist_class)
 {
-    Qr = std::vector<double>(nbr_class, -1);
+    Qr = std::vector<double>(nbr_geo_dist_class, -1);
 }

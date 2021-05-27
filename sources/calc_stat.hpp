@@ -19,7 +19,7 @@ double calc_Hnei(data_plane_vec_c const &data_plane_vec);
 //WARNING : for microsat only
 double calc_Var_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus);
 //calc_Q_intra_indiv => calc_Qwi_frac
-double calc_Hobs_per_loc_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus);
+double calc_Hobs_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus);
 double calc_MGW_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus);
 double calc_MGW(data_plane_vec_c const &data_plane_vec);
 

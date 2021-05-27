@@ -102,7 +102,7 @@ TEST_CASE("genepop_input_test")
     SECTION("constructor")
     {
         genepop_input_c<2> input("input_test.txt", 10);
-        REQUIRE(input.Nbr_dist_class == 10);
+        REQUIRE(input.Nbr_geo_dist_class == 10);
         REQUIRE(input.Nbr_chr_dist_class == 0);
         REQUIRE(input.Dist_btw_loc == std::vector<std::vector<std::vector<double>>>{});
         REQUIRE(input.Dist_class_btw_loc == std::vector<std::vector<std::vector<int>>>{});
@@ -161,7 +161,7 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Genotype[3][2].at(0) == std::array{0, 10});
         REQUIRE(input.Genotype[3][2].at(4) == std::array{8, 7});
     }
-    SECTION("dist_btw_deme for int dist")
+    SECTION("geo_dist_btw_gene for int dist")
     {
         genepop_input_c<2> input("input_test.txt", 10);
         REQUIRE(input.Dist_btw_deme[0] == std::vector<double>{0, 1, 2, 3});
@@ -175,10 +175,10 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{9, 6, 3, 0});
     }
 
-    SECTION("dist_btw_deme for int dist")
+    SECTION("geo_dist_btw_gene for int dist")
     {
         genepop_input_c<2> input("float_dist_test.txt", 3);
-        REQUIRE(input.Nbr_dist_class == 3);
+        REQUIRE(input.Nbr_geo_dist_class == 3);
         REQUIRE(input.Dist_btw_deme[0][0] == Approx(0).margin(0.01));
         REQUIRE(input.Dist_btw_deme[0][1] == Approx(1.5).margin(0.01));
         REQUIRE(input.Dist_btw_deme[0][2] == Approx(6.8).margin(0.01));
@@ -245,7 +245,8 @@ TEST_CASE("selector_input_test")
     {
         selector_input_c setting("test_selector.txt");
 
-        REQUIRE(setting.Input_name == "./test.txt");
+        REQUIRE(setting.Data_filename == "./test.txt");
+        REQUIRE(setting.Genetic_map_name == "./test.map");
 
         REQUIRE(setting.Hobs == true);
         REQUIRE(setting.Hexp == true);
@@ -263,6 +264,22 @@ TEST_CASE("selector_input_test")
         REQUIRE(setting.Eta == true);
 
         REQUIRE(setting.Missing_data == false);
-        REQUIRE(setting.Nbr_class == 100);
+        REQUIRE(setting.Nbr_geo_dist_class == 100);
+    }
+}
+
+TEST_CASE("map_input_test")
+{
+    SECTION("read")
+    {
+        auto const map_file = gss::str_tolower(gss::read_file("input_test.map"));
+        auto const map_file_vec = gss::slice_unix_windows_file_by_line(map_file);
+
+        std::vector<std::vector<std::string>> crude_map_vec(map_file_vec.size());
+        for (int i = 0; i < crude_map_vec.size(); ++i)
+        {
+            crude_map_vec[i] = gss::slice_by_char(map_file_vec[i], '\t');
+            REQUIRE(crude_map_vec[i].size() == 4);
+        }
     }
 }

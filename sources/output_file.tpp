@@ -3,14 +3,14 @@
 #include <fstream>
 
 template <typename values>
-void gss::print_output(std::string path_to_file, std::vector<values> vec_value, std::string open_file_mode)
+void gss::print_output(std::string path_to_settings_file, std::vector<values> vec_value, std::string open_file_mode)
 {
     std::ofstream file;
     if (open_file_mode == "over")
     {
-        file.open(path_to_file, std::ios::out);
+        file.open(path_to_settings_file, std::ios::out);
     } else {
-        file.open(path_to_file, std::ios::app);
+        file.open(path_to_settings_file, std::ios::app);
     }
     auto vec_value_itr = vec_value.begin();
     if (file.is_open())
@@ -25,6 +25,6 @@ void gss::print_output(std::string path_to_file, std::vector<values> vec_value, 
     }
     else
     {
-        throw std::invalid_argument("( Unable to open " + path_to_file + ". I exit. )");
+        throw std::invalid_argument("( Unable to open " + path_to_settings_file + ". I exit. )");
     }
 }

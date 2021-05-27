@@ -307,7 +307,7 @@ double calc_Var_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr,
     return (result / nbr_of_count) * (n / (n - 1));
 }
 //calc_Q_intra_indiv => calc_Qwi_frac
-double calc_Hobs_per_loc_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
+double calc_Hobs_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q0 = std::array<int, 2>{0, 0};
 
@@ -362,7 +362,7 @@ std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &d
         //gene1 + ploidy - (gene1 % ploidy) diploid case = gene1 + 1 (impair) or + 2 (pair)
         for (int gene2 = gene1 + ploidy - (gene1 % ploidy); gene2 < locus_end; ++gene2)
         {
-            auto dist_class = data_plane_vec.dist_class_btw_deme(gene1, gene2);
+            auto dist_class = data_plane_vec.geo_dist_class_btw_gene(gene1, gene2);
             auto &frac = result_fract[dist_class];
             if (data_plane_vec[gene1] == data_plane_vec[gene2])
             {
@@ -372,7 +372,7 @@ std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &d
         }
     }
 
-    int dist_class_nbr = data_plane_vec.nbr_of_dist_class();
+    int dist_class_nbr = data_plane_vec.nbr_geo_dist_class();
     std::vector<std::array<int, 2>> result(dist_class_nbr);
     for (int i = 0; i < dist_class_nbr; ++i)
     {
@@ -384,7 +384,7 @@ std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &d
 // std::vector<qr>
 std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
 {
-    std::vector<std::array<int, 2>> result_frac(data_plane_vec.nbr_of_dist_class());
+    std::vector<std::array<int, 2>> result_frac(data_plane_vec.nbr_geo_dist_class());
 
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
@@ -400,7 +400,7 @@ std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
         }
     }
 
-    std::vector<double> result(data_plane_vec.nbr_of_dist_class());
+    std::vector<double> result(data_plane_vec.nbr_geo_dist_class());
     auto result_frac_itr = result_frac.begin();
     for (auto &res : result)
     {
@@ -451,7 +451,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
 
                         if (locus == 0)
                         {
-                            result_itr->at(0) = data_plane_vec.dist_btw_deme(indiv * Ploidy, next_indiv * Ploidy);
+                            result_itr->at(0) = data_plane_vec.geo_dist_btw_gene(indiv * Ploidy, next_indiv * Ploidy);
                         }
                         result_itr->at(1) += Qw - 2 * Qr + 1;
                     }
@@ -481,7 +481,7 @@ std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane
     {
         for (int next_indiv = indiv + 1; next_indiv < data_plane_vec.nbr_of_indiv(); ++next_indiv)
         {
-            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv_per_loc(indiv), data_plane_vec.nomiss_data_indiv_per_loc(next_indiv));
+            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data(indiv), data_plane_vec.nomiss_data(next_indiv));
             for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
@@ -552,7 +552,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
 
                         if (locus == 0)
                         {
-                            save_value_itr->at(0) = data_plane_vec.dist_btw_deme(indiv * Ploidy, next_indiv * Ploidy);
+                            save_value_itr->at(0) = data_plane_vec.geo_dist_btw_gene(indiv * Ploidy, next_indiv * Ploidy);
                         }
                         save_value_itr->at(1) += Qij;
                         sum_Qij_by_locus[locus] += Qij;
@@ -604,7 +604,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
         {
             //file Qi_use_by_pair with sum of Qi and Qj (if i or j have missing value, Qi or Qj = 0, just need to remove the other one)
             *Qi_use_by_pair_itr = Qi_sum_all_loc[indiv] + Qi_sum_all_loc[next_indiv];
-            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data_indiv_per_loc(indiv), data_plane_vec.nomiss_data_indiv_per_loc(next_indiv));
+            std::vector<bool> nomiss_data = bin_vec::and_(data_plane_vec.nomiss_data(indiv), data_plane_vec.nomiss_data(next_indiv));
             for (int locus = 0; locus < data_plane_vec.nbr_locus(); ++locus)
             {
                 //if indiv1 OR indiv2 have missing data at loc, remove it from Qw_sum
@@ -691,7 +691,7 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane
             {
                 if (data_plane_vec[gene2] != 0)
                 {
-                    if (data_plane_vec.same_loc_in_indiv(gene1, gene2))
+                    if (data_plane_vec.same_indiv(gene1, gene2))
                     {
                         if (data_plane_vec[gene1] == data_plane_vec[gene2])
                         {

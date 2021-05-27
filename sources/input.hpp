@@ -16,10 +16,10 @@ struct genepop_input_c
 {
     genepop_input_c(){};
     //10 class => 11 limits
-    genepop_input_c(std::string path_to_genepop_file, int nbr_dist_class = 0, std::string path_to_chr_map_file = "", int nbr_chr_dist_class = 0);
+    genepop_input_c(std::string path_to_genepop_file, int nbr_geo_dist_class = 0, std::string path_to_chr_map_file = "", int nbr_chr_dist_class = 0);
 
     std::array<int, ploidy> trim_locus(std::string locus);
-    void calc_dist_class_btw_deme(int nbr_dist_class);
+    void calc_dist_class_btw_deme(int nbr_geo_dist_class);
     void calc_dist_btw_loc(std::vector<std::tuple<int, std::string, double, int>> const &map_vec, int chr, int nbr_chr_dist_class);
 
     std::string Header;
@@ -32,9 +32,10 @@ struct genepop_input_c
 
     std::vector<std::vector<std::string>> Pop_name;
     std::vector<std::vector<double>> Dist_btw_deme;
-    int Nbr_dist_class{0};
+    int Nbr_geo_dist_class{0};
     std::vector<std::vector<int>> Dist_class_btw_deme;
 
+    //Pop<indiv>
     std::vector<std::vector<std::string>> Indiv_name;
     //Pop<Indiv<Name, Locus>
     std::vector<std::vector<std::vector<std::array<int, ploidy>>>> Genotype;
@@ -44,9 +45,10 @@ struct genepop_input_c
 struct selector_input_c
 {
     selector_input_c() = default;
-    selector_input_c(std::string path_to_file);
+    selector_input_c(std::string path_to_settings_file);
 
-    std::string Input_name;
+    std::string Data_filename;
+    std::string Genetic_map_name;
 
     bool Hobs{false};
     bool Hexp{false};
@@ -67,12 +69,13 @@ struct selector_input_c
     bool Eta{false};
 
     bool Missing_data{false};
-    int Nbr_class{1};
+    int Nbr_geo_dist_class{0};
+    int Nbr_chr_dist_class{0};
 };
 
 struct result_c
 {
-    result_c(int nbr_class);
+    result_c(int nbr_geo_dist_class);
 
     double Hobs_mean{-1};
     double Hobs_var{-1};

@@ -164,9 +164,9 @@ TEST_CASE("calc_Hobs_calc_stat_test")
                                   {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}}};
 
         data_plane_vec_c data_plane_vec(genepop_input);
-        REQUIRE(calc_Hobs_per_loc_per_loc(data_plane_vec, 0, 0) == 4.0 / 6);
-        REQUIRE(calc_Hobs_per_loc_per_loc(data_plane_vec, 1, 0) == 4.0 / 6);
-        REQUIRE(calc_Hobs_per_loc_per_loc(data_plane_vec, 2, 0) == 5.0 / 6);
+        REQUIRE(calc_Hobs_per_chr_per_loc(data_plane_vec, 0, 0) == 4.0 / 6);
+        REQUIRE(calc_Hobs_per_chr_per_loc(data_plane_vec, 1, 0) == 4.0 / 6);
+        REQUIRE(calc_Hobs_per_chr_per_loc(data_plane_vec, 2, 0) == 5.0 / 6);
     }
 }
 
@@ -211,7 +211,7 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr by locus with one indiv haploid per deme")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
@@ -240,7 +240,7 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr by locus without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
@@ -269,7 +269,7 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
@@ -288,7 +288,7 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("haploid qr with diff deme size")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Nbr_dist_class = 3;
+        genepop_input.Nbr_geo_dist_class = 3;
         genepop_input.Dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};

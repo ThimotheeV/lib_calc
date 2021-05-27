@@ -1,0 +1,23 @@
+- Urgent
+
+Faire version ligne de commande
+Affichage "Run Complete"
+Passer le selecteur en "Stat = True/ False" avec Stat possiblement non présente
+Créer un fonction slice_by_tab_or_space
+genepop_input_c sort alphanumériquement voir TODO
+map nom de chr/index dans la lib calc
+Implémenter la gestion de la ploidy
+Nomiss data test à transformer
+Supprimer Allele_state_bound
+Différencie les locus à index relatif (locus_index_in_chr) et les locus à index absolu (locus_index_in_sample)
+Différencie les indiv à index relatif et les indiv à index absolu
+
+- A terme
+
+Lire VCF => passer le genepop_input en data_input (mission lire les données quelques soit le format d'entrée)
+Calculer les stats Hobs, Hexp, nbr_alle, var, mgw + autre => Nom stat par pop mais aussi global
+Calculer le SFS multi pop
+
+- A long terme
+
+Faire des calcules à la compilation
