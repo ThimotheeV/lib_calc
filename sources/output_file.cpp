@@ -274,7 +274,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
         else
         {
             auto temp = exp_regr(eta_by_chr_dist);
-            std::cout << dist_chr << " " << temp.at(0) << " " << temp.at(1) << " " << temp.at(2) << std::endl;
+            //std::cout << dist_chr << " " << temp.at(0) << " " << temp.at(1) << " " << temp.at(2) << std::endl;
             gss::print_output<double>("./eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
             dist_chr = values.at(1);
             eta_by_chr_dist.resize(0);

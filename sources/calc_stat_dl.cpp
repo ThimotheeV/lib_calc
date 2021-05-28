@@ -537,7 +537,7 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_ge
     lsfitsetcond(state, epsx, maxits);
     alglib::lsfitfit(state, function_cx_1_func, function_cx_1_grad, function_cx_1_hess);
     lsfitresults(state, info, param, rep);
-    printf("%d\n", int(info));
+    // printf("%d\n", int(info));
 
     //return a, b, b_g
     return std::array<double, 3>{param[0], param[1], param[2]};

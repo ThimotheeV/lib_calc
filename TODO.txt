@@ -1,7 +1,5 @@
 - Urgent
 
-Faire version ligne de commande
-Affichage "Run Complete"
 Passer le selecteur en "Stat = True/ False" avec Stat possiblement non présente
 Créer un fonction slice_by_tab_or_space
 genepop_input_c sort alphanumériquement voir TODO
@@ -21,3 +19,9 @@ Calculer le SFS multi pop
 - A long terme
 
 Faire des calcules à la compilation
+
+- Effectué
+
+Faire version ligne de commande
+Affichage "Run Complete"
+

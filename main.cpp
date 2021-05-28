@@ -7,6 +7,7 @@
 
 int main(int argc, char *argv[])
 {
+    std::cout<<"************Begin run************"<<std::endl;
     std::string file_selector;
 
     if (argc == 1)
@@ -24,4 +25,5 @@ int main(int argc, char *argv[])
     data_plane_vec_c data_plane_vec(input);
 
     run(selector, data_plane_vec);
+    std::cout<<"************Run complete************"<<std::endl;
 }
