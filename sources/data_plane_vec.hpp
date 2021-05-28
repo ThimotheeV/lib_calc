@@ -53,8 +53,6 @@ protected:
     std::vector<std::vector<std::map<int, int>>> Allele_state_per_chr_per_loc;
     //Chr<Indent of polymorphic locus>
     std::vector<std::vector<int>> Polymorph_locus_per_chr;
-    //Total allele bound(min, max)
-    std::array<int, 2> Allele_state_bound;
     int Ploidy{-1};
 
 public:
@@ -98,8 +96,6 @@ public:
 
     int nbr_allele(int chr, int locus) const;
     std::map<int, int> const &allele_state(int chr, int locus) const;
-    int state_min() const;
-    int state_max() const;
     std::vector<int> const &polymorph_locus(int chr) const;
 
     std::vector<int> const &get_plane_vec();

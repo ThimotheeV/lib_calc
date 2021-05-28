@@ -26,8 +26,6 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.cumul_nbr_of_indiv_per_deme() == std::vector<int>{0, 2, 4});
         REQUIRE(plane_3d_vec.nbr_allele(1, 0) == 2);
         REQUIRE(plane_3d_vec.allele_state(1, 0) == std::map<int, int>{{1, 2}, {2, 4}});
-        REQUIRE(plane_3d_vec.state_min() == 1);
-        REQUIRE(plane_3d_vec.state_max() == 3);
 
         REQUIRE(plane_3d_vec.polymorph_locus(0) == std::vector<int>{0});
         REQUIRE(plane_3d_vec.polymorph_locus(1) == std::vector<int>{0});
@@ -55,8 +53,6 @@ TEST_CASE("haploid_data_plane_vec_test")
         // {{{0}, {3}}, {{3}, {2}}, {{3}, {2}}}};
         REQUIRE(plane_3d_vec.nbr_allele(1, 0) == 2);
         REQUIRE(plane_3d_vec.allele_state(1, 0) == std::map<int, int>{{1, 2}, {2, 2}});
-        REQUIRE(plane_3d_vec.state_min() == 1);
-        REQUIRE(plane_3d_vec.state_max() == 3);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(0, 0) == 6);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(1, 0) == 4);
@@ -321,8 +317,6 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.cumul_nbr_of_indiv_per_deme() == std::vector<int>{0, 2, 4});
         REQUIRE(plane_3d_vec.nbr_allele(1, 0) == 3);
         REQUIRE(plane_3d_vec.allele_state(1, 0) == std::map<int, int>{{1, 5}, {2, 5}, {3, 2}});
-        REQUIRE(plane_3d_vec.state_min() == 1);
-        REQUIRE(plane_3d_vec.state_max() == 3);
 
         std::vector<int> result = {1, 2, 1, 1, 1, 3, 2, 3, 1, 1, 2, 1, 1, 1, 1, 2, 1, 3, 2, 3, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 2, 3, 1, 3, 2, 3};
         REQUIRE(plane_3d_vec.get_plane_vec() == result);
@@ -347,8 +341,6 @@ TEST_CASE("diploid_data_plane_vec_test")
 
         REQUIRE(plane_3d_vec.nbr_allele(1, 0) == 3);
         REQUIRE(plane_3d_vec.allele_state(1, 0) == std::map<int, int>{{1, 5}, {2, 4}, {3, 2}});
-        REQUIRE(plane_3d_vec.state_min() == 1);
-        REQUIRE(plane_3d_vec.state_max() == 3);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(0, 0) == 12);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(1, 0) == 11);

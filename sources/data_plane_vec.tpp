@@ -99,8 +99,6 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
     Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme.resize(Nbr_of_chr);
     Nomiss_per_indiv_per_loc.resize(Nbr_of_indiv_tot, bin_vec(Nbr_of_locus));
 
-    //WARNING : Be sure than min state < 2 ^ 16
-    Allele_state_bound = std::array<int, 2>{1 << 16, 0};
     Polymorph_locus_per_chr.resize(Nbr_of_chr);
 
     int locus_general = 0;
@@ -138,14 +136,6 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
                         }
                         else
                         {
-                            if (value < Allele_state_bound.at(0))
-                            {
-                                Allele_state_bound.at(0) = value;
-                            }
-                            if (value > Allele_state_bound.at(1))
-                            {
-                                Allele_state_bound.at(1) = value;
-                            }
                             //emplace return a pair consisting of an iterator to the inserted element (or element already in place) and a bool denoting whether the insertion took place
                             auto pair = temp_count_allele_state.emplace(value, 1);
                             if (!pair.second)

@@ -242,11 +242,25 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result)
 void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
 {
     //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
-    //sort by dist-locus
+    //sort by dist-locus and by dist-deme
     std::sort(result.begin(), result.end(),
               [](auto const &a, auto const &b)
               {
-                  return (a.at(1) < b.at(1));
+                  if (a.at(1) < b.at(1))
+                  {
+                      return true;
+                  }
+                  else
+                  {
+                      if (a.at(1) == b.at(1))
+                      {
+                          return a.at(0) < b.at(0);
+                      }
+                      else
+                      {
+                          return false;
+                      }
+                  }
               });
 
     std::vector<std::string> head;
@@ -259,24 +273,37 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
 
     gss::print_output("./eta_exp_regr.txt", head, "over");
 
-    auto eta_by_chr_dist = std::vector<std::array<double, 2>>{};
-    int num_pt = 0;
+    auto eta_by_chr_dist = std::vector<std::array<double, 3>>{};
+    double num_pt = 0;
     double dist_chr = result[0].at(1);
+    double dist_geo = result[0].at(0);
+    double eta = 0;
 
     for (auto const &values : result)
     {
         if (dist_chr == values.at(1))
         {
-            num_pt += 1;
-            auto eta = (values.at(2) - values.at(3)) / values.at(4);
-            eta_by_chr_dist.push_back({values.at(0), eta});
+            if (dist_geo == values.at(0))
+            {
+                eta += (values.at(2) - values.at(3)) / values.at(4);
+                num_pt += 1;
+            }
+            else
+            {
+                eta_by_chr_dist.push_back({values.at(0), eta, num_pt});
+                eta = 0;
+                num_pt = 0;
+                dist_geo = values.at(0);
+            }
         }
         else
         {
             auto temp = exp_regr(eta_by_chr_dist);
-            //std::cout << dist_chr << " " << temp.at(0) << " " << temp.at(1) << " " << temp.at(2) << std::endl;
             gss::print_output<double>("./eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
             dist_chr = values.at(1);
+            dist_geo = values.at(0);
+            eta = 0;
+            num_pt = 0;
             eta_by_chr_dist.resize(0);
         }
     }
@@ -287,8 +314,8 @@ void output_sfs_stat_files(std::map<int, double> const &result)
     std::vector<std::string> head;
     head.reserve(2);
 
-    head.emplace_back("Locis count");
-    head.emplace_back("Allele count class");
+    head.emplace_back("Loci_count");
+    head.emplace_back("Allele_count_class");
 
     gss::print_output("./SFS.txt", head, "over");
 

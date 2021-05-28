@@ -112,16 +112,6 @@ std::map<int, int> const &data_plane_vec_c::allele_state(int chr, int locus) con
     return Allele_state_per_chr_per_loc[chr][locus];
 }
 
-int data_plane_vec_c::state_min() const
-{
-    return Allele_state_bound.at(0);
-}
-
-int data_plane_vec_c::state_max() const
-{
-    return Allele_state_bound.at(1);
-}
-
 std::vector<int> const &data_plane_vec_c::polymorph_locus(int chr) const
 {
     return Polymorph_locus_per_chr[chr];

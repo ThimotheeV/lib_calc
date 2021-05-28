@@ -17,4 +17,4 @@ std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &d
 //Continous habitat isolation by distance
 std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c const &data_plane_vec);
 //Exp regresssion
-std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_geo_eta);
+std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_geo_eta_weights);

@@ -430,8 +430,9 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
 
 #include "stdafx.h"
 #include "interpolation.h"
+#include "common_tools.hpp"
 using namespace alglib;
-std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_geo_eta)
+std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_geo_eta_weights)
 {
     //a+ b * (1-exp(-b_g * Dist_btw_deme))
     //c[0] a ; c[1] = b ; c[2] = b_g ; x[0] = Dist_btw_deme
@@ -485,46 +486,46 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_ge
     // by f(x) = a+ b * (1-exp(-c *x)
     // using function value, gradient and Hessian (with respect to a, b, c)
     std::string param_str = "[0, ";
-    double min = dist_geo_eta[0].at(1);
-    double max = dist_geo_eta[0].at(1);
+    double mini = dist_geo_eta_weights[0].at(1);
+    double maxi = dist_geo_eta_weights[0].at(1);
 
-    for (auto value : dist_geo_eta)
+    for (auto value : dist_geo_eta_weights)
     {
-        if (value.at(1) > max)
-        {
-            max = value.at(1);
-        }
-        if (value.at(1) < min)
-        {
-            min = value.at(1);
-        }
+        maxi = max(value.at(1), maxi);
+        mini = min(value.at(1), mini);
     }
-    double range = max - min;
+    double range = maxi - mini;
     param_str += std::to_string(range);
     param_str += ", ";
-    param_str += std::to_string(log(2) / dist_geo_eta.size());
+    param_str += std::to_string(log(2) / dist_geo_eta_weights.size());
     param_str += "]";
 
     real_1d_array param = param_str.c_str();
 
     std::string dist_geo_str = "[[";
     std::string eta_str = "[";
+    std::string weights_str = "[";
 
-    for (int i = 0; i < dist_geo_eta.size() - 1; ++i)
+    for (int i = 0; i < dist_geo_eta_weights.size() - 1; ++i)
     {
-        dist_geo_str += std::to_string(dist_geo_eta[i].at(0));
+        dist_geo_str += std::to_string(dist_geo_eta_weights[i].at(0));
         dist_geo_str += "],[";
-        eta_str += std::to_string(dist_geo_eta[i].at(1));
+        eta_str += std::to_string(dist_geo_eta_weights[i].at(1));
         eta_str += ", ";
+        weights_str += std::to_string(dist_geo_eta_weights[i].at(2));
+        weights_str += ", ";
     }
 
-    dist_geo_str += std::to_string(dist_geo_eta[dist_geo_eta.size() - 1].at(0));
+    dist_geo_str += std::to_string(dist_geo_eta_weights[dist_geo_eta_weights.size() - 1].at(0));
     dist_geo_str += "]]";
-    eta_str += std::to_string(dist_geo_eta[dist_geo_eta.size() - 1].at(1));
+    eta_str += std::to_string(dist_geo_eta_weights[dist_geo_eta_weights.size() - 1].at(1));
     eta_str += "]";
+    weights_str += std::to_string(dist_geo_eta_weights[dist_geo_eta_weights.size() - 1].at(2));
+    weights_str += "]";
 
     real_2d_array dist_geo = dist_geo_str.c_str();
     real_1d_array eta = eta_str.c_str();
+    real_1d_array weights = weights_str.c_str();
 
     double epsx = 0.000001;
     ae_int_t maxits = 0;
@@ -532,8 +533,8 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 2>> const &dist_ge
     lsfitstate state;
     lsfitreport rep;
 
-    // Fitting without weights
-    lsfitcreatefgh(dist_geo, eta, param, state);
+    // Fitting with weights
+    lsfitcreatewfgh(dist_geo, eta, weights, param, state);
     lsfitsetcond(state, epsx, maxits);
     alglib::lsfitfit(state, function_cx_1_func, function_cx_1_grad, function_cx_1_hess);
     lsfitresults(state, info, param, rep);
