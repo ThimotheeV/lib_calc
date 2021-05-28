@@ -1,13 +1,13 @@
-Qr =
+Qr = true
 
-Hobs =
-Hexp =
+Hobs = true
+Hexp = true
 
-F_stat =
+F_stat = true
 
 Nbr_geo_dist_class = 100
 
 Data_filename = ./test.txt
 Genetic_map_name = ./test.map
 
-Eta =
+Eta = true

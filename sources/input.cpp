@@ -89,32 +89,32 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
         }
         if (stat_name == "hobs")
         {
-            Hobs = true;
+            Hobs = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "hexp")
         {
-            Hexp = true;
+            Hexp = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "nballele")
         {
-            Nb_allele = true;
+            Nb_allele = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "var")
         {
-            Var = true;
+            Var = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "mgw")
         {
-            MGW = true;
+            MGW = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "sfs")
         {
-            SFS = true;
+            SFS = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "mingene")
@@ -125,37 +125,37 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
         }
         if (stat_name == "fstat")
         {
-            F_stat = true;
+            F_stat = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "qstat")
         {
-            Q_stat = true;
+            Q_stat = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "qr")
         {
-            Qr = true;
+            Qr = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "ar")
         {
-            Ar = true;
+            Ar = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "er")
         {
-            Er = true;
+            Er = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "eta")
         {
-            Eta = true;
+            Eta = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "missingdata")
         {
-            Missing_data = true;
+            Missing_data = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
         if (stat_name == "nbrgeodistclass")
