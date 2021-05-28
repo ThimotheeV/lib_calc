@@ -159,6 +159,39 @@ std::vector<std::string> gss::slice_by_char(std::string const &str, char sep)
     return result;
 }
 
+std::vector<std::string> gss::slice_by_tab_or_space(std::string const &str)
+{
+    std::vector<std::string> result;
+    result.reserve(str.size());
+
+    std::size_t beg = 0;
+    std::size_t pos = beg;
+
+    while (pos < str.size())
+    {
+        while ((str[pos] == '\t') || (str[pos] == ' '))
+        {
+            ++pos;
+        }
+
+        beg = pos;
+
+        while (((str[pos] != '\t') && (str[pos] != ' ')) && (pos < str.size()))
+        {
+            ++pos;
+        }
+        //Handle sep as last element before end of line
+        if ((str[beg] != '\n') && (str[beg] != '\r') && (beg != pos))
+        {
+            auto temp = str.substr(beg, pos - beg);
+            result.push_back(temp);
+        }
+    }
+
+    result.shrink_to_fit();
+    return result;
+}
+
 std::vector<std::string> gss::slice_by_comma_semicolon(std::string const &str)
 {
     std::vector<std::string> result;

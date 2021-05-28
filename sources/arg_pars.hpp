@@ -13,6 +13,7 @@ std::string replace_spaces_tab_in_range_by_comma(std::string str, int pos_beg, i
 std::string replace_spaces_tab_underscores_by_comma(std::string str);
 std::string str_tolower(std::string str);
 std::vector<std::string> slice_by_char(std::string const &str, char sep);
+std::vector<std::string> slice_by_tab_or_space(std::string const &str);
 std::vector<std::string> slice_by_comma_semicolon(std::string const &str);
 std::vector<std::string> slice_unix_windows_file_by_line(std::string const &str);
 std::vector<std::vector<std::string>> slice_str_vec_by_string(std::vector<std::string> const &vec_str, std::string const &sep);

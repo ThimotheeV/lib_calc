@@ -45,6 +45,19 @@ TEST_CASE("input_handler_test")
         REQUIRE(result[1] == "  0201 003003 0102 0302 1011 01");
     }
 
+    SECTION("slice_by_tab_or_space")
+    {
+        auto result = slice_by_tab_or_space(" 0201\t003003 0102   0302 1011 01 ");
+
+        REQUIRE(result.size() == 6);
+        REQUIRE(result[0] == "0201");
+        REQUIRE(result[1] == "003003");
+        REQUIRE(result[2] == "0102");
+        REQUIRE(result[3] == "0302");
+        REQUIRE(result[4] == "1011");
+        REQUIRE(result[5] == "01");
+    }
+
     SECTION("trim_unix_file")
     {
         auto result = slice_unix_windows_file_by_line("line 1\n\nline 2\n\n");

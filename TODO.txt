@@ -1,6 +1,5 @@
 - Urgent
 
-Créer un fonction slice_by_tab_or_space
 genepop_input_c sort alphanumériquement voir TODO
 map nom de chr/index dans la lib calc
 Implémenter la gestion de la ploidy
@@ -24,4 +23,5 @@ Faire des calcules à la compilation
 Faire version ligne de commande
 Affichage "Run Complete"
 Passer le selecteur en "Stat = True/ False" avec Stat possiblement non présente
+Créer un fonction slice_by_tab_or_space
 
