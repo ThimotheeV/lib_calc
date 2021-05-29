@@ -40,14 +40,14 @@ TEST_CASE("haplo_genepop_input_test")
         REQUIRE(input.Genotype[4][9].at(9) == std::array{46});
     }
 
-    SECTION("Dist_btw_deme")
+    SECTION("Geo_dist_btw_deme")
     {
         genepop_input_c<1> input("genotype_genedeme_format.txt");
-        REQUIRE(input.Dist_btw_deme[0][0] == Approx(0).margin(0.0001));
-        REQUIRE(input.Dist_btw_deme[0][1] == Approx(1).margin(0.0001));
-        REQUIRE(input.Dist_btw_deme[0][2] == Approx(2).margin(0.0001));
-        REQUIRE(input.Dist_btw_deme[0][3] == Approx(3).margin(0.0001));
-        REQUIRE(input.Dist_btw_deme[0][4] == Approx(4).margin(0.0001));
+        REQUIRE(input.Geo_dist_btw_deme[0][0] == Approx(0).margin(0.0001));
+        REQUIRE(input.Geo_dist_btw_deme[0][1] == Approx(1).margin(0.0001));
+        REQUIRE(input.Geo_dist_btw_deme[0][2] == Approx(2).margin(0.0001));
+        REQUIRE(input.Geo_dist_btw_deme[0][3] == Approx(3).margin(0.0001));
+        REQUIRE(input.Geo_dist_btw_deme[0][4] == Approx(4).margin(0.0001));
     }
 
     SECTION("regres_ar_without_missing_value")

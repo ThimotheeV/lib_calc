@@ -5,13 +5,39 @@ template <std::size_t ploidy>
 data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
 {
     Ploidy = ploidy;
-    //Dist matrix locus
-    Dist_btw_loc = genepop_data.Dist_btw_loc;
-    Dist_class_btw_loc = genepop_data.Dist_class_btw_loc;
-    Nbr_chr_dist_class = genepop_data.Nbr_chr_dist_class;
 
+    //Chr dist and chr class dist between deme
     Nbr_of_locus = genepop_data.Genotype[0][0].size();
-    if (Dist_btw_loc.size() == 0)
+    Nbr_of_chr = genepop_data.Chr_dist_btw_loc.size();
+    Chr_dist_class_nbr = genepop_data.Chr_dist_class_nbr;
+
+    Chr_dist_btw_loc = std::vector<double>{};
+    if (genepop_data.Chr_dist_btw_loc.size() > 0)
+    {
+        Nbr_of_loc_per_chr.resize(Nbr_of_chr);
+        Cumul_nbr_of_loc_per_chr.resize(Nbr_of_chr);
+        Chr_dist_btw_loc.resize(Nbr_of_locus * Nbr_of_locus);
+
+        int loc_tot_count = 0;
+        int loc_cumul_per_chr = 0;
+        for (auto chr = 0; chr < Nbr_of_chr; ++chr)
+        {
+            int nbr_of_loc = genepop_data.Chr_dist_btw_loc[chr].size();
+            Nbr_of_loc_per_chr[chr] = nbr_of_loc;
+            Cumul_nbr_of_loc_per_chr[chr] = loc_cumul_per_chr;
+            loc_cumul_per_chr += nbr_of_loc;
+
+            for (auto loc1 = 0; loc1 < nbr_of_loc; ++loc1)
+            {
+                for (auto loc2 = 0; loc2 < nbr_of_loc; ++loc2)
+                {
+                    Chr_dist_btw_loc[loc_tot_count] = genepop_data.Chr_dist_btw_loc[chr][loc1][loc2];
+                    ++loc_tot_count;
+                }
+            }
+        }
+    }
+    else // If no map
     {
         //When locus are independant, each chr have one locus on it
         Nbr_of_chr = Nbr_of_locus;
@@ -25,50 +51,71 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
             ++cumul;
         }
     }
-    else
-    {
-        Nbr_of_chr = Dist_btw_loc.size();
-        Nbr_of_loc_per_chr.resize(Nbr_of_chr);
-        Cumul_nbr_of_loc_per_chr.resize(Nbr_of_chr);
-        int cumul = 0;
-        for (int i = 0; i < Nbr_of_chr; ++i)
-        {
-            int nbr_of_loc = Dist_btw_loc[i].size();
-            Nbr_of_loc_per_chr[i] = nbr_of_loc;
-            Cumul_nbr_of_loc_per_chr[i] = cumul;
-            cumul += nbr_of_loc;
-        }
-    }
 
-    //size of different part
-    Nbr_of_deme = genepop_data.Genotype.size();
-    Dist_class_nbr = genepop_data.Nbr_geo_dist_class;
-    if (genepop_data.Dist_btw_deme.size() > 0)
+    Chr_dist_class_btw_loc = std::vector<int>{};
+    if (genepop_data.Chr_dist_class_btw_loc.size() > 0)
     {
-        Dist_btw_deme = genepop_data.Dist_btw_deme;
-    }
-    else
-    {
-        //If no genepop_data.Dist_btw_deme; Dist_btw_deme become a identity "inverse" matrix
-        Dist_btw_deme.resize(Nbr_of_deme);
-        for (auto deme1 = 0; deme1 < Nbr_of_deme; ++deme1)
+        Chr_dist_class_btw_loc.resize(Nbr_of_locus * Nbr_of_locus);
+        int count = 0;
+        for (auto chr = 0; chr < Nbr_of_chr; ++chr)
         {
-            Dist_btw_deme[deme1].resize(Nbr_of_deme);
-            for (auto deme2 = 0; deme2 < Nbr_of_deme; ++deme2)
+            for (auto loc1 = 0; loc1 < genepop_data.Chr_dist_class_btw_loc[chr].size(); ++loc1)
             {
-                Dist_btw_deme[deme1][deme2] = (deme1 != deme2);
+                for (auto loc2 = 0; loc2 < genepop_data.Chr_dist_class_btw_loc[chr].size(); ++loc2)
+                {
+                    Chr_dist_class_btw_loc[count] = genepop_data.Chr_dist_class_btw_loc[chr][loc1][loc2];
+                    ++count;
+                }
             }
         }
     }
 
-    if (genepop_data.Dist_class_btw_deme.size() > 0)
+    // Calc around loc and chr
+
+    //Geo dist and geo class dist between deme
+    Nbr_of_deme = genepop_data.Genotype.size();
+    Geo_dist_class_nbr = genepop_data.Geo_dist_class_nbr;
+    if (genepop_data.Geo_dist_btw_deme.size() > 0)
     {
-        Dist_class_btw_deme = genepop_data.Dist_class_btw_deme;
+        Geo_dist_btw_deme.resize(Nbr_of_deme * Nbr_of_deme);
+        int count = 0;
+        for (auto deme1 = 0; deme1 < Nbr_of_deme; ++deme1)
+        {
+            for (auto deme2 = 0; deme2 < Nbr_of_deme; ++deme2)
+            {
+                Geo_dist_btw_deme[count] = genepop_data.Geo_dist_btw_deme[deme1][deme2];
+                ++count;
+            }
+        }
     }
-    //If no genepop_data.Dist_class_btw_deme (mean no genepop_data.Dist_btw_deme); Dist_class_btw_deme = become a "inverse" identity matrix;
     else
     {
-        Dist_btw_deme = genepop_data.Dist_btw_deme;
+        //If no genepop_data.Geo_dist_btw_deme; Geo_dist_btw_deme become a identity "inverse" matrix
+        Geo_dist_btw_deme.resize(Nbr_of_deme * Nbr_of_deme);
+        int count = 0;
+        for (auto deme1 = 0; deme1 < Nbr_of_deme; ++deme1)
+        {
+            for (auto deme2 = 0; deme2 < Nbr_of_deme; ++deme2)
+            {
+                Geo_dist_btw_deme[count] = (deme1 != deme2);
+                ++count;
+            }
+        }
+    }
+
+    Geo_dist_class_btw_deme = std::vector<int>{};
+    if (genepop_data.Geo_dist_class_btw_deme.size() > 0)
+    {
+        Geo_dist_class_btw_deme.resize(Geo_dist_btw_deme.size());
+        int count = 0;
+        for (auto deme1 = 0; deme1 < Nbr_of_deme; ++deme1)
+        {
+            for (auto deme2 = 0; deme2 < Nbr_of_deme; ++deme2)
+            {
+                Geo_dist_class_btw_deme[count] = genepop_data.Geo_dist_class_btw_deme[deme1][deme2];
+                ++count;
+            }
+        }
     }
 
     Nbr_of_indiv_per_deme.reserve(Nbr_of_deme);
@@ -90,33 +137,28 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
 
     //Nbr indiv * nbr locus
     Plane_vec.reserve(Nbr_of_indiv_tot * Nbr_of_locus * Ploidy);
-    Allele_state_per_chr_per_loc.resize(Nbr_of_chr);
+    Allele_state_per_chr_per_loc.reserve(Nbr_of_locus);
     //To calc nc for estimate with missing values
-    Nomiss_nbr_of_deme_per_chr_per_loc.resize(Nbr_of_chr);
-    Nomiss_nbr_of_gene_per_chr_per_loc.resize(Nbr_of_chr);
-    Nomiss_nbr_of_gene_per_chr_per_loc_per_deme.resize(Nbr_of_chr);
+    Nomiss_nbr_of_deme_per_chr_per_loc.reserve(Nbr_of_locus);
+    Nomiss_nbr_of_gene_per_chr_per_loc.reserve(Nbr_of_locus);
+    Nomiss_nbr_of_gene_per_chr_per_loc_per_deme.reserve(Nbr_of_locus * Nbr_of_deme);
     Nomiss_nbr_of_indiv_per_loc.resize(Nbr_of_locus);
-    Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme.resize(Nbr_of_chr);
+    Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme.reserve(Nbr_of_locus * Nbr_of_deme);
     Nomiss_per_indiv_per_loc.resize(Nbr_of_indiv_tot, bin_vec(Nbr_of_locus));
 
-    Polymorph_locus_per_chr.resize(Nbr_of_chr);
+    Polymorph_locus_list_per_chr.resize(Nbr_of_chr);
 
     int locus_general = 0;
 
     for (int chr = 0; chr < Nbr_of_chr; ++chr)
     {
-        Allele_state_per_chr_per_loc[chr].resize(Nbr_of_loc_per_chr[chr]);
-        Nomiss_nbr_of_deme_per_chr_per_loc[chr].resize(Nbr_of_loc_per_chr[chr]);
-        Nomiss_nbr_of_gene_per_chr_per_loc[chr].resize(Nbr_of_loc_per_chr[chr]);
-        Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr].resize(Nbr_of_loc_per_chr[chr]);
-        Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr].resize(Nbr_of_loc_per_chr[chr]);
-        Polymorph_locus_per_chr[chr].reserve(Nbr_of_loc_per_chr[chr]);
+        Polymorph_locus_list_per_chr[chr].reserve(Nbr_of_loc_per_chr[chr]);
 
         for (int locus = 0; locus < Nbr_of_loc_per_chr[chr]; ++locus)
         {
             std::map<int, int> temp_count_allele_state;
-            Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus].reserve(Nbr_of_deme);
-            Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus].reserve(Nbr_of_deme);
+            Nomiss_nbr_of_deme_per_chr_per_loc.push_back(0);
+            Nomiss_nbr_of_gene_per_chr_per_loc.push_back(0);
             auto indiv_general = 0;
             for (int deme = 0; deme < Nbr_of_deme; ++deme)
             {
@@ -154,27 +196,21 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
                     ++indiv_general;
                 }
                 //To calc nc for estimate with missing values
-                if (nomiss_nbr_of_gene_in_deme != 0)
-                {
-                    Nomiss_nbr_of_indiv_per_loc[locus_general] += nomiss_nbr_of_indiv_in_deme;
-                    Nomiss_nbr_of_deme_per_chr_per_loc[chr][locus] += 1;
-                    Nomiss_nbr_of_gene_per_chr_per_loc[chr][locus] += nomiss_nbr_of_gene_in_deme;
-                    Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus].push_back(nomiss_nbr_of_gene_in_deme);
-                    Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus].push_back(nomiss_nbr_of_indiv_in_deme);
-                }
+                Nomiss_nbr_of_indiv_per_loc[locus_general] += nomiss_nbr_of_indiv_in_deme;
+                Nomiss_nbr_of_deme_per_chr_per_loc.back() += 1;
+                Nomiss_nbr_of_gene_per_chr_per_loc.back() += nomiss_nbr_of_gene_in_deme;
+                Nomiss_nbr_of_gene_per_chr_per_loc_per_deme.push_back(nomiss_nbr_of_gene_in_deme);
+                Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme.push_back(nomiss_nbr_of_indiv_in_deme);
             }
             if (temp_count_allele_state.size() > 1)
             {
-                Polymorph_locus_per_chr[chr].push_back(locus);
+                Polymorph_locus_list_per_chr[chr].push_back(locus);
             }
 
-            Allele_state_per_chr_per_loc[chr][locus] = std::move(temp_count_allele_state);
-            //size = number of non void deme
-            Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus].shrink_to_fit();
-            Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus].shrink_to_fit();
+            Allele_state_per_chr_per_loc.push_back(std::move(temp_count_allele_state));
 
             ++locus_general;
         }
-        Polymorph_locus_per_chr[chr].shrink_to_fit();
+        Polymorph_locus_list_per_chr[chr].shrink_to_fit();
     }
 }

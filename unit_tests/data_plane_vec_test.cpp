@@ -27,9 +27,9 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.nbr_allele(1, 0) == 2);
         REQUIRE(plane_3d_vec.allele_state(1, 0) == std::map<int, int>{{1, 2}, {2, 4}});
 
-        REQUIRE(plane_3d_vec.polymorph_locus(0) == std::vector<int>{0});
-        REQUIRE(plane_3d_vec.polymorph_locus(1) == std::vector<int>{0});
-        REQUIRE(plane_3d_vec.polymorph_locus(2) == std::vector<int>{0});
+        REQUIRE(plane_3d_vec.polymorph_locus_list(0) == std::vector<int>{0});
+        REQUIRE(plane_3d_vec.polymorph_locus_list(1) == std::vector<int>{0});
+        REQUIRE(plane_3d_vec.polymorph_locus_list(2) == std::vector<int>{0});
 
         std::vector<int> result = {1, 1, 3, 3, 1, 2, 1, 2, 1, 2, 2, 2, 1, 3, 3, 2, 3, 2};
         REQUIRE(plane_3d_vec.get_plane_vec() == result);
@@ -58,22 +58,14 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(1, 0) == 4);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(2, 0) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(0, 0) == std::vector<int>{2, 2, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(0, 0, 0) == 2);
-
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(1, 0) == std::vector<int>{2, 2});
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(2, 0) == std::vector<int>{1, 2, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(2, 0, 2) == 2);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(0, 0) == 6);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(1, 0) == 4);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(2, 0) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(0, 0) == std::vector<int>{2, 2, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(0, 0, 0) == 2);
-
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(1, 0) == std::vector<int>{2, 2});
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(2, 0) == std::vector<int>{1, 2, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(2, 0, 2) == 2);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_deme(0, 0) == 3);
@@ -346,22 +338,14 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(1, 0) == 11);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(2, 0) == 10);
 
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(0, 0) == std::vector<int>{4, 4, 4});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(0, 0, 0) == 4);
-
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(1, 0) == std::vector<int>{4, 3, 4});
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_gene_per_deme(2, 0) == std::vector<int>{4, 4, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_gene(2, 0, 2) == 2);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(0, 0) == 6);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(1, 0) == 5);
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(2, 0) == 5);
 
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(0, 0) == std::vector<int>{2, 2, 2});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(0, 0, 0) == 2);
-
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(1, 0) == std::vector<int>{2, 1, 2});
-        REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv_per_deme(2, 0) == std::vector<int>{2, 2, 1});
         REQUIRE(plane_3d_vec.nomiss_nbr_of_indiv(2, 0, 2) == 1);
 
         REQUIRE(plane_3d_vec.nomiss_nbr_of_deme(0, 0) == 3);
@@ -590,8 +574,8 @@ TEST_CASE("Indiv_feat_test")
     SECTION("double geo_dist_btw_gene(int gene_index1, int gene_index2)")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus, 3 chr
@@ -630,8 +614,8 @@ TEST_CASE("Indiv_feat_test")
     SECTION("int geo_dist_class_btw_gene(int gene_index1, int gene_index2)")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_class_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus, 3 chr

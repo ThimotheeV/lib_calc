@@ -19,14 +19,14 @@ class data_plane_vec_c
 protected:
     std::vector<int> Plane_vec;
     std::vector<feature_c> Indiv_feat;
-    std::vector<std::vector<double>> Dist_btw_deme;
-    std::vector<std::vector<int>> Dist_class_btw_deme;
-    int Dist_class_nbr = 0;
+    std::vector<double> Geo_dist_btw_deme;
+    std::vector<int> Geo_dist_class_btw_deme;
+    int Geo_dist_class_nbr = 0;
 
     //Chr<matrix(loc_i, loc_j)>
-    std::vector<std::vector<std::vector<double>>> Dist_btw_loc;
-    std::vector<std::vector<std::vector<int>>> Dist_class_btw_loc;
-    int Nbr_chr_dist_class = 0;
+    std::vector<double> Chr_dist_btw_loc;
+    std::vector<int> Chr_dist_class_btw_loc;
+    int Chr_dist_class_nbr = 0;
 
     //Locus, deme
     int Nbr_of_deme{0};
@@ -40,19 +40,19 @@ protected:
     std::vector<int> Nbr_of_loc_per_chr;
     std::vector<int> Cumul_nbr_of_loc_per_chr;
     //Complete indiv sampled
-    std::vector<std::vector<int>> Nomiss_nbr_of_gene_per_chr_per_loc;
+    std::vector<int> Nomiss_nbr_of_gene_per_chr_per_loc;
     //Work with absolute locus index
     std::vector<int> Nomiss_nbr_of_indiv_per_loc;
-    std::vector<std::vector<int>> Nomiss_nbr_of_deme_per_chr_per_loc;
+    std::vector<int> Nomiss_nbr_of_deme_per_chr_per_loc;
     //for each indiv => if locus have (ploidy) data present (absolute locus index)
     std::vector<bin_vec> Nomiss_per_indiv_per_loc;
     //[chr][locus][deme]
-    std::vector<std::vector<std::vector<int>>> Nomiss_nbr_of_gene_per_chr_per_loc_per_deme;
-    std::vector<std::vector<std::vector<int>>> Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme;
+    std::vector<int> Nomiss_nbr_of_gene_per_chr_per_loc_per_deme;
+    std::vector<int> Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme;
     //Allele state resum by loc (state, nbr of allele in this state)
-    std::vector<std::vector<std::map<int, int>>> Allele_state_per_chr_per_loc;
+    std::vector<std::map<int, int>> Allele_state_per_chr_per_loc;
     //Chr<Indent of polymorphic locus>
-    std::vector<std::vector<int>> Polymorph_locus_per_chr;
+    std::vector<std::vector<int>> Polymorph_locus_list_per_chr;
     int Ploidy{-1};
 
 public:
@@ -83,20 +83,18 @@ public:
     feature_c const &get_feature(int indiv);
 
     int nomiss_nbr_of_gene(int chr, int locus) const;
+    int nomiss_nbr_of_gene(int chr, int locus, int deme) const;
     //in haploid data, indiv = gene ; in diploid data, indiv = 2 genes
     //absolute locus index
     int nomiss_nbr_of_indiv(int locus) const;
     // chr relative locus index
     int nomiss_nbr_of_indiv(int chr, int locus) const;
-    std::vector<int> const &nomiss_nbr_of_gene_per_deme(int chr, int locus) const;
-    int nomiss_nbr_of_gene(int chr, int locus, int deme) const;
-    std::vector<int> const &nomiss_nbr_of_indiv_per_deme(int chr, int locus) const;
     int nomiss_nbr_of_indiv(int chr, int locus, int deme) const;
     int nomiss_nbr_of_deme(int chr, int locus) const;
 
     int nbr_allele(int chr, int locus) const;
     std::map<int, int> const &allele_state(int chr, int locus) const;
-    std::vector<int> const &polymorph_locus(int chr) const;
+    std::vector<int> const &polymorph_locus_list(int chr) const;
 
     std::vector<int> const &get_plane_vec();
     int operator[](int i) const;

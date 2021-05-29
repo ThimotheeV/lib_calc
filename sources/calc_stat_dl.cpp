@@ -239,7 +239,7 @@ std::vector<std::array<double, 5>> calc_eta(data_plane_vec_c const &data_plane_v
     std::vector<std::array<double, 5>> result;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus_list(chr);
         //TODO : Need to be handle up to avoid general throws
         if (poly_loc.size() < 2)
         {
@@ -278,7 +278,7 @@ std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &d
     std::vector<std::array<double, 5>> result;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus_list(chr);
         //TODO : Need to be handle up to avoid general throws
         if (poly_loc.size() < 2)
         {
@@ -349,7 +349,7 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
     std::vector<std::array<double, 5>> result;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus(chr);
+        std::vector<int> const &poly_loc = data_plane_vec.polymorph_locus_list(chr);
         //TODO : Need to be handle up to avoid general throws
         if (poly_loc.size() < 2)
         {
@@ -434,8 +434,8 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
 using namespace alglib;
 std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_geo_eta_weights)
 {
-    //a+ b * (1-exp(-b_g * Dist_btw_deme))
-    //c[0] a ; c[1] = b ; c[2] = b_g ; x[0] = Dist_btw_deme
+    //a+ b * (1-exp(-b_g * Geo_dist_btw_deme))
+    //c[0] a ; c[1] = b ; c[2] = b_g ; x[0] = Geo_dist_btw_deme
     auto function_cx_1_func = [](const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
     {
         // this callback calculates f(c,x)=c[0]+ c[1] * (1-exp(-c[2] *x)
@@ -480,6 +480,19 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_ge
         hess[2][0] = 0;
         hess[2][1] = x[0] * exp(-c[2] * x[0]);
         hess[2][2] = -c[1] * pow(x[0], 2) * exp(-c[2] * x[0]);
+
+        // std::cout << "Gradient" << std::endl;
+        // std::cout << "[a] " << grad[0] << std::endl;
+        // std::cout << "[b] " << grad[1] << std::endl;
+        // std::cout << "[c] " << grad[2] << std::endl;
+
+        // std::cout << "Hessian Matrix" << std::endl;
+        // std::cout << "[a,a] " << hess[0][0] << std::endl;
+        // std::cout << "[a,b] " << hess[0][1] << std::endl;
+        // std::cout << "[a,c] " << hess[0][2] << std::endl;
+        // std::cout << "[b,b] " << hess[1][1] << std::endl;
+        // std::cout << "[b,c] " << hess[2][1] << std::endl;
+        // std::cout << "[c,c] " << hess[2][2] << std::endl;
     };
 
     // In this example we demonstrate exponential fitting
@@ -500,6 +513,7 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_ge
     param_str += std::to_string(log(2) / dist_geo_eta_weights.size());
     param_str += "]";
 
+    //std::cout << "Param start : " << param_str << std::endl;
     real_1d_array param = param_str.c_str();
 
     std::string dist_geo_str = "[[";

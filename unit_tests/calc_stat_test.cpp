@@ -97,7 +97,7 @@ TEST_CASE("calc_Hnei_calc_stat_test")
     SECTION("calc_Hnei one locus")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 3 indiv, 1 locus
@@ -113,7 +113,7 @@ TEST_CASE("calc_Hnei_calc_stat_test")
     SECTION("calc_Hnei multi locus")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 3 indiv, 3 locus
@@ -176,7 +176,7 @@ TEST_CASE("calc_MGW_calc_stat_test")
     SECTION("calc_MGW one locus")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 3 indiv, 1 locus
@@ -192,7 +192,7 @@ TEST_CASE("calc_MGW_calc_stat_test")
     SECTION("calc_MGW multi locus")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 3 indiv, 3 locus
@@ -211,8 +211,8 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr by locus with one indiv haploid per deme")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_class_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
         //3 deme, 1 indiv, 3 locus
@@ -240,8 +240,8 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr by locus without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_class_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -269,8 +269,8 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("qr without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_class_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -288,8 +288,8 @@ TEST_CASE("qr_all_loc_calc_stat_test")
     SECTION("haploid qr with diff deme size")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Nbr_geo_dist_class = 3;
-        genepop_input.Dist_class_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_class_nbr = 3;
+        genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
                                              {1, 0, 1},
                                              {2, 1, 0}};
         //3 deme, 2-1-3 indiv, 3 locus
@@ -310,7 +310,7 @@ TEST_CASE("ar_calc_stat_test")
     SECTION("diploid ar without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -335,7 +335,7 @@ TEST_CASE("ar_calc_stat_test")
     SECTION("diploid ar with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0}};
+        genepop_input.Geo_dist_btw_deme = {{0}};
         //1 deme, 4 indiv, 3 locus
         genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 2}}, {{1, 2}, {1, 0}, {1, 3}}, {{1, 1}, {2, 3}, {0, 3}}, {{2, 2}, {3, 3}, {3, 3}}}};
 
@@ -359,7 +359,7 @@ TEST_CASE("er_calc_stat_test")
     SECTION("simple er without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 1 indiv, 1 locus
@@ -384,7 +384,7 @@ TEST_CASE("er_calc_stat_test")
     SECTION("er without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2, 3},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2, 3},
                                        {1, 0, 1, 2},
                                        {2, 1, 0, 1},
                                        {3, 2, 1, 0}};
@@ -411,7 +411,7 @@ TEST_CASE("er_calc_stat_test")
     SECTION("er without missing value, bis")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -436,7 +436,7 @@ TEST_CASE("er_calc_stat_test")
     SECTION("diploid er with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0}};
+        genepop_input.Geo_dist_btw_deme = {{0}};
         //1 deme, 4 indiv, 3 locus
         genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 2}},
                                    {{1, 2}, {1, 0}, {1, 3}},
@@ -463,7 +463,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_probid_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_probid simple case")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 1 locus
@@ -483,7 +483,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_probid_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_probid without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2, 3},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2, 3},
                                        {1, 0, 1, 2},
                                        {2, 1, 0, 1},
                                        {3, 2, 1, 0}};
@@ -508,7 +508,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_indic_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_indic simple case")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 1 locus, 1 chr
@@ -528,7 +528,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_indic_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_indic without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2, 3},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2, 3},
                                        {1, 0, 1, 2},
                                        {2, 1, 0, 1},
                                        {3, 2, 1, 0}};
@@ -550,7 +550,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_indic_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_indic simple case with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 1 locus
@@ -570,7 +570,7 @@ TEST_CASE("Fstat_per_chr_by_loc_with_indic_calc_stat_test")
     SECTION("Fstat_per_chr_by_loc_with_indic with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2, 3},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2, 3},
                                        {1, 0, 1, 2},
                                        {2, 1, 0, 1},
                                        {3, 2, 1, 0}};
@@ -595,7 +595,7 @@ TEST_CASE("Fstat_genepop")
     SECTION("Fstat without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -625,7 +625,7 @@ TEST_CASE("Fstat_genepop")
     SECTION("Fstat with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus
@@ -658,7 +658,7 @@ TEST_CASE("SFS")
     SECTION("SFS 2 states without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //1 deme, 6 indiv, 3 locus; 1 ancestry state, 2 derived state
@@ -683,7 +683,7 @@ TEST_CASE("SFS")
     SECTION("SFS 2 states with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 2},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}};
         //1 deme, 3 indiv, 3 locus; 1 ancestry state, 2 derived state

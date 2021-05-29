@@ -40,7 +40,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
     SECTION("phi 2 diploid pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
         //2 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
@@ -132,7 +132,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
     SECTION("calc_phi_ij 2 diploid pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
         //2 deme, 3 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
@@ -159,9 +159,9 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     SECTION("eta 2 diploid pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
@@ -190,10 +190,10 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     SECTION("eta 3 diploid pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
                                        {1, 0, 1},
                                        {1, 1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
@@ -223,10 +223,10 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     SECTION("eta_q1_v 3 diploid pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
                                        {1, 0, 1},
                                        {1, 1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
@@ -256,10 +256,10 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     SECTION("eta 3 diploid 1 indiv_pop without missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
                                        {1, 0, 1},
                                        {1, 1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //3 deme, 1 indiv, 3 locus, 1 chr
@@ -292,9 +292,9 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     SECTION("eta 2 haploid pop without missing value")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
@@ -323,10 +323,10 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     SECTION("eta 3 haploid pop without missing value")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
                                        {1, 0, 1},
                                        {1, 1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
@@ -357,10 +357,10 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     SECTION("eta 3 haploid 1 indiv_pop without missing value")
     {
         genepop_input_c<1> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
                                        {1, 0, 1},
                                        {1, 1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //3 deme, 1 indiv, 3 locus, 1 chr
@@ -393,9 +393,9 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
     SECTION("eta 2 diploid pop with missing value")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
-        genepop_input.Dist_btw_loc = {{{0, 1, 2},
+        genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
                                        {1, 0, 1},
                                        {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
@@ -427,7 +427,7 @@ TEST_CASE("calc_eta corner case calc_stat_dl")
     SECTION("eta without difference")
     {
         genepop_input_c<2> genepop_input;
-        genepop_input.Dist_btw_deme = {{0, 1},
+        genepop_input.Geo_dist_btw_deme = {{0, 1},
                                        {1, 0}};
 
         //2 deme, 1 indiv, 2 locus

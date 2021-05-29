@@ -158,14 +158,14 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             Missing_data = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
-        if (stat_name == "nbrgeodistclass")
+        if (stat_name == "geodistclassnbr")
         {
-            Nbr_geo_dist_class = static_cast<int>(std::stod(line_pair_key_value[1]));
+            Geo_dist_class_nbr = static_cast<int>(std::stod(line_pair_key_value[1]));
             continue;
         }
-        if (stat_name == "nbrchrdistclass")
+        if (stat_name == "chrdistclassnbr")
         {
-            Nbr_chr_dist_class = static_cast<int>(std::stod(line_pair_key_value[1]));
+            Chr_dist_class_nbr = static_cast<int>(std::stod(line_pair_key_value[1]));
             continue;
         }
         throw std::invalid_argument("( Unknown keyworld : " + line + " from cmdline_settings.txt or glib_settings.txt. I exit. )");

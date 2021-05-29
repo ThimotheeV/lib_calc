@@ -11,7 +11,7 @@
 void output_stat_files(selector_input_c const &selec, result_c const &result)
 {
     std::vector<std::string> head;
-    head.reserve(20 + selec.Nbr_geo_dist_class + 2 + 2);
+    head.reserve(20 + selec.Geo_dist_class_nbr + 2 + 2);
 
     if (selec.Hobs)
     {
@@ -67,7 +67,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.Qr)
     {
-        for (int dist = 0; dist < selec.Nbr_geo_dist_class; ++dist)
+        for (int dist = 0; dist < selec.Geo_dist_class_nbr; ++dist)
         {
             std::string temp = "Q" + std::to_string(dist);
             head.emplace_back(temp);
@@ -94,7 +94,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     //for output
     std::vector<double> stats_run;
-    stats_run.reserve(20 + selec.Nbr_geo_dist_class + 2 + 2);
+    stats_run.reserve(20 + selec.Geo_dist_class_nbr + 2 + 2);
 
     if (selec.Hobs)
     {
@@ -150,7 +150,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.Qr)
     {
-        for (int dist = 0; dist < selec.Nbr_geo_dist_class; ++dist)
+        for (int dist = 0; dist < selec.Geo_dist_class_nbr; ++dist)
         {
             stats_run.emplace_back(result.Qr.at(dist));
         }
@@ -198,7 +198,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result)
     std::vector<std::string> head;
     head.reserve(6);
 
-    head.emplace_back("Dist_btw_deme");
+    head.emplace_back("Geo_dist_btw_deme");
     head.emplace_back("Dist_btw_locus_pb");
     head.emplace_back("Sum_Phi");
     head.emplace_back("Sum_Q1_join");
@@ -298,6 +298,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
         }
         else
         {
+            // std::cout<<"--------------------- Dist_btw_locus_pb : "<<dist_chr<<" ---------------------"<<std::endl;
             auto temp = exp_regr(eta_by_chr_dist);
             gss::print_output<double>("./eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
             dist_chr = values.at(1);

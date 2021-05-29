@@ -70,7 +70,11 @@ feature_c const &data_plane_vec_c::get_feature(int indiv)
 
 int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus) const
 {
-    return Nomiss_nbr_of_gene_per_chr_per_loc[chr][locus];
+    return Nomiss_nbr_of_gene_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
+}
+int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus, int deme) const
+{
+    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_deme + deme];
 }
 int data_plane_vec_c::nomiss_nbr_of_indiv(int locus) const
 {
@@ -80,41 +84,29 @@ int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus) const
 {
     return Nomiss_nbr_of_indiv_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
 }
-std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_gene_per_deme(int chr, int locus) const
-{
-    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus];
-}
-int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus, int deme) const
-{
-    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[chr][locus][deme];
-}
-std::vector<int> const &data_plane_vec_c::nomiss_nbr_of_indiv_per_deme(int chr, int locus) const
-{
-    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus];
-}
 int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus, int deme) const
 {
-    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[chr][locus][deme];
+    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_deme + deme];
 }
 int data_plane_vec_c::nomiss_nbr_of_deme(int chr, int locus) const
 {
-    return Nomiss_nbr_of_deme_per_chr_per_loc[chr][locus];
+    return Nomiss_nbr_of_deme_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
 }
 
 int data_plane_vec_c::nbr_allele(int chr, int locus) const
 {
-    return Allele_state_per_chr_per_loc[chr][locus].size();
+    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus].size();
 }
 
 //map(state, nbr of allele in this state)
 std::map<int, int> const &data_plane_vec_c::allele_state(int chr, int locus) const
 {
-    return Allele_state_per_chr_per_loc[chr][locus];
+    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
 }
 
-std::vector<int> const &data_plane_vec_c::polymorph_locus(int chr) const
+std::vector<int> const &data_plane_vec_c::polymorph_locus_list(int chr) const
 {
-    return Polymorph_locus_per_chr[chr];
+    return Polymorph_locus_list_per_chr[chr];
 }
 
 std::vector<int> const &data_plane_vec_c::get_plane_vec()
@@ -243,7 +235,7 @@ double data_plane_vec_c::geo_dist_btw_gene(int dpv_gene_index1, int dpv_gene_ind
     auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
     auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 
-    return Dist_btw_deme[deme_gen1][deme_gen2];
+    return Geo_dist_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
 
 double data_plane_vec_c::geo_dist_btw_deme(int deme_index1, int deme_index2) const
@@ -253,12 +245,12 @@ double data_plane_vec_c::geo_dist_btw_deme(int deme_index1, int deme_index2) con
         return 0;
     }
 
-    return Dist_btw_deme[deme_index1][deme_index2];
+    return Geo_dist_btw_deme[deme_index1 * Nbr_of_deme + deme_index2];
 }
 
 int data_plane_vec_c::nbr_geo_dist_class() const
 {
-    return Dist_class_nbr;
+    return Geo_dist_class_nbr;
 }
 
 int data_plane_vec_c::geo_dist_class_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const
@@ -270,7 +262,7 @@ int data_plane_vec_c::geo_dist_class_btw_gene(int dpv_gene_index1, int dpv_gene_
     auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
     auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
 
-    return Dist_class_btw_deme[deme_gen1][deme_gen2];
+    return Geo_dist_class_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
 
 int data_plane_vec_c::geo_dist_class_btw_deme(int deme1, int deme2) const
@@ -280,12 +272,12 @@ int data_plane_vec_c::geo_dist_class_btw_deme(int deme1, int deme2) const
         return 0;
     }
 
-    return Dist_class_btw_deme[deme1][deme2];
+    return Geo_dist_class_btw_deme[deme1 * Nbr_of_deme + deme2];
 }
 
 int data_plane_vec_c::nbr_chr_dist_class() const
 {
-    return Nbr_chr_dist_class;
+    return Chr_dist_class_nbr;
 }
 
 double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus_index1, int locus_index2) const
@@ -295,7 +287,7 @@ double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus_index1, int locus
         return 0;
     }
 
-    return Dist_btw_loc[chr][locus_index1][locus_index2];
+    return Chr_dist_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index1 * Nbr_of_loc_per_chr[chr] + locus_index2];
 }
 
 int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const
@@ -305,5 +297,5 @@ int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus_index1, int lo
         return 0;
     }
 
-    return Dist_class_btw_loc[chr][locus_index1][locus_index2];
+    return Chr_dist_class_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index1 * Nbr_of_loc_per_chr[chr] + locus_index2];
 }

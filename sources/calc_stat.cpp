@@ -738,8 +738,9 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane
     double S2 = 0;
     double ns = data_plane_vec.nomiss_nbr_of_deme(chr, locus);
 
-    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_deme(chr, locus))
+    for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
+        int deme_size = data_plane_vec.nomiss_nbr_of_indiv(chr, locus, deme);
         S1 += deme_size;
         S2 += pow(deme_size, 2);
     }
@@ -774,8 +775,9 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_indic(data_plane_
     double S2 = 0;
     double ns = data_plane_vec.nomiss_nbr_of_deme(chr, locus);
 
-    for (auto deme_size : data_plane_vec.nomiss_nbr_of_indiv_per_deme(chr, locus))
+    for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
+        int deme_size = data_plane_vec.nomiss_nbr_of_indiv(chr, locus, deme);
         S1 += deme_size;
         S2 += pow(deme_size, 2);
     }

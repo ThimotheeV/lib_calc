@@ -2,11 +2,11 @@
 
 result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plane_vec)
 {
-    result_c result(selector.Nbr_geo_dist_class);
+    result_c result(selector.Geo_dist_class_nbr);
     bool stat = false;
     if (selector.Hobs)
     {
-        std::cout << "######Hobs calculation######" << std::endl;
+        std::cout << "\n######Hobs calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double Hobs_mean = 0;
@@ -29,7 +29,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Hexp)
     {
-        std::cout << "######Hexp calculation######" << std::endl;
+        std::cout << "\n######Hexp calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double Hexp_mean = 0;
@@ -52,7 +52,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Var)
     {
-        std::cout << "######Var calculation######" << std::endl;
+        std::cout << "\n######Var calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double var_mean = 0;
@@ -74,7 +74,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Nb_allele)
     {
-        std::cout << "######Nb_allele calculation######" << std::endl;
+        std::cout << "\n######Nb_allele calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double nb_allele_mean = 0;
@@ -97,7 +97,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.MGW)
     {
-        std::cout << "######MGW calculation######" << std::endl;
+        std::cout << "\n######MGW calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double MGW_mean = 0;
@@ -119,7 +119,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.SFS)
     {
-        std::cout << "######SFS calculation######" << std::endl;
+        std::cout << "\n######SFS calculation######" << std::endl;
         if (selector.min_gene_for_SFS < 0)
         {
             throw std::logic_error("( Can't calculate sfs if min_gene not set. I exit. )");
@@ -148,7 +148,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.F_stat)
     {
-        std::cout << "######F_stat calculation######" << std::endl;
+        std::cout << "\n######F_stat calculation######" << std::endl;
         stat = true;
         std::vector<double> Vec_Fis(data_plane_vec.nbr_locus());
         std::vector<double> Vec_Fst(data_plane_vec.nbr_locus());
@@ -193,7 +193,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Qr)
     {
-        std::cout << "######Qr calculation######" << std::endl;
+        std::cout << "\n######Qr calculation######" << std::endl;
         stat = true;
         result.Qr = calc_qr_all_loc(data_plane_vec);
     }
@@ -202,7 +202,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Ar)
     {
-        std::cout << "######Ar calculation######" << std::endl;
+        std::cout << "\n######Ar calculation######" << std::endl;
         stat = true;
         auto Ar = ar_by_pair(data_plane_vec);
         result.Ar_reg = linear_regres_X_Y(Ar);
@@ -212,7 +212,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Er)
     {
-        std::cout << "######Er calculation######" << std::endl;
+        std::cout << "\n######Er calculation######" << std::endl;
         stat = true;
         auto er = er_by_pair(data_plane_vec);
         result.Er_reg = linear_regres_X_Y(er);
@@ -222,7 +222,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Eta)
     {
-        std::cout << "######Eta calculation######" << std::endl;
+        std::cout << "\n######Eta calculation######" << std::endl;
         std::vector<std::array<double, 5>> eta;
         if (data_plane_vec.get_Ploidy() == 2)
         {

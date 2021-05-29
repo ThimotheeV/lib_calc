@@ -79,9 +79,9 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
     //No genetic map
     if (path_to_chr_map_file.size() == 0)
     {
-        Dist_btw_loc = std::vector<std::vector<std::vector<double>>>{};
-        Nbr_chr_dist_class = 0;
-        Dist_class_btw_loc = std::vector<std::vector<std::vector<int>>>{};
+        Chr_dist_btw_loc = std::vector<std::vector<std::vector<double>>>{};
+        Chr_dist_class_nbr = 0;
+        Chr_dist_class_btw_loc = std::vector<std::vector<std::vector<int>>>{};
     }
     else
     {
@@ -170,8 +170,8 @@ std::array<int, ploidy> genepop_input_c<ploidy>::trim_locus(std::string str)
 template <std::size_t ploidy>
 void genepop_input_c<ploidy>::calc_dist_class_btw_deme(int nbr_geo_dist_class)
 {
-    Nbr_geo_dist_class = nbr_geo_dist_class;
-    Dist_btw_deme = std::vector<std::vector<double>>(Pop_name.size(), std::vector<double>(Pop_name.size()));
+    Geo_dist_class_nbr = nbr_geo_dist_class;
+    Geo_dist_btw_deme = std::vector<std::vector<double>>(Pop_name.size(), std::vector<double>(Pop_name.size()));
     std::vector<std::array<double, 2>> deme_coord(Pop_name.size());
     auto deme_coord_itr = deme_coord.begin();
 
@@ -190,15 +190,15 @@ void genepop_input_c<ploidy>::calc_dist_class_btw_deme(int nbr_geo_dist_class)
     }
 
     double max_dist = 0;
-    for (auto deme1 = 0; deme1 < Dist_btw_deme.size(); ++deme1)
+    for (auto deme1 = 0; deme1 < Geo_dist_btw_deme.size(); ++deme1)
     {
-        for (auto deme2 = 0; deme2 < Dist_btw_deme.size(); ++deme2)
+        for (auto deme2 = 0; deme2 < Geo_dist_btw_deme.size(); ++deme2)
         {
             //euclidien dist
-            Dist_btw_deme[deme1][deme2] = sqrt(pow(deme_coord[deme1].at(0) - deme_coord[deme2].at(0), 2) + pow(deme_coord[deme1].at(1) - deme_coord[deme2].at(1), 2));
-            if (Dist_btw_deme[deme1][deme2] > max_dist)
+            Geo_dist_btw_deme[deme1][deme2] = sqrt(pow(deme_coord[deme1].at(0) - deme_coord[deme2].at(0), 2) + pow(deme_coord[deme1].at(1) - deme_coord[deme2].at(1), 2));
+            if (Geo_dist_btw_deme[deme1][deme2] > max_dist)
             {
-                max_dist = Dist_btw_deme[deme1][deme2];
+                max_dist = Geo_dist_btw_deme[deme1][deme2];
             }
         }
     }
@@ -206,19 +206,19 @@ void genepop_input_c<ploidy>::calc_dist_class_btw_deme(int nbr_geo_dist_class)
     if (nbr_geo_dist_class > 0)
     {
         double dist_btw_class = max_dist / nbr_geo_dist_class;
-        Dist_class_btw_deme = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
+        Geo_dist_class_btw_deme = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
         {
-            for (auto deme1 = 0; deme1 < Dist_btw_deme.size(); ++deme1)
+            for (auto deme1 = 0; deme1 < Geo_dist_btw_deme.size(); ++deme1)
             {
-                for (auto deme2 = 0; deme2 < Dist_btw_deme.size(); ++deme2)
+                for (auto deme2 = 0; deme2 < Geo_dist_btw_deme.size(); ++deme2)
                 {
-                    //if Dist_btw_deme  =  0 class 0 else floor(Dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
+                    //if Geo_dist_btw_deme  =  0 class 0 else floor(Geo_dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
                     //
-                    Dist_class_btw_deme[deme1][deme2] = (Dist_btw_deme[deme1][deme2] ? ceil(Dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
+                    Geo_dist_class_btw_deme[deme1][deme2] = (Geo_dist_btw_deme[deme1][deme2] ? ceil(Geo_dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
                     //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
-                    if (Dist_class_btw_deme[deme1][deme2] == nbr_geo_dist_class)
+                    if (Geo_dist_class_btw_deme[deme1][deme2] == nbr_geo_dist_class)
                     {
-                        --Dist_class_btw_deme[deme1][deme2];
+                        --Geo_dist_class_btw_deme[deme1][deme2];
                     }
                 }
             }
@@ -255,20 +255,20 @@ void genepop_input_c<ploidy>::calc_dist_btw_loc(std::vector<std::tuple<int, std:
         }
     }
 
-    //Compute Dist_btw_loc and max_dist
-    Dist_btw_loc.resize(chr);
+    //Compute Chr_dist_btw_loc and max_dist
+    Chr_dist_btw_loc.resize(chr);
     double max_dist = 0;
     for (auto chr_num = 0; chr_num < chr; ++chr_num)
     {
         auto nbr_loc_per_chr = dist_from_chr_ori[chr_num].size();
-        Dist_btw_loc[chr_num].resize(nbr_loc_per_chr);
+        Chr_dist_btw_loc[chr_num].resize(nbr_loc_per_chr);
         for (auto loc1 = 0; loc1 < nbr_loc_per_chr; ++loc1)
         {
-            Dist_btw_loc[chr_num][loc1].resize(nbr_loc_per_chr);
+            Chr_dist_btw_loc[chr_num][loc1].resize(nbr_loc_per_chr);
             for (auto loc2 = 0; loc2 < nbr_loc_per_chr; ++loc2)
             {
                 auto dist = abs(dist_from_chr_ori[chr_num][loc1] - dist_from_chr_ori[chr_num][loc2]);
-                Dist_btw_loc[chr_num][loc1][loc2] = dist;
+                Chr_dist_btw_loc[chr_num][loc1][loc2] = dist;
                 if (dist > max_dist)
                 {
                     max_dist = dist;
@@ -277,28 +277,28 @@ void genepop_input_c<ploidy>::calc_dist_btw_loc(std::vector<std::tuple<int, std:
         }
     }
 
-    //Compute Dist_class_btw_loc
+    //Compute Chr_dist_class_btw_loc
     if (nbr_chr_dist_class > 0)
     {
-        Nbr_chr_dist_class = nbr_chr_dist_class;
-        Dist_class_btw_loc.resize(chr);
-        double class_length = max_dist / Nbr_chr_dist_class;
+        Chr_dist_class_nbr = nbr_chr_dist_class;
+        Chr_dist_class_btw_loc.resize(chr);
+        double class_length = max_dist / Chr_dist_class_nbr;
 
         for (auto chr_num = 0; chr_num < chr; ++chr_num)
         {
             auto nbr_loc_per_chr = dist_from_chr_ori[chr_num].size();
-            Dist_class_btw_loc[chr_num].resize(nbr_loc_per_chr);
+            Chr_dist_class_btw_loc[chr_num].resize(nbr_loc_per_chr);
             for (auto loc1 = 0; loc1 < nbr_loc_per_chr; ++loc1)
             {
-                Dist_class_btw_loc[chr_num][loc1].resize(nbr_loc_per_chr);
+                Chr_dist_class_btw_loc[chr_num][loc1].resize(nbr_loc_per_chr);
                 for (auto loc2 = 0; loc2 < nbr_loc_per_chr; ++loc2)
                 {
-                    //if Dist_btw_loc  =  0 class 0 else floor(Dist_btw_loc/class_length) to be [class_limit_min, class_limit_max[
-                    Dist_class_btw_loc[chr_num][loc1][loc2] = (Dist_btw_loc[chr_num][loc1][loc2] ? ceil(Dist_btw_loc[chr_num][loc1][loc2] / class_length) - 1 : 0);
+                    //if Chr_dist_btw_loc  =  0 class 0 else floor(Chr_dist_btw_loc/class_length) to be [class_limit_min, class_limit_max[
+                    Chr_dist_class_btw_loc[chr_num][loc1][loc2] = (Chr_dist_btw_loc[chr_num][loc1][loc2] ? ceil(Chr_dist_btw_loc[chr_num][loc1][loc2] / class_length) - 1 : 0);
                     //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
-                    if (Dist_class_btw_loc[chr_num][loc1][loc2] == Nbr_chr_dist_class)
+                    if (Chr_dist_class_btw_loc[chr_num][loc1][loc2] == Chr_dist_class_nbr)
                     {
-                        --Dist_class_btw_loc[chr_num][loc1][loc2];
+                        --Chr_dist_class_btw_loc[chr_num][loc1][loc2];
                     }
                 }
             }
@@ -306,6 +306,6 @@ void genepop_input_c<ploidy>::calc_dist_btw_loc(std::vector<std::tuple<int, std:
     }
     else
     {
-        Nbr_chr_dist_class = 0;
+        Chr_dist_class_nbr = 0;
     }
 }

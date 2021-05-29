@@ -115,10 +115,10 @@ TEST_CASE("genepop_input_test")
     SECTION("constructor")
     {
         genepop_input_c<2> input("input_test.txt", 10);
-        REQUIRE(input.Nbr_geo_dist_class == 10);
-        REQUIRE(input.Nbr_chr_dist_class == 0);
-        REQUIRE(input.Dist_btw_loc == std::vector<std::vector<std::vector<double>>>{});
-        REQUIRE(input.Dist_class_btw_loc == std::vector<std::vector<std::vector<int>>>{});
+        REQUIRE(input.Geo_dist_class_nbr == 10);
+        REQUIRE(input.Chr_dist_class_nbr == 0);
+        REQUIRE(input.Chr_dist_btw_loc == std::vector<std::vector<std::vector<double>>>{});
+        REQUIRE(input.Chr_dist_class_btw_loc == std::vector<std::vector<std::vector<int>>>{});
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 6);
         REQUIRE(input.Locus_name[0] == "adhlocus1");
@@ -177,78 +177,78 @@ TEST_CASE("genepop_input_test")
     SECTION("geo_dist_btw_gene for int dist")
     {
         genepop_input_c<2> input("input_test.txt", 10);
-        REQUIRE(input.Dist_btw_deme[0] == std::vector<double>{0, 1, 2, 3});
-        REQUIRE(input.Dist_btw_deme[1] == std::vector<double>{1, 0, 1, 2});
-        REQUIRE(input.Dist_btw_deme[2] == std::vector<double>{2, 1, 0, 1});
-        REQUIRE(input.Dist_btw_deme[3] == std::vector<double>{3, 2, 1, 0});
+        REQUIRE(input.Geo_dist_btw_deme[0] == std::vector<double>{0, 1, 2, 3});
+        REQUIRE(input.Geo_dist_btw_deme[1] == std::vector<double>{1, 0, 1, 2});
+        REQUIRE(input.Geo_dist_btw_deme[2] == std::vector<double>{2, 1, 0, 1});
+        REQUIRE(input.Geo_dist_btw_deme[3] == std::vector<double>{3, 2, 1, 0});
         //10 classes
-        REQUIRE(input.Dist_class_btw_deme[0] == std::vector<int>{0, 3, 6, 9});
-        REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{3, 0, 3, 6});
-        REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{6, 3, 0, 3});
-        REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{9, 6, 3, 0});
+        REQUIRE(input.Geo_dist_class_btw_deme[0] == std::vector<int>{0, 3, 6, 9});
+        REQUIRE(input.Geo_dist_class_btw_deme[1] == std::vector<int>{3, 0, 3, 6});
+        REQUIRE(input.Geo_dist_class_btw_deme[2] == std::vector<int>{6, 3, 0, 3});
+        REQUIRE(input.Geo_dist_class_btw_deme[3] == std::vector<int>{9, 6, 3, 0});
     }
 
     SECTION("geo_dist_btw_gene for int dist")
     {
         genepop_input_c<2> input("float_dist_test.txt", 3);
-        REQUIRE(input.Nbr_geo_dist_class == 3);
-        REQUIRE(input.Dist_btw_deme[0][0] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[0][1] == Approx(1.5).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[0][2] == Approx(6.8).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[0][3] == Approx(8.1).margin(0.01));
+        REQUIRE(input.Geo_dist_class_nbr == 3);
+        REQUIRE(input.Geo_dist_btw_deme[0][0] == Approx(0).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[0][1] == Approx(1.5).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[0][2] == Approx(6.8).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[0][3] == Approx(8.1).margin(0.01));
 
-        REQUIRE(input.Dist_btw_deme[1][0] == Approx(1.5).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[1][1] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[1][2] == Approx(5.3).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[1][3] == Approx(6.6).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[1][0] == Approx(1.5).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[1][1] == Approx(0).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[1][2] == Approx(5.3).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[1][3] == Approx(6.6).margin(0.01));
 
-        REQUIRE(input.Dist_btw_deme[2][0] == Approx(6.8).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[2][1] == Approx(5.3).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[2][2] == Approx(0).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[2][3] == Approx(1.3).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[2][0] == Approx(6.8).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[2][1] == Approx(5.3).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[2][2] == Approx(0).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[2][3] == Approx(1.3).margin(0.01));
 
-        REQUIRE(input.Dist_btw_deme[3][0] == Approx(8.1).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[3][1] == Approx(6.6).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[3][2] == Approx(1.3).margin(0.01));
-        REQUIRE(input.Dist_btw_deme[3][3] == Approx(0).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[3][0] == Approx(8.1).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[3][1] == Approx(6.6).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[3][2] == Approx(1.3).margin(0.01));
+        REQUIRE(input.Geo_dist_btw_deme[3][3] == Approx(0).margin(0.01));
 
-        REQUIRE(input.Dist_class_btw_deme[0] == std::vector<int>{0, 0, 2, 2});
-        REQUIRE(input.Dist_class_btw_deme[1] == std::vector<int>{0, 0, 1, 2});
-        REQUIRE(input.Dist_class_btw_deme[2] == std::vector<int>{2, 1, 0, 0});
-        REQUIRE(input.Dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
+        REQUIRE(input.Geo_dist_class_btw_deme[0] == std::vector<int>{0, 0, 2, 2});
+        REQUIRE(input.Geo_dist_class_btw_deme[1] == std::vector<int>{0, 0, 1, 2});
+        REQUIRE(input.Geo_dist_class_btw_deme[2] == std::vector<int>{2, 1, 0, 0});
+        REQUIRE(input.Geo_dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
     }
 
-    SECTION("Dist_btw_loc")
+    SECTION("Chr_dist_btw_loc")
     {
         genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 0);
 
-        REQUIRE(input.Dist_btw_loc[0][0] == std::vector<double>{0, 1, 2, 3});
-        REQUIRE(input.Dist_btw_loc[0][1] == std::vector<double>{1, 0, 1, 2});
-        REQUIRE(input.Dist_btw_loc[0][2] == std::vector<double>{2, 1, 0, 1});
-        REQUIRE(input.Dist_btw_loc[0][3] == std::vector<double>{3, 2, 1, 0});
-        REQUIRE(input.Dist_btw_loc[1][0] == std::vector<double>{0, 1});
-        REQUIRE(input.Dist_btw_loc[1][1] == std::vector<double>{1, 0});
+        REQUIRE(input.Chr_dist_btw_loc[0][0] == std::vector<double>{0, 1, 2, 3});
+        REQUIRE(input.Chr_dist_btw_loc[0][1] == std::vector<double>{1, 0, 1, 2});
+        REQUIRE(input.Chr_dist_btw_loc[0][2] == std::vector<double>{2, 1, 0, 1});
+        REQUIRE(input.Chr_dist_btw_loc[0][3] == std::vector<double>{3, 2, 1, 0});
+        REQUIRE(input.Chr_dist_btw_loc[1][0] == std::vector<double>{0, 1});
+        REQUIRE(input.Chr_dist_btw_loc[1][1] == std::vector<double>{1, 0});
     }
 
-    SECTION("Dist_class_btw_loc")
+    SECTION("Chr_dist_class_btw_loc")
     {
         genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 4);
 
-        REQUIRE(input.Dist_class_btw_loc[0][0] == std::vector<int>{0, 1, 2, 3});
-        REQUIRE(input.Dist_class_btw_loc[0][1] == std::vector<int>{1, 0, 1, 2});
-        REQUIRE(input.Dist_class_btw_loc[0][2] == std::vector<int>{2, 1, 0, 1});
-        REQUIRE(input.Dist_class_btw_loc[0][3] == std::vector<int>{3, 2, 1, 0});
-        REQUIRE(input.Dist_class_btw_loc[1][0] == std::vector<int>{0, 1});
-        REQUIRE(input.Dist_class_btw_loc[1][1] == std::vector<int>{1, 0});
+        REQUIRE(input.Chr_dist_class_btw_loc[0][0] == std::vector<int>{0, 1, 2, 3});
+        REQUIRE(input.Chr_dist_class_btw_loc[0][1] == std::vector<int>{1, 0, 1, 2});
+        REQUIRE(input.Chr_dist_class_btw_loc[0][2] == std::vector<int>{2, 1, 0, 1});
+        REQUIRE(input.Chr_dist_class_btw_loc[0][3] == std::vector<int>{3, 2, 1, 0});
+        REQUIRE(input.Chr_dist_class_btw_loc[1][0] == std::vector<int>{0, 1});
+        REQUIRE(input.Chr_dist_class_btw_loc[1][1] == std::vector<int>{1, 0});
 
         genepop_input_c<2> input1("input_test.txt", 0, "input_test.map", 2);
 
-        REQUIRE(input1.Dist_class_btw_loc[0][0] == std::vector<int>{0, 0, 1, 1});
-        REQUIRE(input1.Dist_class_btw_loc[0][1] == std::vector<int>{0, 0, 0, 1});
-        REQUIRE(input1.Dist_class_btw_loc[0][2] == std::vector<int>{1, 0, 0, 0});
-        REQUIRE(input1.Dist_class_btw_loc[0][3] == std::vector<int>{1, 1, 0, 0});
-        REQUIRE(input1.Dist_class_btw_loc[1][0] == std::vector<int>{0, 0});
-        REQUIRE(input1.Dist_class_btw_loc[1][1] == std::vector<int>{0, 0});
+        REQUIRE(input1.Chr_dist_class_btw_loc[0][0] == std::vector<int>{0, 0, 1, 1});
+        REQUIRE(input1.Chr_dist_class_btw_loc[0][1] == std::vector<int>{0, 0, 0, 1});
+        REQUIRE(input1.Chr_dist_class_btw_loc[0][2] == std::vector<int>{1, 0, 0, 0});
+        REQUIRE(input1.Chr_dist_class_btw_loc[0][3] == std::vector<int>{1, 1, 0, 0});
+        REQUIRE(input1.Chr_dist_class_btw_loc[1][0] == std::vector<int>{0, 0});
+        REQUIRE(input1.Chr_dist_class_btw_loc[1][1] == std::vector<int>{0, 0});
     }
 }
 
@@ -277,7 +277,7 @@ TEST_CASE("selector_input_test")
         REQUIRE(setting.Eta == true);
 
         REQUIRE(setting.Missing_data == false);
-        REQUIRE(setting.Nbr_geo_dist_class == 100);
+        REQUIRE(setting.Geo_dist_class_nbr == 100);
     }
 }
 

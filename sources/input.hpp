@@ -25,15 +25,15 @@ struct genepop_input_c
     std::string Header;
     std::vector<std::string> Locus_name;
     //Chr<loc1, loc2>
-    std::vector<std::vector<std::vector<double>>> Dist_btw_loc;
-    int Nbr_chr_dist_class{0};
+    std::vector<std::vector<std::vector<double>>> Chr_dist_btw_loc;
     //Chr<loc1, loc2>
-    std::vector<std::vector<std::vector<int>>> Dist_class_btw_loc;
+    std::vector<std::vector<std::vector<int>>> Chr_dist_class_btw_loc;
+    int Chr_dist_class_nbr{0};
 
     std::vector<std::vector<std::string>> Pop_name;
-    std::vector<std::vector<double>> Dist_btw_deme;
-    int Nbr_geo_dist_class{0};
-    std::vector<std::vector<int>> Dist_class_btw_deme;
+    std::vector<std::vector<double>> Geo_dist_btw_deme;
+    std::vector<std::vector<int>> Geo_dist_class_btw_deme;
+    int Geo_dist_class_nbr{0};
 
     //Pop<indiv>
     std::vector<std::vector<std::string>> Indiv_name;
@@ -69,8 +69,8 @@ struct selector_input_c
     bool Eta{false};
 
     bool Missing_data{false};
-    int Nbr_geo_dist_class{0};
-    int Nbr_chr_dist_class{0};
+    int Geo_dist_class_nbr{0};
+    int Chr_dist_class_nbr{0};
 };
 
 struct result_c
