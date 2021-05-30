@@ -148,13 +148,13 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
 
     Polymorph_locus_list_per_chr.resize(Nbr_of_chr);
 
-    int locus_general = 0;
+    int locus_index_in_sample = 0;
 
     for (int chr = 0; chr < Nbr_of_chr; ++chr)
     {
         Polymorph_locus_list_per_chr[chr].reserve(Nbr_of_loc_per_chr[chr]);
 
-        for (int locus = 0; locus < Nbr_of_loc_per_chr[chr]; ++locus)
+        for (int locus_index_in_chr = 0; locus_index_in_chr < Nbr_of_loc_per_chr[chr]; ++locus_index_in_chr)
         {
             std::map<int, int> temp_count_allele_state;
             Nomiss_nbr_of_deme_per_chr_per_loc.push_back(0);
@@ -164,12 +164,12 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
             {
                 int nomiss_nbr_of_indiv_in_deme = Nbr_of_indiv_per_deme[deme];
                 int nomiss_nbr_of_gene_in_deme = nomiss_nbr_of_indiv_in_deme * Ploidy;
-                for (int indiv = 0; indiv < Nbr_of_indiv_per_deme[deme]; ++indiv)
+                for (int indiv_index_in_deme = 0; indiv_index_in_deme < Nbr_of_indiv_per_deme[deme]; ++indiv_index_in_deme)
                 {
                     bool missing_value = false;
-                    for (int gene = 0; gene < Ploidy; ++gene)
+                    for (int gene_index_in_indiv = 0; gene_index_in_indiv < Ploidy; ++gene_index_in_indiv)
                     {
-                        int value = genepop_data.Genotype[deme][indiv][Cumul_nbr_of_loc_per_chr[chr] + locus][gene];
+                        int value = genepop_data.Genotype[deme][indiv_index_in_deme][Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr][gene_index_in_indiv];
                         //To calc nc for estimate with missing values
                         if (value == 0)
                         {
@@ -190,13 +190,13 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
                     }
                     if (missing_value)
                     {
-                        Nomiss_per_indiv_per_loc[indiv_general].insert(locus_general, 0);
+                        Nomiss_per_indiv_per_loc[indiv_general].insert(locus_index_in_sample, 0);
                         --nomiss_nbr_of_indiv_in_deme;
                     }
                     ++indiv_general;
                 }
                 //To calc nc for estimate with missing values
-                Nomiss_nbr_of_indiv_per_loc[locus_general] += nomiss_nbr_of_indiv_in_deme;
+                Nomiss_nbr_of_indiv_per_loc[locus_index_in_sample] += nomiss_nbr_of_indiv_in_deme;
                 Nomiss_nbr_of_deme_per_chr_per_loc.back() += 1;
                 Nomiss_nbr_of_gene_per_chr_per_loc.back() += nomiss_nbr_of_gene_in_deme;
                 Nomiss_nbr_of_gene_per_chr_per_loc_per_deme.push_back(nomiss_nbr_of_gene_in_deme);
@@ -204,12 +204,12 @@ data_plane_vec_c::data_plane_vec_c(genepop_input_c<ploidy> const &genepop_data)
             }
             if (temp_count_allele_state.size() > 1)
             {
-                Polymorph_locus_list_per_chr[chr].push_back(locus);
+                Polymorph_locus_list_per_chr[chr].push_back(locus_index_in_chr);
             }
 
             Allele_state_per_chr_per_loc.push_back(std::move(temp_count_allele_state));
 
-            ++locus_general;
+            ++locus_index_in_sample;
         }
         Polymorph_locus_list_per_chr[chr].shrink_to_fit();
     }

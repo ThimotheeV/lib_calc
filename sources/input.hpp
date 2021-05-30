@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <cmath>
+#include <map>
 
 #include "arg_pars.hpp"
 namespace gss
@@ -35,6 +36,7 @@ struct genepop_input_c
     std::vector<std::vector<int>> Geo_dist_class_btw_deme;
     int Geo_dist_class_nbr{0};
 
+    std::map<int, std::string> Chr_name;
     //Pop<indiv>
     std::vector<std::vector<std::string>> Indiv_name;
     //Pop<Indiv<Name, Locus>
@@ -49,6 +51,7 @@ struct selector_input_c
 
     std::string Data_filename;
     std::string Genetic_map_name;
+    int Ploidy{0};
 
     bool Hobs{false};
     bool Hexp{false};

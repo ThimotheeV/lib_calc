@@ -80,20 +80,20 @@ public:
     std::vector<int> const &cumul_nbr_of_indiv_per_deme() const;
 
     int get_indiv(int gene) const;
-    feature_c const &get_feature(int indiv);
+    feature_c const &get_feature(int indiv_index_in_sample);
 
-    int nomiss_nbr_of_gene(int chr, int locus) const;
-    int nomiss_nbr_of_gene(int chr, int locus, int deme) const;
+    int nomiss_nbr_of_gene(int chr, int locus_index_in_chr) const;
+    int nomiss_nbr_of_gene(int chr, int locus_index_in_chr, int deme) const;
     //in haploid data, indiv = gene ; in diploid data, indiv = 2 genes
     //absolute locus index
-    int nomiss_nbr_of_indiv(int locus) const;
+    int nomiss_nbr_of_indiv(int locus_index_in_sample) const;
     // chr relative locus index
-    int nomiss_nbr_of_indiv(int chr, int locus) const;
-    int nomiss_nbr_of_indiv(int chr, int locus, int deme) const;
-    int nomiss_nbr_of_deme(int chr, int locus) const;
+    int nomiss_nbr_of_indiv(int chr, int locus_index_in_chr) const;
+    int nomiss_nbr_of_indiv(int chr, int locus_index_in_chr, int deme) const;
+    int nomiss_nbr_of_deme(int chr, int locus_index_in_chr) const;
 
-    int nbr_allele(int chr, int locus) const;
-    std::map<int, int> const &allele_state(int chr, int locus) const;
+    int nbr_allele(int chr, int locus_index_in_chr) const;
+    std::map<int, int> const &allele_state(int chr, int locus_index_in_chr) const;
     std::vector<int> const &polymorph_locus_list(int chr) const;
 
     std::vector<int> const &get_plane_vec();
@@ -102,26 +102,26 @@ public:
     std::vector<int>::const_iterator begin() const;
     std::vector<int>::const_iterator end() const;
 
-    int const &operator()(int chr, int locus, int deme, int indiv, int gene) const;
+    int const &operator()(int chr, int locus_index_in_chr, int deme, int indiv_index_in_deme, int gene_index_in_indiv) const;
     //Acces at indiv for one specific locus (deme independent)
-    int const &operator()(int chr, int locus, int indiv, int gene) const;
-    int const &operator()(int locus, int indiv, int gene) const;
-    int index_begin_locus(int chr, int locus) const;
-    int index_end_locus(int chr, int locus) const;
+    int const &operator()(int chr, int locus_index_in_chr, int indiv_index_in_sample, int gene_index_in_indiv) const;
+    int const &operator()(int locus_index_in_sample, int indiv_index_in_sample, int gene_index_in_indiv) const;
+    int index_begin_locus(int chr, int locus_index_in_chr) const;
+    int index_end_locus(int chr, int locus_index_in_chr) const;
 
     // in the same locus => gene 1 & gene 2 : same deme, indiv ?
-    bool same_indiv(int dpv_gene_index1, int dpv_gene_index2) const;
-    bool same_deme(int dpv_gene_index1, int dpv_gene_index2) const;
-    bin_vec const &nomiss_data(int indiv) const;
-    double geo_dist_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const;
-    double geo_dist_btw_deme(int deme_index1, int deme_index2) const;
+    bool same_indiv(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    bool same_deme(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    bin_vec const &nomiss_data(int indiv_index_in_sample) const;
+    double geo_dist_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    double geo_dist_btw_deme(int deme1, int deme2) const;
     int nbr_geo_dist_class() const;
-    int geo_dist_class_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const;
+    int geo_dist_class_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const;
     int geo_dist_class_btw_deme(int deme1, int deme2) const;
 
     int nbr_chr_dist_class() const;
-    double chr_dist_btw_locus(int chr, int locus_index1, int locus_index2) const;
-    int chr_dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const;
+    double chr_dist_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr12) const;
+    int chr_dist_class_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr12) const;
 };
 
 #include "data_plane_vec.tpp"

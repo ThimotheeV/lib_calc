@@ -105,20 +105,22 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
         std::sort(crude_map_vec.begin(), crude_map_vec.end(),
                   [](auto &str_vec1, auto &str_vec2)
                   {
-                      return std::stoi(str_vec1.at(0)) < std::stoi(str_vec2.at(0));
+                      return str_vec1.at(0) < str_vec2.at(0);
                   });
 
         //Num chr, name locus, dist in cM and pos in chr
         std::vector<std::tuple<int, std::string, double, int>> refined_map_vec(map_file_vec.size());
 
         int chr = 0;
-        int prev_chr = std::stoi(crude_map_vec[0].at(0));
+        std::string prev_chr = crude_map_vec[0].at(0);
+        Chr_name.emplace(chr, prev_chr);
         for (int i = 0; i < crude_map_vec.size(); ++i)
         {
-            int actual_chr = std::stoi(crude_map_vec[i].at(0));
+            std::string actual_chr = crude_map_vec[i].at(0);
             if (prev_chr != actual_chr)
             {
                 ++chr;
+                Chr_name.emplace(chr, actual_chr);
             }
             prev_chr = actual_chr;
             std::get<0>(refined_map_vec.at(i)) = chr;

@@ -9,5 +9,6 @@ Geo_dist_class_nbr = 100
 
 Data_filename = ./test.txt
 Genetic_map_name = ./test.map
+Ploidy = 2
 
 Eta = true

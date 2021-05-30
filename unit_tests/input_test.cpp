@@ -218,6 +218,19 @@ TEST_CASE("genepop_input_test")
         REQUIRE(input.Geo_dist_class_btw_deme[3] == std::vector<int>{2, 2, 0, 0});
     }
 
+    SECTION("Chr_map")
+    {
+        genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 0);
+        auto chr_map_itr = input.Chr_name.begin();
+        auto result = std::array<std::pair<const int, std::string>, 2>{std::make_pair(0, "1"), std::make_pair(1, "3")};
+
+        for (auto value : result)
+        {
+            REQUIRE(*chr_map_itr == value);
+            ++chr_map_itr;
+        }
+    }
+
     SECTION("Chr_dist_btw_loc")
     {
         genepop_input_c<2> input("input_test.txt", 0, "input_test.map", 0);
@@ -260,6 +273,7 @@ TEST_CASE("selector_input_test")
 
         REQUIRE(setting.Data_filename == "./test.txt");
         REQUIRE(setting.Genetic_map_name == "./test.map");
+        REQUIRE(setting.Ploidy == 2);
 
         REQUIRE(setting.Hobs == true);
         REQUIRE(setting.Hexp == true);

@@ -63,45 +63,45 @@ int data_plane_vec_c::get_indiv(int gene_index) const
 
     return place_in_locus / Ploidy;
 }
-feature_c const &data_plane_vec_c::get_feature(int indiv)
+feature_c const &data_plane_vec_c::get_feature(int indiv_index_in_sample)
 {
-    return Indiv_feat[indiv];
+    return Indiv_feat[indiv_index_in_sample];
 }
 
-int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus) const
+int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus_index_in_chr) const
 {
-    return Nomiss_nbr_of_gene_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
+    return Nomiss_nbr_of_gene_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr];
 }
-int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus, int deme) const
+int data_plane_vec_c::nomiss_nbr_of_gene(int chr, int locus_index_in_chr, int deme) const
 {
-    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_deme + deme];
+    return Nomiss_nbr_of_gene_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr) * Nbr_of_deme + deme];
 }
 int data_plane_vec_c::nomiss_nbr_of_indiv(int locus) const
 {
     return Nomiss_nbr_of_indiv_per_loc[locus];
 }
-int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus) const
+int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus_index_in_chr) const
 {
-    return Nomiss_nbr_of_indiv_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
+    return Nomiss_nbr_of_indiv_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr];
 }
-int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus, int deme) const
+int data_plane_vec_c::nomiss_nbr_of_indiv(int chr, int locus_index_in_chr, int deme) const
 {
-    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_deme + deme];
+    return Nomiss_nbr_of_indiv_per_chr_per_loc_per_deme[(Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr) * Nbr_of_deme + deme];
 }
-int data_plane_vec_c::nomiss_nbr_of_deme(int chr, int locus) const
+int data_plane_vec_c::nomiss_nbr_of_deme(int chr, int locus_index_in_chr) const
 {
-    return Nomiss_nbr_of_deme_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
+    return Nomiss_nbr_of_deme_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr];
 }
 
-int data_plane_vec_c::nbr_allele(int chr, int locus) const
+int data_plane_vec_c::nbr_allele(int chr, int locus_index_in_chr) const
 {
-    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus].size();
+    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr].size();
 }
 
 //map(state, nbr of allele in this state)
-std::map<int, int> const &data_plane_vec_c::allele_state(int chr, int locus) const
+std::map<int, int> const &data_plane_vec_c::allele_state(int chr, int locus_index_in_chr) const
 {
-    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus];
+    return Allele_state_per_chr_per_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr];
 }
 
 std::vector<int> const &data_plane_vec_c::polymorph_locus_list(int chr) const
@@ -129,123 +129,123 @@ std::vector<int>::const_iterator data_plane_vec_c::end() const
     return Plane_vec.cend();
 }
 
-int const &data_plane_vec_c::operator()(int chr, int locus, int deme, int indiv, int gene) const
+int const &data_plane_vec_c::operator()(int chr, int locus_index_in_chr, int deme, int indiv_index_in_deme, int gene_index_in_indiv) const
 {
-    if (gene > Ploidy - 1)
+    if (gene_index_in_indiv > Ploidy - 1)
     {
-        ++gene;
-        throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
+        ++gene_index_in_indiv;
+        throw std::logic_error("Can't show the gene " + std::to_string(gene_index_in_indiv) + " when max gene by indiv is " + std::to_string(Ploidy));
     }
 
-    if (indiv > Nbr_of_indiv_tot - 1)
+    if (indiv_index_in_deme > Nbr_of_indiv_tot - 1)
     {
-        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
+        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus_index_in_chr));
     }
     //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + Cumul_nbr_of_indiv_per_deme[deme] * Ploidy + indiv(deme relative index) * Ploidy + gene
-    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot + Cumul_nbr_of_indiv_per_deme[deme] + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
+    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr) * Nbr_of_indiv_tot + Cumul_nbr_of_indiv_per_deme[deme] + indiv_index_in_deme) * Ploidy + gene_index_in_indiv]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
 }
 
-int const &data_plane_vec_c::operator()(int chr, int locus, int indiv, int gene) const
+int const &data_plane_vec_c::operator()(int chr, int locus_index_in_chr, int indiv_index_in_sample, int gene_index_in_indiv) const
 {
-    if (gene > Ploidy - 1)
+    if (gene_index_in_indiv > Ploidy - 1)
     {
-        ++gene;
-        throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
+        ++gene_index_in_indiv;
+        throw std::logic_error("Can't show the gene " + std::to_string(gene_index_in_indiv) + " when max gene by indiv is " + std::to_string(Ploidy));
     }
 
-    if (indiv > Nbr_of_indiv_tot - 1)
+    if (indiv_index_in_sample > Nbr_of_indiv_tot - 1)
     {
-        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
-    }
-    //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + indiv(absolute index) * Ploidy + gene
-    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
-}
-
-int const &data_plane_vec_c::operator()(int locus, int indiv, int gene) const
-{
-    if (gene > Ploidy - 1)
-    {
-        ++gene;
-        throw std::logic_error("Can't show the gene " + std::to_string(gene) + " when max gene by indiv is " + std::to_string(Ploidy));
-    }
-
-    if (indiv > Nbr_of_indiv_tot - 1)
-    {
-        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus));
+        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus_index_in_chr));
     }
     //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + indiv(absolute index) * Ploidy + gene
-    return Plane_vec[(locus * Nbr_of_indiv_tot + indiv) * Ploidy + gene]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
+    return Plane_vec[((Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr) * Nbr_of_indiv_tot + indiv_index_in_sample) * Ploidy + gene_index_in_indiv]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
 }
 
-int data_plane_vec_c::index_begin_locus(int chr, int locus) const
+int const &data_plane_vec_c::operator()(int locus_index_in_sample, int indiv_index_in_sample, int gene_index_in_indiv) const
 {
-    return (Cumul_nbr_of_loc_per_chr[chr] + locus) * Nbr_of_indiv_tot * Ploidy;
+    if (gene_index_in_indiv > Ploidy - 1)
+    {
+        ++gene_index_in_indiv;
+        throw std::logic_error("Can't show the gene " + std::to_string(gene_index_in_indiv) + " when max gene by indiv is " + std::to_string(Ploidy));
+    }
+
+    if (indiv_index_in_sample > Nbr_of_indiv_tot - 1)
+    {
+        throw std::logic_error("Only " + std::to_string(Nbr_of_indiv_tot) + " in locus " + std::to_string(locus_index_in_sample));
+    }
+    //Cumul_nbr_of_loc_per_chr[chr] * Nbr_indiv * Ploidy + locus * Nbr_indiv * Ploidy + indiv(absolute index) * Ploidy + gene
+    return Plane_vec[(locus_index_in_sample * Nbr_of_indiv_tot + indiv_index_in_sample) * Ploidy + gene_index_in_indiv]; //(Ploidy - 1) if operator use in haploid return the same for gene 0 and gene 1
 }
 
-int data_plane_vec_c::index_end_locus(int chr, int locus) const
+int data_plane_vec_c::index_begin_locus(int chr, int locus_index_in_chr) const
 {
-    return (Cumul_nbr_of_loc_per_chr[chr] + locus + 1) * Nbr_of_indiv_tot * Ploidy;
+    return (Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr) * Nbr_of_indiv_tot * Ploidy;
+}
+
+int data_plane_vec_c::index_end_locus(int chr, int locus_index_in_chr) const
+{
+    return (Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr + 1) * Nbr_of_indiv_tot * Ploidy;
 }
 
 //In same locus
-bool data_plane_vec_c::same_indiv(int dpv_gene_index1, int dpv_gene_index2) const
+bool data_plane_vec_c::same_indiv(int gene_index_in_sample1, int gene_index_in_sample2) const
 {
-    if (dpv_gene_index1 == dpv_gene_index2)
+    if (gene_index_in_sample1 == gene_index_in_sample2)
     {
         return true;
     }
-    if (dpv_gene_index1 > dpv_gene_index2)
+    if (gene_index_in_sample1 > gene_index_in_sample2)
     {
-        auto temp = dpv_gene_index1;
-        dpv_gene_index1 = dpv_gene_index2;
-        dpv_gene_index2 = temp;
+        auto temp = gene_index_in_sample1;
+        gene_index_in_sample1 = gene_index_in_sample2;
+        gene_index_in_sample2 = temp;
     }
 
     bool result{false};
     if (Ploidy == 2)
     {
         //Need to be adjacent
-        result = (dpv_gene_index1 % 2 == 0) && (dpv_gene_index2 - dpv_gene_index1 == 1);
+        result = (gene_index_in_sample1 % 2 == 0) && (gene_index_in_sample2 - gene_index_in_sample1 == 1);
     }
     return result;
 }
 
-bool data_plane_vec_c::same_deme(int dpv_gene_index1, int dpv_gene_index2) const
+bool data_plane_vec_c::same_deme(int gene_index_in_sample1, int gene_index_in_sample2) const
 {
-    if (dpv_gene_index1 == dpv_gene_index2)
+    if (gene_index_in_sample1 == gene_index_in_sample2)
     {
         return true;
     }
 
-    return Indiv_feat[get_indiv(dpv_gene_index1)].Deme == Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
+    return Indiv_feat[get_indiv(gene_index_in_sample1)].Deme == Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
 }
 
-bin_vec const &data_plane_vec_c::nomiss_data(int indiv) const
+bin_vec const &data_plane_vec_c::nomiss_data(int indiv_index_in_sample) const
 {
-    return Nomiss_per_indiv_per_loc[indiv];
+    return Nomiss_per_indiv_per_loc[indiv_index_in_sample];
 }
 
 //Passer par un tableau d'attribut des indivs
-double data_plane_vec_c::geo_dist_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const
+double data_plane_vec_c::geo_dist_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const
 {
-    if (dpv_gene_index1 == dpv_gene_index2)
+    if (gene_index_in_sample1 == gene_index_in_sample2)
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
-    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
+    auto const deme_gen1 = Indiv_feat[get_indiv(gene_index_in_sample1)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
 
     return Geo_dist_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
 
-double data_plane_vec_c::geo_dist_btw_deme(int deme_index1, int deme_index2) const
+double data_plane_vec_c::geo_dist_btw_deme(int deme1, int deme2) const
 {
-    if (deme_index1 == deme_index2)
+    if (deme1 == deme2)
     {
         return 0;
     }
 
-    return Geo_dist_btw_deme[deme_index1 * Nbr_of_deme + deme_index2];
+    return Geo_dist_btw_deme[deme1 * Nbr_of_deme + deme2];
 }
 
 int data_plane_vec_c::nbr_geo_dist_class() const
@@ -253,14 +253,14 @@ int data_plane_vec_c::nbr_geo_dist_class() const
     return Geo_dist_class_nbr;
 }
 
-int data_plane_vec_c::geo_dist_class_btw_gene(int dpv_gene_index1, int dpv_gene_index2) const
+int data_plane_vec_c::geo_dist_class_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const
 {
-    if (dpv_gene_index1 == dpv_gene_index2)
+    if (gene_index_in_sample1 == gene_index_in_sample2)
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(dpv_gene_index1)].Deme;
-    auto const deme_gen2 = Indiv_feat[get_indiv(dpv_gene_index2)].Deme;
+    auto const deme_gen1 = Indiv_feat[get_indiv(gene_index_in_sample1)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
 
     return Geo_dist_class_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
@@ -280,22 +280,22 @@ int data_plane_vec_c::nbr_chr_dist_class() const
     return Chr_dist_class_nbr;
 }
 
-double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus_index1, int locus_index2) const
+double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr2) const
 {
-    if (locus_index1 == locus_index2)
+    if (locus_index_in_chr1 == locus_index_in_chr2)
     {
         return 0;
     }
 
-    return Chr_dist_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index1 * Nbr_of_loc_per_chr[chr] + locus_index2];
+    return Chr_dist_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr1 * Nbr_of_loc_per_chr[chr] + locus_index_in_chr2];
 }
 
-int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus_index1, int locus_index2) const
+int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr2) const
 {
-    if (locus_index1 == locus_index2)
+    if (locus_index_in_chr1 == locus_index_in_chr2)
     {
         return 0;
     }
 
-    return Chr_dist_class_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index1 * Nbr_of_loc_per_chr[chr] + locus_index2];
+    return Chr_dist_class_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr1 * Nbr_of_loc_per_chr[chr] + locus_index_in_chr2];
 }

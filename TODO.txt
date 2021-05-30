@@ -1,11 +1,6 @@
 - Urgent
 
-Différencie les locus à index relatif (locus_index_in_chr) et les locus à index absolu (locus_index_in_sample)
-Différencie les indiv à index relatif et les indiv à index absolu
-genepop_input_c sort alphanumériquement voir TODO
-map nom de chr/index dans la lib calc
 Implémenter la gestion de la ploidy
-Nomiss data test à transformer
 
 - A terme
 
@@ -24,3 +19,9 @@ Affichage "Run Complete"
 Passer le selecteur en "Stat = True/ False" avec Stat possiblement non présente
 Créer un fonction slice_by_tab_or_space
 Supprimer Allele_state_bound
+Différencie les locus à index relatif (locus_index_in_chr) et les locus à index absolu (locus_index_in_sample)
+Différencie les indiv à index relatif et les indiv à index absolu
+Différencie les gene à index relatif et les gene à index absolu
+map nom de chr/index dans la lib calc
+Nomiss data test à transformer
+
