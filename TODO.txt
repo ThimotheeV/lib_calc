@@ -1,7 +1,5 @@
 - Urgent
 
-Implémenter la gestion de la ploidy
-
 - A terme
 
 Lire VCF => passer le genepop_input en data_input (mission lire les données quelques soit le format d'entrée)
@@ -24,4 +22,5 @@ Différencie les indiv à index relatif et les indiv à index absolu
 Différencie les gene à index relatif et les gene à index absolu
 map nom de chr/index dans la lib calc
 Nomiss data test à transformer
+Implémenter la gestion de la ploidy
 

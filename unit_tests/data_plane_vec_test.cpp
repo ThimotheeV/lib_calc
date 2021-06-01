@@ -266,24 +266,24 @@ TEST_CASE("haploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(3, 16) == true);
     }
 
-    // SECTION("bool nomiss_data(int indiv, int locus) with missing data")
-    // {
-    //     genepop_input_c<1> genepop_input;
-    //     //3 deme, 2-1-3 indiv, 3 locus, 3 chr
-    //     genepop_input.Genotype = {{{{1}, {1}, {1}}, {{1}, {2}, {3}}},
-    //                               {{{0}, {1}, {3}}},
-    //                               {{{1}, {2}, {3}}, {{2}, {2}, {2}}, {{3}, {2}, {0}}}};
+    SECTION("bool nomiss_data(int indiv_index_in_sample) with missing data")
+    {
+        genepop_input_c<1> genepop_input;
+        //3 deme, 2-1-3 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {{{{1}, {1}, {1}}, {{1}, {2}, {3}}},
+                                  {{{0}, {1}, {3}}},
+                                  {{{1}, {2}, {3}}, {{2}, {2}, {2}}, {{3}, {2}, {0}}}};
 
-    //     data_plane_vec_c plane_3d_vec(genepop_input);
-    //     //3chr, 1 locus/chr, 3 deme, 2-1-3 indiv
-    //     //{{{{1}, {1}}, {{0}}, {{1}, {2}, {3}}},
-    //     // {{{1}, {2}}, {{1}}, {{2}, {2}, {2}}},
-    //     // {{{1}, {3}}, {{3}}, {{3}, {2}, {0}}}};
+        data_plane_vec_c plane_3d_vec(genepop_input);
+        //3chr, 1 locus/chr, 3 deme, 2-1-3 indiv
+        //{{{{1}, {1}}, {{0}}, {{1}, {2}, {3}}},
+        // {{{1}, {2}}, {{1}}, {{2}, {2}, {2}}},
+        // {{{1}, {3}}, {{3}}, {{3}, {2}, {0}}}};
 
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == true);
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == false);
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
-    // }
+        REQUIRE(plane_3d_vec.nomiss_data(0).at(0) == true);
+        REQUIRE(plane_3d_vec.nomiss_data(2).at(0) == false);
+        REQUIRE(plane_3d_vec.nomiss_data(5).at(2) == false);
+    }
 }
 
 TEST_CASE("diploid_data_plane_vec_test")
@@ -549,24 +549,24 @@ TEST_CASE("diploid_data_plane_vec_test")
         REQUIRE(plane_3d_vec.same_deme(12, 16) == false);
     }
 
-    // SECTION("bool nomiss_data_indiv(int locus, int indiv) with missing data")
-    // {
-    //     genepop_input_c<2> genepop_input;
-    //     //3 deme, 2-1-3 indiv, 3 locus, 3 chr
-    //     genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
-    //                               {{{1, 3}, {1, 3}, {1, 3}}},
-    //                               {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 0}}}};
+    SECTION("bool nomiss_data(int indiv_index_in_sample) with missing data")
+    {
+        genepop_input_c<2> genepop_input;
+        //3 deme, 2-1-3 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {{{{0, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+                                  {{{1, 3}, {1, 3}, {1, 3}}},
+                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 0}}}};
 
-    //     data_plane_vec_c plane_3d_vec(genepop_input);
-    //     //3 locus, 3 deme, 2-1-3 indiv
-    //     //{{{{0, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
-    //     // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
-    //     // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 0}}}};
+        data_plane_vec_c plane_3d_vec(genepop_input);
+        //3 locus, 3 deme, 2-1-3 indiv
+        //{{{{0, 2}, {1, 1}}, {{1, 3}}, {{1, 1}, {2, 1}, {2, 3}}},
+        // {{{1, 1}, {1, 2}}, {{1, 3}}, {{1, 2}, {2, 2}, {2, 3}}},
+        // {{{1, 1}, {1, 3}}, {{1, 3}}, {{1, 3}, {2, 3}, {2, 0}}}};
 
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 0) == false);
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(0, 2) == true);
-    //     REQUIRE(plane_3d_vec.nomiss_data_indiv(2, 5) == false);
-    // }
+        REQUIRE(plane_3d_vec.nomiss_data(0).at(0) == false);
+        REQUIRE(plane_3d_vec.nomiss_data(0).at(2) == true);
+        REQUIRE(plane_3d_vec.nomiss_data(5).at(2) == false);
+    }
 }
 
 TEST_CASE("Indiv_feat_test")

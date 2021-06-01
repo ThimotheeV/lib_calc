@@ -122,7 +122,7 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             SFS = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
-        if (stat_name == "mingene")
+        if (stat_name == "mingeneforsfs")
         {
             //Needed to read integer in scientific format
             min_gene_for_SFS = static_cast<int>(std::stod(line_pair_key_value[1]));

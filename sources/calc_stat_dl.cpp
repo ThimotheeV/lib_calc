@@ -508,9 +508,9 @@ std::array<double, 3> exp_regr(std::vector<std::array<double, 3>> const &dist_ge
         mini = min(value.at(1), mini);
     }
     double range = maxi - mini;
-    param_str += std::to_string(range);
+    param_str += std::to_string(4);
     param_str += ", ";
-    param_str += std::to_string(log(2) / dist_geo_eta_weights.size());
+    param_str += std::to_string(1);
     param_str += "]";
 
     //std::cout << "Param start : " << param_str << std::endl;
