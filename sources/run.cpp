@@ -150,43 +150,11 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
     {
         std::cout << "\n######F_stat calculation######" << std::endl;
         stat = true;
-        std::vector<double> Vec_Fis(data_plane_vec.nbr_locus());
-        std::vector<double> Vec_Fst(data_plane_vec.nbr_locus());
         //Fis or Fst
-        double Fis_mean = 0;
-        double Fst_mean = 0;
-        int loc_abs = 0;
-        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
-        {
-            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
-            {
-                //WARNING : Array <Fis, Fst> => <.at(0), .at(1)>
-                std::array<double, 2> fract_Fis;
-                std::array<double, 2> fract_Fst;
-                if (selector.Missing_data)
-                {
-                    auto temp = Fstat_per_chr_by_loc_with_indic(data_plane_vec, chr, loc);
-                    fract_Fis = temp.at(0);
-                    fract_Fst = temp.at(1);
-                }
-                else
-                {
-                    auto temp = Fstat_per_chr_by_loc_with_probid(data_plane_vec, chr, loc);
-                    fract_Fis = temp.at(0);
-                    fract_Fst = temp.at(1);
-                }
 
-                Vec_Fis[loc_abs] = fract_Fis.at(0) / fract_Fis.at(1);
-                Fis_mean += Vec_Fis[loc_abs];
-                Vec_Fst[loc_abs] = fract_Fst.at(0) / fract_Fst.at(1);
-                Fst_mean += Vec_Fst[loc_abs];
-                ++loc_abs;
-            }
-        }
-        result.Fis_mean = Fis_mean / data_plane_vec.nbr_locus();
-        result.Fis_var = var(Vec_Fis, result.Fis_mean);
-        result.Fst_mean = Fst_mean / data_plane_vec.nbr_locus();
-        result.Fst_var = var(Vec_Fst, result.Fst_mean);
+        auto temp = Fstat_genepop(data_plane_vec, selector.Missing_data);
+        result.Fis = temp.at(0);
+        result.Fst = temp.at(1);
     }
 
     /*******************************************/

@@ -209,19 +209,17 @@ void genepop_input_c<ploidy>::calc_dist_class_btw_deme(int nbr_geo_dist_class)
     {
         double dist_btw_class = max_dist / nbr_geo_dist_class;
         Geo_dist_class_btw_deme = std::vector<std::vector<int>>(Pop_name.size(), std::vector<int>(Pop_name.size()));
+        for (auto deme1 = 0; deme1 < Geo_dist_btw_deme.size(); ++deme1)
         {
-            for (auto deme1 = 0; deme1 < Geo_dist_btw_deme.size(); ++deme1)
+            for (auto deme2 = 0; deme2 < Geo_dist_btw_deme.size(); ++deme2)
             {
-                for (auto deme2 = 0; deme2 < Geo_dist_btw_deme.size(); ++deme2)
+                //if Geo_dist_btw_deme  =  0 class 0 else floor(Geo_dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
+                //
+                Geo_dist_class_btw_deme[deme1][deme2] = (Geo_dist_btw_deme[deme1][deme2] ? ceil(Geo_dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
+                //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
+                if (Geo_dist_class_btw_deme[deme1][deme2] == nbr_geo_dist_class)
                 {
-                    //if Geo_dist_btw_deme  =  0 class 0 else floor(Geo_dist_btw_deme/dist_btw_class) to be [class_limit_min, class_limit_max[
-                    //
-                    Geo_dist_class_btw_deme[deme1][deme2] = (Geo_dist_btw_deme[deme1][deme2] ? ceil(Geo_dist_btw_deme[deme1][deme2] / dist_btw_class) - 1 : 0);
-                    //Handle trouble with value who are close to max_dist and who can be ceil at class + 1
-                    if (Geo_dist_class_btw_deme[deme1][deme2] == nbr_geo_dist_class)
-                    {
-                        --Geo_dist_class_btw_deme[deme1][deme2];
-                    }
+                    --Geo_dist_class_btw_deme[deme1][deme2];
                 }
             }
         }

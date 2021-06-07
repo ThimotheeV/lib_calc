@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     if (argc == 1)
     {
-        file_selector = "./selector.txt";
+        file_selector = "GSumStatSettings.txt";
     }
     else
     {

@@ -41,7 +41,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
         //2 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
@@ -133,7 +133,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
         //2 deme, 3 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}},
@@ -160,10 +160,10 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
@@ -191,11 +191,11 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
-                                       {1, 0, 1},
-                                       {1, 1, 0}};
+                                           {1, 0, 1},
+                                           {1, 1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
@@ -224,11 +224,11 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
-                                       {1, 0, 1},
-                                       {1, 1, 0}};
+                                           {1, 0, 1},
+                                           {1, 1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
@@ -257,11 +257,11 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
-                                       {1, 0, 1},
-                                       {1, 1, 0}};
+                                           {1, 0, 1},
+                                           {1, 1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //3 deme, 1 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 2}, {2, 2}, {1, 1}}},
@@ -293,10 +293,10 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     {
         genepop_input_c<1> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1}, {2}, {1}}, {{1}, {1}, {1}}, {{1}, {1}, {1}}, {{1}, {2}, {3}}},
@@ -324,11 +324,11 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     {
         genepop_input_c<1> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
-                                       {1, 0, 1},
-                                       {1, 1, 0}};
+                                           {1, 0, 1},
+                                           {1, 1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //3 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1}, {2}, {1}}, {{1}, {1}, {1}}, {{1}, {1}, {1}}, {{1}, {2}, {3}}},
@@ -358,11 +358,11 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     {
         genepop_input_c<1> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 1},
-                                       {1, 0, 1},
-                                       {1, 1, 0}};
+                                           {1, 0, 1},
+                                           {1, 1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //3 deme, 1 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1}, {2}, {1}}},
@@ -394,10 +394,10 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
         genepop_input.Chr_dist_btw_loc = {{{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}}};
         //2 deme, 4 indiv, 3 locus, 1 chr
         genepop_input.Genotype = {
             {{{1, 0}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 0}, {1, 0}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
@@ -406,7 +406,7 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
         data_plane_vec_c data_plane_vec(genepop_input);
 
         //value come from gmf.ods (golden master file)
-        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.1287030}, {1, 2, -0.1617969}, {1, 1, 0.0006974}}};
+        std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.1224188}, {1, 2, -0.2102390}, {1, 1, 0.0334026}}};
 
         auto result = calc_eta(data_plane_vec);
         auto result_itr = result.begin();
@@ -428,7 +428,7 @@ TEST_CASE("calc_eta corner case calc_stat_dl")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1},
-                                       {1, 0}};
+                                           {1, 0}};
 
         //2 deme, 1 indiv, 2 locus
         genepop_input.Genotype = {

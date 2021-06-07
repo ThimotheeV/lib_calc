@@ -6,7 +6,7 @@
 #include "calc_stat.hpp"
 
 //calc_Q_intra_indiv => calc_Qwi_frac
-std::array<int, 2> calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
+double calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q0 = std::array<int, 2>{0, 0};
     for (int indiv = 0; indiv < data_plane_vec.nomiss_nbr_of_indiv(chr, locus); ++indiv)
@@ -22,25 +22,23 @@ std::array<int, 2> calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec_c const &
             ++Q0.at(1);
         }
     }
-    return Q0;
+    return static_cast<double>(Q0.at(0)) / Q0.at(1);
 }
 
 double calc_Q_intra_indiv(data_plane_vec_c const &data_plane_vec)
 {
-    auto Q0 = std::array<int, 2>{0, 0};
+    double Q0 = 0;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            auto temp = calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
-            Q0.at(0) += temp.at(0);
-            Q0.at(1) += temp.at(1);
+            Q0 += calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
         }
     }
-    return static_cast<double>(Q0.at(0)) / Q0.at(1);
+    return Q0 / data_plane_vec.nbr_locus();
 }
 
-std::array<int, 2> calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int chr, int locus, int deme)
+double calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec_c const &data_plane_vec, int chr, int locus, int deme)
 {
     auto Q1 = std::array<int, 2>{0, 0};
 
@@ -116,39 +114,35 @@ std::array<int, 2> calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec_
             }
         }
     }
-    return Q1;
+    return static_cast<double>(Q1.at(0)) / Q1.at(1);
 }
 
-std::array<int, 2> calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
+double calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
-    auto Q1 = std::array<int, 2>{0, 0};
+    double Q1 = 0;
 
     for (int deme = 0; deme < data_plane_vec.nbr_of_deme(); ++deme)
     {
-        auto temp = calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, locus, deme);
-        Q1.at(0) += temp.at(0);
-        Q1.at(1) += temp.at(1);
+        Q1 += calc_Q_inter_indiv_per_chr_per_locus_per_deme(data_plane_vec, chr, locus, deme);
     }
-    return Q1;
+    return Q1 / data_plane_vec.nbr_of_deme();
 }
 
 double calc_Q_inter_indiv_intra_deme(data_plane_vec_c const &data_plane_vec)
 {
-    auto Q1 = std::array<int, 2>{0, 0};
+    double Q1 = 0;
 
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            auto temp = calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
-            Q1.at(0) += temp.at(0);
-            Q1.at(1) += temp.at(1);
+            Q1 += calc_Q_inter_indiv_per_chr_per_locus(data_plane_vec, chr, locus);
         }
     }
-    return static_cast<double>(Q1.at(0)) / Q1.at(1);
+    return Q1 / data_plane_vec.nbr_locus();
 }
 
-std::array<int, 2> calc_Q_inter_deme_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
+double calc_Q_inter_deme_per_chr_per_locus(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto Q2 = std::array<int, 2>{0, 0};
 
@@ -238,23 +232,21 @@ std::array<int, 2> calc_Q_inter_deme_per_chr_per_locus(data_plane_vec_c const &d
         }
     }
 
-    return Q2;
+    return static_cast<double>(Q2.at(0)) / Q2.at(1);
 }
 
 //deme/locus/indiv
 double calc_Q_inter_deme(data_plane_vec_c const &data_plane_vec)
 {
-    auto Q2 = std::array<int, 2>{0, 0};
+    double Q2 = 0;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            auto temp = calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus);
-            Q2.at(0) += temp.at(0);
-            Q2.at(1) += temp.at(1);
+            Q2 += calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus);
         }
     }
-    return static_cast<double>(Q2.at(0)) / Q2.at(1);
+    return Q2 / data_plane_vec.nbr_locus();
 }
 
 double calc_Hnei_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
@@ -272,17 +264,15 @@ double calc_Hnei_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr
 double calc_Hnei(data_plane_vec_c const &data_plane_vec)
 {
     double result = 0;
-    int nbr_value = 0;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
             result += calc_Hnei_per_chr_per_loc(data_plane_vec, chr, locus);
-            ++nbr_value;
         }
     }
 
-    return result / nbr_value;
+    return result / data_plane_vec.nbr_locus();
 }
 
 //WARNING : For microsat only
@@ -306,6 +296,7 @@ double calc_Var_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr,
     double n = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
     return (result / nbr_of_count) * (n / (n - 1));
 }
+
 //calc_Q_intra_indiv => calc_Qwi_frac
 double calc_Hobs_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
@@ -325,6 +316,21 @@ double calc_Hobs_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr
         }
     }
     return static_cast<double>(Q0.at(0)) / Q0.at(1);
+}
+
+double calc_Hobs(data_plane_vec_c const &data_plane_vec)
+{
+    double Hobs = 0;
+
+    for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
+    {
+        for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+        {
+            Hobs += calc_Hobs_per_chr_per_loc(data_plane_vec, chr, loc);
+        }
+    }
+
+    return Hobs / data_plane_vec.nbr_locus();
 }
 
 double calc_MGW_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
@@ -351,7 +357,7 @@ double calc_MGW(data_plane_vec_c const &data_plane_vec)
 
 #include <iostream>
 // std::vector<qr_num, qr_denum>
-std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
+std::vector<double> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     std::map<double, std::array<int, 2>> result_fract;
     int ploidy = data_plane_vec.get_Ploidy();
@@ -373,10 +379,10 @@ std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &d
     }
 
     int dist_class_nbr = data_plane_vec.nbr_geo_dist_class();
-    std::vector<std::array<int, 2>> result(dist_class_nbr);
+    std::vector<double> result(dist_class_nbr);
     for (int i = 0; i < dist_class_nbr; ++i)
     {
-        result[i] = {result_fract[i].at(0), result_fract[i].at(1)};
+        result[i] = static_cast<double>(result_fract[i].at(0)) / result_fract[i].at(1);
     }
     return result;
 }
@@ -384,7 +390,7 @@ std::vector<std::array<int, 2>> calc_qr_per_chr_by_loc(data_plane_vec_c const &d
 // std::vector<qr>
 std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
 {
-    std::vector<std::array<int, 2>> result_frac(data_plane_vec.nbr_geo_dist_class());
+    std::vector<double> result_frac(data_plane_vec.nbr_geo_dist_class());
 
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
@@ -394,8 +400,7 @@ std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
 
             for (std::size_t i = 0; i < temp.size(); ++i)
             {
-                result_frac[i].at(0) += temp[i].at(0);
-                result_frac[i].at(1) += temp[i].at(1);
+                result_frac[i] += temp[i];
             }
         }
     }
@@ -404,7 +409,8 @@ std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
     auto result_frac_itr = result_frac.begin();
     for (auto &res : result)
     {
-        res = static_cast<double>(result_frac_itr->at(0)) / result_frac_itr->at(1);
+        res = *result_frac_itr / data_plane_vec.nbr_locus();
+        ;
         ++result_frac_itr;
     }
 
@@ -656,7 +662,7 @@ std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane
 }
 
 //esti Fis, Fst
-//WARNING : Not know pertinence if missing value
+//WARNING : If no missing value and indiv_per_deme > 1
 std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     std::array<std::array<double, 2>, 2> result{{{0}, {0}}};
@@ -761,6 +767,7 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane
 }
 
 //esti Fis, Fst
+//WARNING : Work if indiv_per_deme > 1 but slower
 std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_indic(data_plane_vec_c const &data_plane_vec, int chr, int locus)
 {
     auto const &allele_state = data_plane_vec.allele_state(chr, locus);
@@ -855,16 +862,23 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_indic(data_plane_
     return result;
 }
 
-std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec)
+std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec, bool mising_data)
 {
     std::array<double, 2> result{0, 0};
-
     double fis_num = 0, fis_denum = 0, fst_num = 0, fst_denum = 0;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
-            auto temp = Fstat_per_chr_by_loc_with_indic(data_plane_vec, chr, locus);
+            std::array<std::array<double, 2>, 2> temp;
+            if (mising_data)
+            {
+                temp = Fstat_per_chr_by_loc_with_indic(data_plane_vec, chr, locus);
+            }
+            else
+            {
+                temp = Fstat_per_chr_by_loc_with_probid(data_plane_vec, chr, locus);
+            }
             fis_num += temp.at(0).at(0);
             fis_denum += temp.at(0).at(1);
             fst_num += temp.at(1).at(0);

@@ -41,10 +41,9 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.F_stat)
     {
-        head.emplace_back("Fis_mean");
-        head.emplace_back("Fis_var");
-        head.emplace_back("Fst_mean");
-        head.emplace_back("Fst_var");
+        head.emplace_back("Fis");
+        head.emplace_back("Fst");
+        head.emplace_back("Fit");
     }
 
     if (selec.Q_stat)
@@ -88,7 +87,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     head.shrink_to_fit();
 
-    gss::print_output("./Stats.txt", head, "over");
+    gss::print_output("GSumStat_stat.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
@@ -124,10 +123,9 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
 
     if (selec.F_stat)
     {
-        stats_run.emplace_back(result.Fis_mean);
-        stats_run.emplace_back(result.Fis_var);
-        stats_run.emplace_back(result.Fst_mean);
-        stats_run.emplace_back(result.Fst_var);
+        stats_run.emplace_back(result.Fis);
+        stats_run.emplace_back(result.Fst);
+        stats_run.emplace_back(-1 * (1 - result.Fis) * (1 - result.Fst) + 1);
     }
 
     if (selec.Q_stat)
@@ -169,7 +167,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
     }
 
     stats_run.shrink_to_fit();
-    gss::print_output("./Stats.txt", stats_run, "app");
+    gss::print_output("GSumStat_stat.txt", stats_run, "app");
 }
 
 void output_eta_stat_files(std::vector<std::array<double, 5>> result)
@@ -205,7 +203,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result)
     head.emplace_back("Sum_Eta_denum");
     head.emplace_back("Num_pt");
 
-    gss::print_output("./Stats_dl.txt", head, "over");
+    gss::print_output("./GSumStat_Eta.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
@@ -226,7 +224,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result)
         }
         else
         {
-            gss::print_output<double>("./Stats_dl.txt", {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
+            gss::print_output<double>("./GSumStat_Eta.txt", {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
                                       "app");
             dist_geo = values.at(0);
             dist_chr = values.at(1);
@@ -271,7 +269,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
     head.emplace_back("b");
     head.emplace_back("b_g");
 
-    gss::print_output("./eta_exp_regr.txt", head, "over");
+    gss::print_output("./Eta_exp_regr.txt", head, "over");
 
     auto eta_by_chr_dist = std::vector<std::array<double, 3>>{};
     double num_pt = 0;
@@ -300,7 +298,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
         {
             // std::cout<<"--------------------- Dist_btw_locus_pb : "<<dist_chr<<" ---------------------"<<std::endl;
             auto temp = exp_regr(eta_by_chr_dist);
-            gss::print_output<double>("./eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
+            gss::print_output<double>("./Eta_exp_regr.txt", {dist_chr, temp.at(0), temp.at(1), temp.at(2)}, "app");
             dist_chr = values.at(1);
             dist_geo = values.at(0);
             eta = 0;
@@ -318,12 +316,12 @@ void output_sfs_stat_files(std::map<int, double> const &result)
     head.emplace_back("Loci_count");
     head.emplace_back("Allele_count_class");
 
-    gss::print_output("./SFS.txt", head, "over");
+    gss::print_output("./GSumStat_SFS.txt", head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
     for (auto const &values : result)
     {
-        gss::print_output<double>("./SFS.txt", {static_cast<double>(values.first), values.second}, "app");
+        gss::print_output<double>("./GSumStat_SFS.txt", {static_cast<double>(values.first), values.second}, "app");
     }
 }

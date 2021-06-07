@@ -10,7 +10,7 @@ TEST_CASE("haplo_genepop_input_test")
 {
     SECTION("read_test")
     {
-        genepop_input_c<1> input("genotype_genedeme_format.txt");
+        genepop_input_c<1> input("genotype_genepop_format.txt");
         //Verify ADH-4 , ADH-5 \n mtDNA have been well separate
         REQUIRE(input.Locus_name.size() == 10);
         REQUIRE(input.Locus_name[4] == "4");
@@ -42,7 +42,7 @@ TEST_CASE("haplo_genepop_input_test")
 
     SECTION("Geo_dist_btw_deme")
     {
-        genepop_input_c<1> input("genotype_genedeme_format.txt");
+        genepop_input_c<1> input("genotype_genepop_format.txt");
         REQUIRE(input.Geo_dist_btw_deme[0][0] == Approx(0).margin(0.0001));
         REQUIRE(input.Geo_dist_btw_deme[0][1] == Approx(1).margin(0.0001));
         REQUIRE(input.Geo_dist_btw_deme[0][2] == Approx(2).margin(0.0001));
@@ -81,111 +81,152 @@ TEST_CASE("func_test")
     {
         genepop_input_c<2> input("Test_func.txt", 15);
         data_plane_vec_c data_plane_vec(input);
+        result_c result(15);
 
-        std::vector<double> Vec_value(data_plane_vec.nbr_of_locus());
-        double Hexp_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        std::cout << "\n######Hobs calculation######" << std::endl;
+        std::vector<double> Vec_value(data_plane_vec.nbr_locus());
+        double Hobs_mean = 0;
+        int loc_abs = 0;
+        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            Vec_value[loc] = calc_Hnei_per_loc(data_plane_vec, loc);
-            Hexp_moy += Vec_value[loc];
+            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+            {
+                Vec_value[loc_abs] = calc_Hobs_per_chr_per_loc(data_plane_vec, chr, loc);
+                Hobs_mean += Vec_value[loc];
+                ++loc_abs;
+            }
         }
 
-        Hexp_moy /= data_plane_vec.nbr_of_locus();
+        result.Hobs_mean = Hobs_mean / data_plane_vec.nbr_locus();
+        result.Hobs_var = var(Vec_value, result.Hobs_mean);
 
         /*******************************************/
 
-        double var_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        std::cout << "\n######Hexp calculation######" << std::endl;
+        Vec_value.clear();
+        Vec_value.resize(data_plane_vec.nbr_locus());
+        double Hexp_mean = 0;
+        loc_abs = 0;
+        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            Vec_value[loc] = calc_Var_per_loc(data_plane_vec, loc);
-            var_moy += Vec_value[loc];
-        }
-        var_moy /= data_plane_vec.nbr_of_locus();
-
-        /*******************************************/
-        double nb_allele_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
-        {
-            Vec_value[loc] = data_plane_vec.nbr_allele_per_loc(loc);
-            nb_allele_moy += Vec_value[loc];
-        }
-
-        nb_allele_moy /= data_plane_vec.nbr_of_locus();
-
-        /*******************************************/
-
-        double MGW_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
-        {
-            Vec_value[loc] = calc_MGW_per_loc(data_plane_vec, loc);
-            MGW_moy += Vec_value[loc];
+            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+            {
+                Vec_value[loc_abs] = calc_Hnei_per_chr_per_loc(data_plane_vec, chr, loc);
+                Hexp_mean += Vec_value[loc];
+                ++loc_abs;
+            }
         }
 
-        MGW_moy /= data_plane_vec.nbr_of_locus();
+        result.Hexp_mean = Hexp_mean / data_plane_vec.nbr_locus();
+        result.Hexp_var = var(Vec_value, result.Hexp_mean);
 
         /*******************************************/
 
-        double Hobs_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        std::cout << "\n######Var calculation######" << std::endl;
+        Vec_value.clear();
+        Vec_value.resize(data_plane_vec.nbr_locus());
+        double var_mean = 0;
+        loc_abs = 0;
+        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            Vec_value[loc] = calc_Hobs_per_loc(data_plane_vec, loc);
-            Hobs_moy += Vec_value[loc];
+            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+            {
+                Vec_value[loc_abs] = calc_Var_per_chr_per_loc(data_plane_vec, chr, loc);
+                var_mean += Vec_value[loc];
+                ++loc_abs;
+            }
+        }
+        result.Var_mean = var_mean / data_plane_vec.nbr_locus();
+        result.Var_var = var(Vec_value, result.Var_mean);
+
+        /*******************************************/
+
+        std::cout << "\n######Nb_allele calculation######" << std::endl;
+        Vec_value.clear();
+        Vec_value.resize(data_plane_vec.nbr_locus());
+        double nb_allele_mean = 0;
+        loc_abs = 0;
+        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
+        {
+            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+            {
+                Vec_value[loc_abs] = data_plane_vec.nbr_allele(chr, loc);
+                nb_allele_mean += Vec_value[loc];
+                ++loc_abs;
+            }
         }
 
-        Hobs_moy /= data_plane_vec.nbr_of_locus();
+        result.Nb_allele_mean = nb_allele_mean / data_plane_vec.nbr_locus();
+        result.Nb_allele_var = var(Vec_value, result.Nb_allele_mean);
 
         /*******************************************/
 
-        //Fis or Fst
-        double F_moy = 0;
-        for (int loc = 0; loc < Vec_value.size(); ++loc)
+        std::cout << "\n######MGW calculation######" << std::endl;
+        Vec_value.clear();
+        Vec_value.resize(data_plane_vec.nbr_locus());
+        double MGW_mean = 0;
+        loc_abs = 0;
+        for (std::size_t chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            //    //WARNING : Array <Fis, Fst> => <.at(0), .at(1)>
-            auto fract_Fst = Fstat_by_loc_with_indic(data_plane_vec, loc).at(1);
-            Vec_value[loc] = fract_Fst.at(0) / fract_Fst.at(1);
-            F_moy += Vec_value[loc];
+            for (std::size_t loc = 0; loc < data_plane_vec.nbr_locus(chr); ++loc)
+            {
+                Vec_value[loc_abs] = calc_MGW_per_chr_per_loc(data_plane_vec, chr, loc);
+                MGW_mean += Vec_value[loc];
+                ++loc_abs;
+            }
         }
-
-        F_moy /= data_plane_vec.nbr_of_locus();
-
-        /*******************************************/
-
-        auto Qr = calc_qr_all_loc(data_plane_vec);
+        result.MGW_mean = MGW_mean / data_plane_vec.nbr_locus();
+        result.MGW_var = var(Vec_value, result.MGW_mean);
 
         /*******************************************/
 
+        std::cout << "\n######F_stat calculation######" << std::endl;
+
+        auto temp = Fstat_genepop(data_plane_vec, false);
+        result.Fis = temp.at(0);
+        result.Fst = temp.at(1);
+
+        /*******************************************/
+
+        std::cout << "\n######Qr calculation######" << std::endl;
+        result.Qr = calc_qr_all_loc(data_plane_vec);
+
+        /*******************************************/
+
+        std::cout << "\n######Ar calculation######" << std::endl;
         auto Ar = ar_by_pair(data_plane_vec);
-        auto Ar_regr = linear_regres_X_Y(Ar);
+        result.Ar_reg = linear_regres_X_Y(Ar);
 
         /*******************************************/
 
+        std::cout << "\n######Er calculation######" << std::endl;
         auto er = er_by_pair(data_plane_vec);
-        auto er_regr = linear_regres_X_Y(er);
+        result.Er_reg = linear_regres_X_Y(er);
 
         /*******************************************/
         // Value from IBDSim
-        REQUIRE(Hobs_moy == Approx(0.5555556).margin(0.0000001));
-        REQUIRE(Hexp_moy == Approx(0.7237660).margin(0.0000001));
-        REQUIRE(var_moy == Approx(3.158315).margin(0.000001));
-        REQUIRE(MGW_moy == Approx(0.9297619).margin(0.0000001));
-        REQUIRE(F_moy == Approx(0.2452756).margin(0.0000001)); //Le Fst de genedeme => moyenne des Fst des locus dans genedeme (et non pas le Fst moyen de Genedeme)
-        REQUIRE(nb_allele_moy == 6.1);
-        REQUIRE(Qr[0] == Approx(0.37333).margin(0.00001));
-        REQUIRE(Qr[1] == Approx(0.31281).margin(0.00001));
-        REQUIRE(Qr[2] == Approx(0.29392).margin(0.00001));
-        REQUIRE(Qr[3] == Approx(0.28254).margin(0.00001));
-        REQUIRE(Qr[4] == Approx(0.27965).margin(0.00001));
-        REQUIRE(Qr[5] == Approx(0.27442).margin(0.00001));
-        REQUIRE(Qr[6] == Approx(0.27813).margin(0.00001));
-        REQUIRE(Qr[7] == Approx(0.26475).margin(0.00001));
-        REQUIRE(Qr[8] == Approx(0.26013).margin(0.00001));
-        REQUIRE(Qr[9] == Approx(0.26194).margin(0.00001));
-        REQUIRE(Qr[10] == Approx(0.24749).margin(0.00001));
-        REQUIRE(Qr[11] == Approx(0.26760).margin(0.00001));
-        REQUIRE(Qr[12] == Approx(0.26709).margin(0.00001));
-        REQUIRE(Ar_regr.at(0) == Approx(0.0108752).margin(0.0000001));  //Ar_slope
-        REQUIRE(Ar_regr.at(1) == Approx(0.231215).margin(0.0000001));   //Ar_intercept
-        REQUIRE(er_regr.at(0) == Approx(0.00857859).margin(0.0000001)); //Er_slope
-        REQUIRE(er_regr.at(1) == Approx(-0.0572093).margin(0.0000001)); //Er_intercept
+        REQUIRE(result.Hobs_mean == Approx(0.5555556).margin(0.0000001));
+        REQUIRE(result.Hexp_mean == Approx(0.7237660).margin(0.0000001));
+        REQUIRE(result.Var_mean == Approx(3.158315).margin(0.000001));
+        REQUIRE(result.MGW_mean == Approx(0.9297619).margin(0.0000001));
+        REQUIRE(result.Nb_allele_mean == 6.1);
+        REQUIRE(result.Qr[0] == Approx(0.37333).margin(0.00001));
+        REQUIRE(result.Qr[1] == Approx(0.31281).margin(0.00001));
+        REQUIRE(result.Qr[2] == Approx(0.29392).margin(0.00001));
+        REQUIRE(result.Qr[3] == Approx(0.28254).margin(0.00001));
+        REQUIRE(result.Qr[4] == Approx(0.27965).margin(0.00001));
+        REQUIRE(result.Qr[5] == Approx(0.27442).margin(0.00001));
+        REQUIRE(result.Qr[6] == Approx(0.27813).margin(0.00001));
+        REQUIRE(result.Qr[7] == Approx(0.26475).margin(0.00001));
+        REQUIRE(result.Qr[8] == Approx(0.26013).margin(0.00001));
+        REQUIRE(result.Qr[9] == Approx(0.26194).margin(0.00001));
+        REQUIRE(result.Qr[10] == Approx(0.24749).margin(0.00001));
+        REQUIRE(result.Qr[11] == Approx(0.26760).margin(0.00001));
+        REQUIRE(result.Qr[12] == Approx(0.26709).margin(0.00001));
+        // Value from Genepop
+        REQUIRE(result.Ar_reg.at(0) == Approx(0.0108752).margin(0.0000001));  //Ar_slope
+        REQUIRE(result.Ar_reg.at(1) == Approx(0.231215).margin(0.0000001));   //Ar_intercept
+        REQUIRE(result.Er_reg.at(0) == Approx(0.00857859).margin(0.0000001)); //Er_slope
+        REQUIRE(result.Er_reg.at(1) == Approx(-0.0572093).margin(0.0000001)); //Er_intercept
     }
 }

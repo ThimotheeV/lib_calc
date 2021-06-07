@@ -428,8 +428,30 @@ TEST_CASE("diploid_data_plane_vec_test")
         //3chr, 1 locus/chr, 3 deme, 2 indiv
         REQUIRE(plane_3d_vec.index_begin_locus(0, 0) == 0);
         REQUIRE(plane_3d_vec.index_end_locus(0, 0) == 12);
+        REQUIRE(plane_3d_vec.index_begin_locus(1, 0) == 12);
+        REQUIRE(plane_3d_vec.index_end_locus(1, 0) == 24);
         REQUIRE(plane_3d_vec.index_begin_locus(2, 0) == 24);
         REQUIRE(plane_3d_vec.index_end_locus(2, 0) == 36);
+    }
+
+    SECTION("index_begin_locus() && index_end_locus() with heterogene number of loc by gene")
+    {
+        genepop_input_c<2> genepop_input;
+        //3 deme, 2-1-3 indiv, 3 locus, 2 chr (2 locs and 1 locs)
+        genepop_input.Chr_dist_btw_loc = {{{0, 1}, {1, 0}},
+                                          {{0}}};
+        genepop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
+                                  {{{1, 3}, {1, 3}, {1, 3}}},
+                                  {{{1, 1}, {1, 2}, {1, 3}}, {{2, 1}, {2, 2}, {2, 3}}, {{2, 3}, {2, 3}, {2, 3}}}};
+
+        data_plane_vec_c plane_3d_vec(genepop_input);
+        //3chr, 1 locus/chr, 3 deme, 2 indiv
+        REQUIRE(plane_3d_vec.index_begin_locus(0, 0) == 0);
+        REQUIRE(plane_3d_vec.index_end_locus(0, 0) == 12);
+        REQUIRE(plane_3d_vec.index_begin_locus(0, 1) == 12);
+        REQUIRE(plane_3d_vec.index_end_locus(0, 1) == 24);
+        REQUIRE(plane_3d_vec.index_begin_locus(1, 0) == 24);
+        REQUIRE(plane_3d_vec.index_end_locus(1, 0) == 36);
     }
 
     SECTION("same_indiv(int gene_index1, int gene_index2) with same size deme")
@@ -576,8 +598,8 @@ TEST_CASE("Indiv_feat_test")
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_class_nbr = 3;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
-                                       {1, 0, 1},
-                                       {2, 1, 0}};
+                                           {1, 0, 1},
+                                           {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus, 3 chr
         genepop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
                                   {{{1, 3}, {1, 3}, {1, 3}}},
@@ -616,8 +638,8 @@ TEST_CASE("Indiv_feat_test")
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_class_nbr = 3;
         genepop_input.Geo_dist_class_btw_deme = {{0, 1, 2},
-                                             {1, 0, 1},
-                                             {2, 1, 0}};
+                                                 {1, 0, 1},
+                                                 {2, 1, 0}};
         //3 deme, 2 indiv, 3 locus, 3 chr
         genepop_input.Genotype = {{{{1, 2}, {1, 1}, {1, 1}}, {{1, 1}, {1, 2}, {1, 3}}},
                                   {{{1, 3}, {1, 3}, {1, 3}}},

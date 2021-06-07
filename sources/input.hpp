@@ -91,10 +91,8 @@ struct result_c
     double MGW_mean{-1};
     double MGW_var{-1};
 
-    double Fis_mean{-1};
-    double Fis_var{-1};
-    double Fst_mean{-1};
-    double Fst_var{-1};
+    double Fis{-1};
+    double Fst{-1};
 
     double Qwi_mean{-1};
     double Qwi_var{-1};
