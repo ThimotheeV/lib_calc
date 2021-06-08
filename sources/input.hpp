@@ -51,6 +51,8 @@ struct selector_input_c
 
     std::string Data_filename;
     std::string Genetic_map_name;
+    std::string Generic_data_filename = "GSumStat_";
+
     int Ploidy{0};
 
     bool Hobs{false};

@@ -95,7 +95,7 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
         std::vector<std::vector<std::string>> crude_map_vec(map_file_vec.size());
         for (int i = 0; i < crude_map_vec.size(); ++i)
         {
-            crude_map_vec[i] = gss::slice_by_char(map_file_vec[i], '\t');
+            crude_map_vec[i] = gss::slice_by_tab_or_space(map_file_vec[i]);
             if (crude_map_vec[i].size() != 4)
             {
                 throw std::logic_error("In .map file, at line " + std::to_string(i + 1) + " 4 columns are expected, only  " + std::to_string(crude_map_vec[i].size()) + " provided. I quit.");
@@ -128,8 +128,9 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
             std::get<2>(refined_map_vec.at(i)) = std::stod(crude_map_vec[i].at(2));
             std::get<3>(refined_map_vec.at(i)) = std::stoi(crude_map_vec[i].at(3));
         }
-
+        std::cout << "up" << std::endl;
         calc_dist_btw_loc(refined_map_vec, chr, nbr_chr_dist_class);
+        std::cout << "up" << std::endl;
     }
 }
 
@@ -233,7 +234,7 @@ void genepop_input_c<ploidy>::calc_dist_btw_loc(std::vector<std::tuple<int, std:
     //number of chr and not max chr num
     chr += 1;
     //Organise assign correct locus index to locus in map
-    std::vector<std::vector<int>> dist_from_chr_ori(chr);
+    std::vector<std::vector<int>> dist_from_chr_ori(chr); //TODO : FISH HERE
     for (int locus = 0; locus < Locus_name.size(); ++locus)
     {
         std::string name = Locus_name[locus];

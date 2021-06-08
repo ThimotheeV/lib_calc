@@ -8,7 +8,7 @@
 
 //TODO : data_plane_vec_c => flat_data_vec
 //Coherance of display is handle by previous func => verification of calculus possibility
-void output_stat_files(selector_input_c const &selec, result_c const &result)
+void output_stat_files(selector_input_c const &selec, result_c const &result, std::string path_to_output_file)
 {
     std::vector<std::string> head;
     head.reserve(20 + selec.Geo_dist_class_nbr + 2 + 2);
@@ -170,7 +170,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result)
     gss::print_output("GSumStat_stat.txt", stats_run, "app");
 }
 
-void output_eta_stat_files(std::vector<std::array<double, 5>> result)
+void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::string path_to_output_file)
 {
     //<pair of deme * pair of locus,<dist-deme, dist-locus, value eta>>
     std::sort(result.begin(), result.end(),
@@ -308,7 +308,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
     }
 }
 
-void output_sfs_stat_files(std::map<int, double> const &result)
+void output_sfs_stat_files(std::map<int, double> const &result, std::string path_to_output_file)
 {
     std::vector<std::string> head;
     head.reserve(2);

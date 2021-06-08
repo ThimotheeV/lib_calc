@@ -140,8 +140,8 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
             }
             ++result_itr;
         }
-
-        output_sfs_stat_files(output_map);
+        std::string str(selector.Generic_data_filename + "_SFS.txt");
+        output_sfs_stat_files(output_map, str);
     }
 
     /*******************************************/
@@ -192,23 +192,29 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
     {
         std::cout << "\n######Eta calculation######" << std::endl;
         std::vector<std::array<double, 5>> eta;
-        if (data_plane_vec.get_Ploidy() == 2)
-        {
-            eta = calc_eta(data_plane_vec);
-        }
+
+        if (data_plane_vec.nbr_of_indiv() == data_plane_vec.nbr_of_deme())
+            if (data_plane_vec.get_Ploidy() == 2)
+            {
+                eta = calc_eta(data_plane_vec);
+            }
+            else
+            {
+                eta = calc_eta_q1_version(data_plane_vec);
+            }
         else
         {
-            eta = calc_eta_q1_version(data_plane_vec);
+            eta = calc_eta_1_indiv_deme_v(data_plane_vec);
         }
-
-        output_eta_stat_files(eta);
-        output_exp_regr_eta_stat_files(eta);
+        std::string str(selector.Generic_data_filename + "_Eta.txt");
+        output_eta_stat_files(eta, str);
+        //output_exp_regr_eta_stat_files(eta);
     }
 
     if (stat)
     {
-        std::cout << "-----Writing result-----" << std::endl;
-        output_stat_files(selector, result);
+        std::string str(selector.Generic_data_filename + "_Stats.txt");
+        output_stat_files(selector, result, str);
     }
 
     return result;

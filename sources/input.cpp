@@ -73,7 +73,7 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
     for (auto const &line : str_vec)
     {
         //Clean and parse key=value in a vector[key, value]
-        const auto &clean_line = gss::remove_spaces_tab_in_range(line, 0, static_cast<int>(line.size()));
+        const auto &clean_line = gss::remove_spaces_tab_in_range(line, 0, line.size());
         auto line_pair_key_value = gss::slice_by_char(clean_line, '=');
         const auto &stat_name = gss::remove_underscores(gss::str_tolower(line_pair_key_value[0]));
 

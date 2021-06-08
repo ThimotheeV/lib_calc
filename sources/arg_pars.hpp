@@ -7,7 +7,7 @@
 namespace gss {
 std::string remove_underscores(std::string str);
 std::string remove_spaces_tab_underscores(std::string str);
-std::string remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end);
+std::string remove_spaces_tab_in_range(std::string const &str, std::size_t pos_beg, std::size_t pos_end);
 std::string remove_comma_semicolons_in_range(std::string str, int pos_beg, int pos_end);
 std::string replace_spaces_tab_in_range_by_comma(std::string str, int pos_beg, int pos_end);
 std::string replace_spaces_tab_underscores_by_comma(std::string str);

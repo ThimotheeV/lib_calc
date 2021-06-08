@@ -21,34 +21,42 @@ std::string gss::remove_underscores(std::string str)
 // Remove if char is space, tabulation or "_"
 std::string gss::remove_spaces_tab_underscores(std::string str)
 {
-    str = gss::remove_spaces_tab_in_range(str, 0, static_cast<int>(str.size()));
+    str = gss::remove_spaces_tab_in_range(str, 0, str.size());
 
     return gss::remove_underscores(str);
 }
 
-std::string gss::remove_spaces_tab_in_range(std::string str, int pos_beg, int pos_end)
+std::string gss::remove_spaces_tab_in_range(std::string const &str, std::size_t pos_beg, std::size_t pos_end)
 {
-    auto beg_itr = str.begin();
-    auto space = std::find(beg_itr + pos_beg, beg_itr + pos_end, ' ');
-    auto tab = std::find(beg_itr + pos_beg, beg_itr + pos_end, '\t');
-    if (space > tab)
-    {
-        space = tab;
-    }
+    std::string result;
+    result.reserve(str.size());
+    result += str.substr(0, pos_beg);
 
-    while ((space != str.end()) && (pos_end > 0))
+    std::size_t beg = pos_beg;
+    std::size_t pos = beg;
+
+    while (pos < str.size() && pos < pos_end)
     {
-        str.erase(space);
-        --pos_end;
-        space = std::find(space, beg_itr + pos_end, ' ');
-        tab = std::find(beg_itr + pos_beg, beg_itr + pos_end, '\t');
-        if (space > tab)
+        while ((str[pos] == '\t') || (str[pos] == ' '))
         {
-            space = tab;
+            ++pos;
+        }
+
+        beg = pos;
+
+        while (((str[pos] != '\t') && (str[pos] != ' ')) && (pos < str.size()))
+        {
+            ++pos;
+        }
+        //Handle sep as last element before end of line
+        if ((str[beg] != '\n') && (str[beg] != '\r') && (beg != pos))
+        {
+            result += str.substr(beg, pos - beg);
         }
     }
 
-    return str;
+    result.shrink_to_fit();
+    return result;
 }
 
 std::string gss::remove_comma_semicolons_in_range(std::string str, int pos_beg, int pos_end)
