@@ -154,7 +154,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
     }
 }
 
-TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
+TEST_CASE("calc_eta_diploide diploid without missing data calc_stat_dl")
 {
     SECTION("eta 2 diploid pop without missing value")
     {
@@ -174,7 +174,7 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.0505051}, {1, 2, -0.1135681}, {1, 1, 0.0600601}}};
 
-        auto result = calc_eta(data_plane_vec);
+        auto result = calc_eta_diploide(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -207,7 +207,7 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0495151}, {1, 1, -0.0891272}, {1, 1, 0.0354858}, {1, 2, -0.0947932}, {1, 2, 0.0410162}, {1, 2, 0.0583342}, {1, 1, 0.0484066}, {1, 1, -0.0750302}, {1, 1, 0.0282371}}};
 
-        auto result = calc_eta(data_plane_vec);
+        auto result = calc_eta_diploide(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -240,7 +240,7 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 9> expect = {{{1, 1, -0.0666666}, {1, 1, -0.1028571}, {1, 1, 0.0285714}, {1, 2, -0.1434482}, {1, 2, 0.0416666}, {1, 2, 0.0494208}, {1, 1, 0.0574712}, {1, 1, -0.0738095}, {1, 1, 0.0219987}}};
 
-        auto result = calc_eta_q1_version(data_plane_vec);
+        auto result = calc_eta_haploid(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -287,7 +287,7 @@ TEST_CASE("calc_eta diploid without missing data calc_stat_dl")
     }
 }
 
-TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
+TEST_CASE("calc_eta_diploide haploid without missing data calc_stat_dl")
 {
     SECTION("eta 2 haploid pop without missing value")
     {
@@ -307,7 +307,7 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 3> expect = {{{1, 1, 0.3333333}, {1, 2, 1.7142857}, {1, 1, 0.1904761}}};
 
-        auto result = calc_eta(data_plane_vec);
+        auto result = calc_eta_diploide(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -341,7 +341,7 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
         std::array<std::array<double, 3>, 9> expect = {
             {{1, 1, 0.1904761}, {1, 1, 0.0846560}, {1, 1, 0.2962962}, {1, 2, 0.6428571}, {1, 2, 0.1428571}, {1, 2, 0.5714285}, {1, 1, 0.125}, {1, 1, -0.0833333}, {1, 1, 0.0833333}}};
 
-        auto result = calc_eta(data_plane_vec);
+        auto result = calc_eta_diploide(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -388,7 +388,7 @@ TEST_CASE("calc_eta haploid without missing data calc_stat_dl")
     }
 }
 
-TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
+TEST_CASE("calc_eta_diploide diploid with missing data calc_stat_dl")
 {
     SECTION("eta 2 diploid pop with missing value")
     {
@@ -408,7 +408,7 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
         //value come from gmf.ods (golden master file)
         std::array<std::array<double, 3>, 3> expect = {{{1, 1, -0.1224188}, {1, 2, -0.2102390}, {1, 1, 0.0334026}}};
 
-        auto result = calc_eta(data_plane_vec);
+        auto result = calc_eta_diploide(data_plane_vec);
         auto result_itr = result.begin();
 
         for (auto value : expect)
@@ -422,7 +422,7 @@ TEST_CASE("calc_eta diploid with missing data calc_stat_dl")
     }
 }
 
-TEST_CASE("calc_eta corner case calc_stat_dl")
+TEST_CASE("calc_eta_diploide corner case calc_stat_dl")
 {
     SECTION("eta without difference")
     {
@@ -437,6 +437,6 @@ TEST_CASE("calc_eta corner case calc_stat_dl")
 
         data_plane_vec_c data_plane_vec(genepop_input);
 
-        REQUIRE_THROWS(calc_eta(data_plane_vec));
+        REQUIRE_THROWS(calc_eta_diploide(data_plane_vec));
     }
 }

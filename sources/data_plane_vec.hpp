@@ -110,18 +110,18 @@ public:
     int index_end_locus(int chr, int locus_index_in_chr) const;
 
     // in the same locus => gene 1 & gene 2 : same deme, indiv ?
-    bool same_indiv(int gene_index_in_sample1, int gene_index_in_sample2) const;
-    bool same_deme(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    bool same_indiv(int gene1_index_in_sample, int gene2_index_in_sample) const;
+    bool same_deme(int gene1_index_in_sample, int gene2_index_in_sample) const;
     bin_vec const &nomiss_data(int indiv_index_in_sample) const;
-    double geo_dist_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    double geo_dist_btw_gene(int gene1_index_in_sample, int gene2_index_in_sample) const;
     double geo_dist_btw_deme(int deme1, int deme2) const;
     int nbr_geo_dist_class() const;
-    int geo_dist_class_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const;
+    int geo_dist_class_btw_gene(int gene1_index_in_sample, int gene2_index_in_sample) const;
     int geo_dist_class_btw_deme(int deme1, int deme2) const;
 
     int nbr_chr_dist_class() const;
-    double chr_dist_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr12) const;
-    int chr_dist_class_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr12) const;
+    double chr_dist_btw_locus(int chr, int locus1_index_in_chr, int locus2_index_in_chr) const;
+    int chr_dist_class_btw_locus(int chr, int locus1_index_in_chr, int locus2_index_in_chr) const;
 };
 
 #include "data_plane_vec.tpp"

@@ -163,7 +163,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
     {
         std::cout << "\n######Qr calculation######" << std::endl;
         stat = true;
-        result.Qr = calc_qr_all_loc(data_plane_vec);
+        result.Qr = calc_qr(data_plane_vec);
     }
 
     /*******************************************/
@@ -193,15 +193,17 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         std::cout << "\n######Eta calculation######" << std::endl;
         std::vector<std::array<double, 5>> eta;
 
-        if (data_plane_vec.nbr_of_indiv() == data_plane_vec.nbr_of_deme())
+        if (data_plane_vec.nbr_of_indiv() != data_plane_vec.nbr_of_deme())
+        {
             if (data_plane_vec.get_Ploidy() == 2)
             {
-                eta = calc_eta(data_plane_vec);
+                eta = calc_eta_diploide(data_plane_vec);
             }
             else
             {
-                eta = calc_eta_q1_version(data_plane_vec);
+                eta = calc_eta_haploid(data_plane_vec);
             }
+        }
         else
         {
             eta = calc_eta_1_indiv_deme_v(data_plane_vec);

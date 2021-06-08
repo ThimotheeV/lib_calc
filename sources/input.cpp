@@ -87,6 +87,11 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             Genetic_map_name = line_pair_key_value[1];
             continue;
         }
+        if (stat_name == "outputfilename")
+        {
+            Generic_data_filename = line_pair_key_value[1];
+            continue;
+        }
         if (stat_name == "ploidy")
         {
             Ploidy = std::stoi(line_pair_key_value[1]);

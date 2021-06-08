@@ -87,7 +87,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
 
     head.shrink_to_fit();
 
-    gss::print_output("GSumStat_stat.txt", head, "over");
+    gss::print_output(path_to_output_file, head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
@@ -167,7 +167,7 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
     }
 
     stats_run.shrink_to_fit();
-    gss::print_output("GSumStat_stat.txt", stats_run, "app");
+    gss::print_output(path_to_output_file, stats_run, "app");
 }
 
 void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::string path_to_output_file)
@@ -203,7 +203,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::strin
     head.emplace_back("Sum_Eta_denum");
     head.emplace_back("Num_pt");
 
-    gss::print_output("./GSumStat_Eta.txt", head, "over");
+    gss::print_output(path_to_output_file, head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
@@ -224,7 +224,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::strin
         }
         else
         {
-            gss::print_output<double>("./GSumStat_Eta.txt", {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
+            gss::print_output<double>(path_to_output_file, {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
                                       "app");
             dist_geo = values.at(0);
             dist_chr = values.at(1);
@@ -316,12 +316,12 @@ void output_sfs_stat_files(std::map<int, double> const &result, std::string path
     head.emplace_back("Loci_count");
     head.emplace_back("Allele_count_class");
 
-    gss::print_output("./GSumStat_SFS.txt", head, "over");
+    gss::print_output(path_to_output_file, head, "over");
 
     //+++++++++++++++++++++++++++++++++++++++++++++++//
 
     for (auto const &values : result)
     {
-        gss::print_output<double>("./GSumStat_SFS.txt", {static_cast<double>(values.first), values.second}, "app");
+        gss::print_output<double>(path_to_output_file, {static_cast<double>(values.first), values.second}, "app");
     }
 }

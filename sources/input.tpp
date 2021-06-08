@@ -128,9 +128,9 @@ genepop_input_c<ploidy>::genepop_input_c(std::string path_to_genepop_file, int n
             std::get<2>(refined_map_vec.at(i)) = std::stod(crude_map_vec[i].at(2));
             std::get<3>(refined_map_vec.at(i)) = std::stoi(crude_map_vec[i].at(3));
         }
-        std::cout << "up" << std::endl;
+
         calc_dist_btw_loc(refined_map_vec, chr, nbr_chr_dist_class);
-        std::cout << "up" << std::endl;
+
     }
 }
 
@@ -240,7 +240,7 @@ void genepop_input_c<ploidy>::calc_dist_btw_loc(std::vector<std::tuple<int, std:
         std::string name = Locus_name[locus];
         bool not_found_name = true;
         int i = 0;
-        while (not_found_name || (i < map_vec.size()))
+        while (not_found_name && (i < map_vec.size()))
         {
             if (name == std::get<1>(map_vec.at(i)))
             {

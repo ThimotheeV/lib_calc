@@ -28,7 +28,7 @@ double calc_MGW(data_plane_vec_c const &data_plane_vec);
 // std::vector<qr_num, qr_denum>
 std::vector<double> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_vec, int chr, int locus);
 // std::vector<qr>
-std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec);
+std::vector<double> calc_qr(data_plane_vec_c const &data_plane_vec);
 
 std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane_vec);
 std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane_vec);

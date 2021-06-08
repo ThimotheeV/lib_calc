@@ -75,7 +75,7 @@ std::vector<double> calc_phi_ij(data_plane_vec_c const &data_plane_vec, int ploi
 }
 
 //<locus_pair_nbr<phi, prob_intra_loc, denom>>
-std::array<double, 3> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, double Q1_loc_i, int locus_j, double Q2_loc_j, double Q1_loc_j, int deme_x, int deme_y)
+std::array<double, 3> calc_eta_ij_per_deme_pair_xy(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, double Q1_loc_i, int locus_j, double Q2_loc_j, double Q1_loc_j, int deme_x, int deme_y)
 {
     double phi = 0;
     double div = 0;
@@ -179,7 +179,7 @@ std::array<double, 3> calc_eta_ij_xy(data_plane_vec_c const &data_plane_vec, int
 }
 
 //<deme_pair_nbr,<dist-deme, dist-locus, value eta, value eta denom>>
-std::vector<std::array<double, 5>> calc_eta_ij(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, int locus_j, double Q2_loc_j)
+std::vector<std::array<double, 5>> calc_eta_ij_per_deme_pair(data_plane_vec_c const &data_plane_vec, int chr, int locus_i, double Q2_loc_i, int locus_j, double Q2_loc_j)
 {
     int deme_pair_nbr = (data_plane_vec.nbr_of_deme() * (data_plane_vec.nbr_of_deme() - 1)) / 2;
     std::vector<std::array<double, 5>> result;
@@ -214,7 +214,7 @@ std::vector<std::array<double, 5>> calc_eta_ij(data_plane_vec_c const &data_plan
         {
             auto Q1_loc_i_xy = (Q1_locus_i_deme[deme_x] + Q1_locus_i_deme[deme_y]) / 2;
             auto Q1_loc_j_xy = (Q1_locus_j_deme[deme_x] + Q1_locus_j_deme[deme_y]) / 2;
-            auto eta = calc_eta_ij_xy(data_plane_vec, chr, locus_i, Q2_loc_i, Q1_loc_i_xy, locus_j, Q2_loc_j, Q1_loc_j_xy, deme_x, deme_y);
+            auto eta = calc_eta_ij_per_deme_pair_xy(data_plane_vec, chr, locus_i, Q2_loc_i, Q1_loc_i_xy, locus_j, Q2_loc_j, Q1_loc_j_xy, deme_x, deme_y);
             //dist-deme, dist-locus, value eta
             double dist_deme;
             if (data_plane_vec.nbr_geo_dist_class() > 1)
@@ -232,9 +232,9 @@ std::vector<std::array<double, 5>> calc_eta_ij(data_plane_vec_c const &data_plan
     return result;
 }
 
-//Haploide version with > 1 indiv/deme
+//Diploid version with > 1 indiv/deme
 //<pair of deme * pair of locus,<dist-locus, dist-deme, value eta>>
-std::vector<std::array<double, 5>> calc_eta(data_plane_vec_c const &data_plane_vec)
+std::vector<std::array<double, 5>> calc_eta_diploide(data_plane_vec_c const &data_plane_vec)
 {
     std::vector<std::array<double, 5>> result;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
@@ -262,7 +262,7 @@ std::vector<std::array<double, 5>> calc_eta(data_plane_vec_c const &data_plane_v
         {
             for (auto locus_j = locus_i + 1; locus_j < poly_loc.end(); ++locus_j)
             {
-                auto temp_vec = calc_eta_ij(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j]);
+                auto temp_vec = calc_eta_ij_per_deme_pair(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j]);
                 result.insert(result.end(), temp_vec.begin(), temp_vec.end());
             }
         }
@@ -271,8 +271,8 @@ std::vector<std::array<double, 5>> calc_eta(data_plane_vec_c const &data_plane_v
     return result;
 }
 
-//Diploide version with > 1 indiv/deme
-std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &data_plane_vec)
+//Haploid version with > 1 indiv/deme
+std::vector<std::array<double, 5>> calc_eta_haploid(data_plane_vec_c const &data_plane_vec)
 {
     std::vector<std::array<double, 5>> result;
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
@@ -323,7 +323,7 @@ std::vector<std::array<double, 5>> calc_eta_q1_version(data_plane_vec_c const &d
                     {
                         auto Q1_loc_i_xy = (Q1_locus_i_deme[deme_x] + Q1_locus_i_deme[deme_y]) / 2;
                         auto Q1_loc_j_xy = (Q1_locus_j_deme[deme_x] + Q1_locus_j_deme[deme_y]) / 2;
-                        auto eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q1_loc_i_xy, Q1_loc_i_xy, *locus_j, Q1_loc_j_xy, Q1_loc_j_xy, deme_x, deme_y);
+                        auto eta = calc_eta_ij_per_deme_pair_xy(data_plane_vec, chr, *locus_i, Q1_loc_i_xy, Q1_loc_i_xy, *locus_j, Q1_loc_j_xy, Q1_loc_j_xy, deme_x, deme_y);
                         //dist-deme, dist-locus, value eta
                         double dist_deme;
                         if (data_plane_vec.nbr_geo_dist_class() > 1)
@@ -396,11 +396,11 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
                         std::array<double, 3> eta;
                         if (data_plane_vec.get_Ploidy() == 2)
                         {
-                            eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q0_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q0_locus[*locus_j], deme_x, deme_y);
+                            eta = calc_eta_ij_per_deme_pair_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q0_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q0_locus[*locus_j], deme_x, deme_y);
                         }
                         if (data_plane_vec.get_Ploidy() == 1)
                         {
-                            eta = calc_eta_ij_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q2_locus[*locus_j], deme_x, deme_y);
+                            eta = calc_eta_ij_per_deme_pair_xy(data_plane_vec, chr, *locus_i, Q2_locus[*locus_i], Q2_locus[*locus_i], *locus_j, Q2_locus[*locus_j], Q2_locus[*locus_j], deme_x, deme_y);
                         }
                         //dist-deme, dist-locus, value eta
                         double dist_deme;

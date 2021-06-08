@@ -188,36 +188,36 @@ int data_plane_vec_c::index_end_locus(int chr, int locus_index_in_chr) const
 }
 
 //In same locus
-bool data_plane_vec_c::same_indiv(int gene_index_in_sample1, int gene_index_in_sample2) const
+bool data_plane_vec_c::same_indiv(int gene1_index_in_sample, int gene2_index_in_sample) const
 {
-    if (gene_index_in_sample1 == gene_index_in_sample2)
+    if (gene1_index_in_sample == gene2_index_in_sample)
     {
         return true;
     }
-    if (gene_index_in_sample1 > gene_index_in_sample2)
+    if (gene1_index_in_sample > gene2_index_in_sample)
     {
-        auto temp = gene_index_in_sample1;
-        gene_index_in_sample1 = gene_index_in_sample2;
-        gene_index_in_sample2 = temp;
+        auto temp = gene1_index_in_sample;
+        gene1_index_in_sample = gene2_index_in_sample;
+        gene2_index_in_sample = temp;
     }
 
     bool result{false};
     if (Ploidy == 2)
     {
         //Need to be adjacent
-        result = (gene_index_in_sample1 % 2 == 0) && (gene_index_in_sample2 - gene_index_in_sample1 == 1);
+        result = (gene1_index_in_sample % 2 == 0) && (gene2_index_in_sample - gene1_index_in_sample == 1);
     }
     return result;
 }
 
-bool data_plane_vec_c::same_deme(int gene_index_in_sample1, int gene_index_in_sample2) const
+bool data_plane_vec_c::same_deme(int gene1_index_in_sample, int gene2_index_in_sample) const
 {
-    if (gene_index_in_sample1 == gene_index_in_sample2)
+    if (gene1_index_in_sample == gene2_index_in_sample)
     {
         return true;
     }
 
-    return Indiv_feat[get_indiv(gene_index_in_sample1)].Deme == Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
+    return Indiv_feat[get_indiv(gene1_index_in_sample)].Deme == Indiv_feat[get_indiv(gene2_index_in_sample)].Deme;
 }
 
 bin_vec const &data_plane_vec_c::nomiss_data(int indiv_index_in_sample) const
@@ -226,14 +226,14 @@ bin_vec const &data_plane_vec_c::nomiss_data(int indiv_index_in_sample) const
 }
 
 //Passer par un tableau d'attribut des indivs
-double data_plane_vec_c::geo_dist_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const
+double data_plane_vec_c::geo_dist_btw_gene(int gene1_index_in_sample, int gene2_index_in_sample) const
 {
-    if (gene_index_in_sample1 == gene_index_in_sample2)
+    if (gene1_index_in_sample == gene2_index_in_sample)
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(gene_index_in_sample1)].Deme;
-    auto const deme_gen2 = Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
+    auto const deme_gen1 = Indiv_feat[get_indiv(gene1_index_in_sample)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(gene2_index_in_sample)].Deme;
 
     return Geo_dist_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
@@ -253,14 +253,14 @@ int data_plane_vec_c::nbr_geo_dist_class() const
     return Geo_dist_class_nbr;
 }
 
-int data_plane_vec_c::geo_dist_class_btw_gene(int gene_index_in_sample1, int gene_index_in_sample2) const
+int data_plane_vec_c::geo_dist_class_btw_gene(int gene1_index_in_sample, int gene2_index_in_sample) const
 {
-    if (gene_index_in_sample1 == gene_index_in_sample2)
+    if (gene1_index_in_sample == gene2_index_in_sample)
     {
         return 0;
     }
-    auto const deme_gen1 = Indiv_feat[get_indiv(gene_index_in_sample1)].Deme;
-    auto const deme_gen2 = Indiv_feat[get_indiv(gene_index_in_sample2)].Deme;
+    auto const deme_gen1 = Indiv_feat[get_indiv(gene1_index_in_sample)].Deme;
+    auto const deme_gen2 = Indiv_feat[get_indiv(gene2_index_in_sample)].Deme;
 
     return Geo_dist_class_btw_deme[deme_gen1 * Nbr_of_deme + deme_gen2];
 }
@@ -280,22 +280,22 @@ int data_plane_vec_c::nbr_chr_dist_class() const
     return Chr_dist_class_nbr;
 }
 
-double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr2) const
+double data_plane_vec_c::chr_dist_btw_locus(int chr, int locus1_index_in_chr, int locus2_index_in_chr) const
 {
-    if (locus_index_in_chr1 == locus_index_in_chr2)
+    if (locus1_index_in_chr == locus2_index_in_chr)
     {
         return 0;
     }
 
-    return Chr_dist_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr1 * Nbr_of_loc_per_chr[chr] + locus_index_in_chr2];
+    return Chr_dist_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus1_index_in_chr * Nbr_of_loc_per_chr[chr] + locus2_index_in_chr];
 }
 
-int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus_index_in_chr1, int locus_index_in_chr2) const
+int data_plane_vec_c::chr_dist_class_btw_locus(int chr, int locus1_index_in_chr, int locus2_index_in_chr) const
 {
-    if (locus_index_in_chr1 == locus_index_in_chr2)
+    if (locus1_index_in_chr == locus2_index_in_chr)
     {
         return 0;
     }
 
-    return Chr_dist_class_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus_index_in_chr1 * Nbr_of_loc_per_chr[chr] + locus_index_in_chr2];
+    return Chr_dist_class_btw_loc[Cumul_nbr_of_loc_per_chr[chr] + locus1_index_in_chr * Nbr_of_loc_per_chr[chr] + locus2_index_in_chr];
 }

@@ -189,7 +189,7 @@ TEST_CASE("func_test")
         /*******************************************/
 
         std::cout << "\n######Qr calculation######" << std::endl;
-        result.Qr = calc_qr_all_loc(data_plane_vec);
+        result.Qr = calc_qr(data_plane_vec);
 
         /*******************************************/
 

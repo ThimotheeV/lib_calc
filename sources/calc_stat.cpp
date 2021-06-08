@@ -282,7 +282,7 @@ double calc_Var_per_chr_per_loc(data_plane_vec_c const &data_plane_vec, int chr,
     int nbr_of_count = 0;
     for (auto freq_al : data_plane_vec.allele_state(chr, locus))
     {
-        //freq_al.first = value of microsat ; freq_al.second = number of microsat
+        //freq_al.first = state ; freq_al.second = number of allele
         moy += freq_al.first * freq_al.second;
         nbr_of_count += freq_al.second;
     }
@@ -388,7 +388,7 @@ std::vector<double> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_ve
 }
 
 // std::vector<qr>
-std::vector<double> calc_qr_all_loc(data_plane_vec_c const &data_plane_vec)
+std::vector<double> calc_qr(data_plane_vec_c const &data_plane_vec)
 {
     std::vector<double> result_frac(data_plane_vec.nbr_geo_dist_class());
 
@@ -898,7 +898,7 @@ std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane
     std::vector<std::vector<int>> locus_usable_for_SFS;
     locus_usable_for_SFS.resize(data_plane_vec.nbr_of_chr());
 
-    int real_min_limit = data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy();
+    int real_min_limit = data_plane_vec.nbr_of_gene();
     bool can_calc_SFS = false;
 
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
@@ -941,7 +941,7 @@ std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane
         }
     }
 
-    if (real_min_limit == data_plane_vec.nbr_of_indiv() * data_plane_vec.get_Ploidy())
+    if (real_min_limit == data_plane_vec.nbr_of_gene())
     {
         for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
