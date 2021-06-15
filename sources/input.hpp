@@ -6,7 +6,7 @@
 #include <cmath>
 #include <map>
 
-#include "arg_pars.hpp"
+#include "arg_pars_gss.hpp"
 namespace gss
 {
     std::string const read_file(std::string const &filename);
@@ -51,7 +51,7 @@ struct selector_input_c
 
     std::string Data_filename;
     std::string Genetic_map_name;
-    std::string Generic_data_filename = "GSumStat_";
+    std::string Generic_data_filename = "GSumStat";
 
     int Ploidy{0};
 

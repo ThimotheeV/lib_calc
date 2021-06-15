@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "arg_pars.hpp"
+#include "arg_pars_gss.hpp"
 
 //TRIMMING
 
