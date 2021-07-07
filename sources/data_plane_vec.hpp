@@ -73,7 +73,7 @@ public:
     int nbr_of_deme() const;
     int nbr_locus() const;        //number of locus in a specifique indiv
     int nbr_locus(int chr) const; //number of locus in a specifique indiv
-    int nbr_of_gene() const;
+    int nbr_of_gene_per_loc() const;
     int nbr_of_chr() const;
     int nbr_of_indiv() const;
     int nbr_of_indiv_per_deme(int nbr_of_deme) const; //deme size

@@ -243,7 +243,9 @@ std::vector<std::array<double, 5>> calc_eta_diploide(data_plane_vec_c const &dat
         //TODO : Need to be handle up to avoid general throws
         if (poly_loc.size() < 2)
         {
-            throw std::logic_error("Less than 2 polymorphics locus in data file. Can't calculate eta.");
+            std::string str = "Can't calculate eta. Less than 2 polymorphics locus in the " + std::to_string(chr + 1);
+            str += "rd chr.";
+            throw std::logic_error(str);
         }
 
         int locus_pair_nbr = (poly_loc.size() * (poly_loc.size() - 1)) / 2;
@@ -366,7 +368,7 @@ std::vector<std::array<double, 5>> calc_eta_1_indiv_deme_v(data_plane_vec_c cons
         Q0_locus.reserve(poly_loc.size());
         for (int locus : poly_loc)
         {
-            Q2_locus.push_back( calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus));
+            Q2_locus.push_back(calc_Q_inter_deme_per_chr_per_locus(data_plane_vec, chr, locus));
             if (data_plane_vec.get_Ploidy() == 2)
             {
                 Q0_locus.push_back(calc_Q_intra_indiv_per_chr_per_locus(data_plane_vec, chr, locus));

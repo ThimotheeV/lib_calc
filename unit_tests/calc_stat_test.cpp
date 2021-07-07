@@ -684,9 +684,9 @@ TEST_CASE("Fstat_genepop")
     }
 }
 
-TEST_CASE("SFS")
+TEST_CASE("AFS")
 {
-    SECTION("SFS 2 states without missing value")
+    SECTION("AFS 2 states without missing value")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
@@ -697,7 +697,7 @@ TEST_CASE("SFS")
 
         data_plane_vec_c data_plane_vec(genepop_input);
 
-        auto result = calc_SFS(data_plane_vec, 0);
+        auto result = calc_AFS(data_plane_vec, 0);
 
         //for frequency : 5,7 /12
         std::vector<int> target{1, 2};
@@ -711,7 +711,7 @@ TEST_CASE("SFS")
         }
     }
 
-    SECTION("SFS 2 states with missing value")
+    SECTION("AFS 2 states with missing value")
     {
         genepop_input_c<2> genepop_input;
         genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
@@ -722,7 +722,7 @@ TEST_CASE("SFS")
 
         data_plane_vec_c data_plane_vec(genepop_input);
 
-        auto result = calc_SFS(data_plane_vec, 0);
+        auto result = calc_AFS(data_plane_vec, 0);
 
         //for frequency : 5,7 /12
         std::vector<double> target{0.066, 0.533, 2, 0.4};

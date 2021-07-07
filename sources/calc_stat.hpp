@@ -40,4 +40,4 @@ std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_indic(data_plane_
 std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec, bool missing_data);
 
 //Return <state, <frequence, nbr of locus>>
-std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus);
+std::map<int, std::map<int, double>> calc_AFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus);

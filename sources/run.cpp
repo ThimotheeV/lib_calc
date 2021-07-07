@@ -117,14 +117,14 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     /*******************************************/
 
-    if (selector.SFS)
+    if (selector.AFS)
     {
-        std::cout << "\n######SFS calculation######" << std::endl;
-        if (selector.min_gene_for_SFS < 0)
+        std::cout << "\n######AFS calculation######" << std::endl;
+        if (selector.min_gene_for_AFS < 0)
         {
-            throw std::logic_error("( Can't calculate sfs if min_gene not set. I exit. )");
+            throw std::logic_error("( Can't calculate afs if min_gene not set. I exit. )");
         }
-        auto result = calc_SFS(data_plane_vec, selector.min_gene_for_SFS);
+        auto result = calc_AFS(data_plane_vec, selector.min_gene_for_AFS);
         std::map<int, double> output_map;
         auto result_itr = result.begin();
         //all state in result, need to take the n-1 state
@@ -140,8 +140,8 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
             }
             ++result_itr;
         }
-        std::string str(selector.Generic_data_filename + "_SFS.txt");
-        output_sfs_stat_files(output_map, str);
+        std::string str(selector.Generic_data_filename + "_AFS.txt");
+        output_afs_stat_files(output_map, str);
     }
 
     /*******************************************/
@@ -193,24 +193,39 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         std::cout << "\n######Eta calculation######" << std::endl;
         std::vector<std::array<double, 5>> eta;
 
-        if (data_plane_vec.nbr_of_indiv() != data_plane_vec.nbr_of_deme())
+        if (data_plane_vec.nbr_locus() == data_plane_vec.nbr_of_chr())
         {
-            if (data_plane_vec.get_Ploidy() == 2)
-            {
-                eta = calc_eta_diploide(data_plane_vec);
-            }
-            else
-            {
-                eta = calc_eta_haploid(data_plane_vec);
-            }
+            std::cerr << "Can't calculate eta. Only one locus per chromosome. Verify your genetic map. I pass." << std::endl;
         }
         else
         {
-            eta = calc_eta_1_indiv_deme_v(data_plane_vec);
+            if (data_plane_vec.nbr_of_deme() < 2)
+            {
+                std::cerr << "Can't calculate eta. Only one deme. I pass." << std::endl;
+            }
+            else
+            {
+
+                if (data_plane_vec.nbr_of_indiv() != data_plane_vec.nbr_of_deme())
+                {
+                    if (data_plane_vec.get_Ploidy() == 2)
+                    {
+                        eta = calc_eta_diploide(data_plane_vec);
+                    }
+                    else
+                    {
+                        eta = calc_eta_haploid(data_plane_vec);
+                    }
+                }
+                else
+                {
+                    eta = calc_eta_1_indiv_deme_v(data_plane_vec);
+                }
+                std::string str(selector.Generic_data_filename + "_Eta.txt");
+                output_eta_stat_files(eta, str);
+                //output_exp_regr_eta_stat_files(eta);
+            }
         }
-        std::string str(selector.Generic_data_filename + "_Eta.txt");
-        output_eta_stat_files(eta, str);
-        //output_exp_regr_eta_stat_files(eta);
     }
 
     if (stat)

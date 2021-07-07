@@ -122,15 +122,15 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             MGW = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
-        if (stat_name == "sfs")
+        if (stat_name == "afs")
         {
-            SFS = gss::convert_str_bool(line_pair_key_value[1]);
+            AFS = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
-        if (stat_name == "mingeneforsfs")
+        if (stat_name == "mingeneforafs")
         {
             //Needed to read integer in scientific format
-            min_gene_for_SFS = static_cast<int>(std::stod(line_pair_key_value[1]));
+            min_gene_for_AFS = static_cast<int>(std::stod(line_pair_key_value[1]));
             continue;
         }
         if (stat_name == "fstat")
@@ -138,11 +138,11 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             F_stat = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
-        if (stat_name == "qstat")
-        {
-            Q_stat = gss::convert_str_bool(line_pair_key_value[1]);
-            continue;
-        }
+        // if (stat_name == "qstat")
+        // {
+        //     Q_stat = gss::convert_str_bool(line_pair_key_value[1]);
+        //     continue;
+        // }
         if (stat_name == "qr")
         {
             Qr = gss::convert_str_bool(line_pair_key_value[1]);

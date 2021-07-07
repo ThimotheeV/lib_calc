@@ -46,23 +46,23 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
         head.emplace_back("Fit");
     }
 
-    if (selec.Q_stat)
-    {
-        if (result.Qwi_mean != -1)
-        {
-            head.emplace_back("Qwi_mean");
-            head.emplace_back("Qwi_var");
-        }
+    // if (selec.Q_stat)
+    // {
+    //     if (result.Qwi_mean != -1)
+    //     {
+    //         head.emplace_back("Qwi_mean");
+    //         head.emplace_back("Qwi_var");
+    //     }
 
-        head.emplace_back("Qwd_mean");
-        head.emplace_back("Qwd_var");
+    //     head.emplace_back("Qwd_mean");
+    //     head.emplace_back("Qwd_var");
 
-        if (result.Qbd_mean != -1)
-        {
-            head.emplace_back("Qbd_mean");
-            head.emplace_back("Qbd_var");
-        }
-    }
+    //     if (result.Qbd_mean != -1)
+    //     {
+    //         head.emplace_back("Qbd_mean");
+    //         head.emplace_back("Qbd_var");
+    //     }
+    // }
 
     if (selec.Qr)
     {
@@ -128,23 +128,23 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
         stats_run.emplace_back(-1 * (1 - result.Fis) * (1 - result.Fst) + 1);
     }
 
-    if (selec.Q_stat)
-    {
-        if (result.Qwi_mean != -1)
-        {
-            stats_run.emplace_back(result.Qwi_mean);
-            stats_run.emplace_back(result.Qwi_var);
-        }
+    // if (selec.Q_stat)
+    // {
+    //     if (result.Qwi_mean != -1)
+    //     {
+    //         stats_run.emplace_back(result.Qwi_mean);
+    //         stats_run.emplace_back(result.Qwi_var);
+    //     }
 
-        stats_run.emplace_back(result.Qwd_mean);
-        stats_run.emplace_back(result.Qwd_var);
+    //     stats_run.emplace_back(result.Qwd_mean);
+    //     stats_run.emplace_back(result.Qwd_var);
 
-        if (result.Qbd_mean != -1)
-        {
-            stats_run.emplace_back(result.Qbd_mean);
-            stats_run.emplace_back(result.Qbd_var);
-        }
-    }
+    //     if (result.Qbd_mean != -1)
+    //     {
+    //         stats_run.emplace_back(result.Qbd_mean);
+    //         stats_run.emplace_back(result.Qbd_var);
+    //     }
+    // }
 
     if (selec.Qr)
     {
@@ -198,6 +198,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::strin
 
     head.emplace_back("Geo_dist_btw_deme");
     head.emplace_back("Dist_btw_locus_pb");
+    head.emplace_back("Etha");
     head.emplace_back("Sum_Phi");
     head.emplace_back("Sum_Q1_join");
     head.emplace_back("Sum_Eta_denum");
@@ -224,7 +225,8 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::strin
         }
         else
         {
-            gss::print_output<double>(path_to_output_file, {dist_geo, dist_chr, phi, q1_join, eta_denum, num_pt},
+            auto etha = (phi - q1_join)/eta_denum;
+            gss::print_output<double>(path_to_output_file, {dist_geo, dist_chr, etha, phi, q1_join, eta_denum, num_pt},
                                       "app");
             dist_geo = values.at(0);
             dist_chr = values.at(1);
@@ -308,7 +310,7 @@ void output_exp_regr_eta_stat_files(std::vector<std::array<double, 5>> result)
     }
 }
 
-void output_sfs_stat_files(std::map<int, double> const &result, std::string path_to_output_file)
+void output_afs_stat_files(std::map<int, double> const &result, std::string path_to_output_file)
 {
     std::vector<std::string> head;
     head.reserve(2);

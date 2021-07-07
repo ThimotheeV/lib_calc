@@ -892,40 +892,40 @@ std::array<double, 2> Fstat_genepop(data_plane_vec_c const &data_plane_vec, bool
 }
 
 //Return <state, <frequence, nbr of locus>>
-std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus)
+std::map<int, std::map<int, double>> calc_AFS(data_plane_vec_c const &data_plane_vec, int limit_min_gene_per_locus)
 {
     //chr<>
-    std::vector<std::vector<int>> locus_usable_for_SFS;
-    locus_usable_for_SFS.resize(data_plane_vec.nbr_of_chr());
+    std::vector<std::vector<int>> locus_usable_for_AFS;
+    locus_usable_for_AFS.resize(data_plane_vec.nbr_of_chr());
 
-    int real_min_limit = data_plane_vec.nbr_of_gene();
-    bool can_calc_SFS = false;
+    int real_min_limit = data_plane_vec.nbr_of_gene_per_loc();
+    bool can_calc_AFS = false;
 
     for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
     {
-        locus_usable_for_SFS[chr].reserve(data_plane_vec.nbr_locus(chr));
+        locus_usable_for_AFS[chr].reserve(data_plane_vec.nbr_locus(chr));
         for (int locus = 0; locus < data_plane_vec.nbr_locus(chr); ++locus)
         {
             int nbr_gene = data_plane_vec.nomiss_nbr_of_gene(chr, locus);
             if (nbr_gene >= limit_min_gene_per_locus)
             {
-                locus_usable_for_SFS[chr].push_back(locus);
+                locus_usable_for_AFS[chr].push_back(locus);
                 if (nbr_gene < real_min_limit)
                 {
                     real_min_limit = nbr_gene;
                 }
             }
         }
-        locus_usable_for_SFS[chr].shrink_to_fit();
-        if (locus_usable_for_SFS[chr].size() > 0)
+        locus_usable_for_AFS[chr].shrink_to_fit();
+        if (locus_usable_for_AFS[chr].size() > 0)
         {
-            can_calc_SFS = true;
+            can_calc_AFS = true;
         }
     }
 
-    if (!can_calc_SFS)
+    if (!can_calc_AFS)
     {
-        throw std::logic_error("Can't calculate SFS, no locus with number of non missing gene > 'min gene'. I exit.");
+        throw std::logic_error("Can't calculate AFS, no locus with number of non missing gene > 'min gene'. I exit.");
     }
 
     std::map<int, std::map<int, double>> result;
@@ -941,7 +941,7 @@ std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane
         }
     }
 
-    if (real_min_limit == data_plane_vec.nbr_of_gene())
+    if (real_min_limit == data_plane_vec.nbr_of_gene_per_loc())
     {
         for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
@@ -964,7 +964,7 @@ std::map<int, std::map<int, double>> calc_SFS(data_plane_vec_c const &data_plane
     {
         for (int chr = 0; chr < data_plane_vec.nbr_of_chr(); ++chr)
         {
-            for (auto locus : locus_usable_for_SFS.at(chr))
+            for (auto locus : locus_usable_for_AFS.at(chr))
             {
                 //map(state, nbr of allele in this state)
                 int n = data_plane_vec.nomiss_nbr_of_gene(chr, locus);

@@ -36,9 +36,9 @@ int data_plane_vec_c::nbr_of_deme() const
 {
     return Nbr_of_deme;
 }
-int data_plane_vec_c::nbr_of_gene() const
+int data_plane_vec_c::nbr_of_gene_per_loc() const
 {
-    return Nbr_of_indiv_tot * Nbr_of_locus * Ploidy;
+    return Nbr_of_indiv_tot * Ploidy;
 }
 int data_plane_vec_c::nbr_of_chr() const
 {

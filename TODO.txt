@@ -4,7 +4,7 @@
 
 Lire VCF => passer le genepop_input en data_input (mission lire les données quelques soit le format d'entrée)
 Calculer les stats Hobs, Hexp, nbr_alle, var, mgw + autre => Nom stat par pop mais aussi global
-Calculer le SFS multi pop (matrice de SFS)
+Calculer le AFS multi pop (matrice de AFS)
 
 - A long terme
 
