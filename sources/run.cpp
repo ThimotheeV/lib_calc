@@ -162,6 +162,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
     if (selector.Qr)
     {
         std::cout << "\n######Qr calculation######" << std::endl;
+        if (selector.Geo_dist_class_nbr < 1)
+        {
+            throw std::logic_error("( Can't calculate Qr if Geo_dist_class_nbr is not set. I exit. )");
+        }
         stat = true;
         result.Qr = calc_qr(data_plane_vec);
     }
@@ -195,37 +199,31 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
         if (data_plane_vec.nbr_locus() == data_plane_vec.nbr_of_chr())
         {
-            std::cerr << "Can't calculate eta. Only one locus per chromosome. Verify your genetic map. I pass." << std::endl;
+            throw std::logic_error("Can't calculate eta. Only one locus per chromosome. Verify your genetic map. I quit.");
         }
-        else
+        if (data_plane_vec.nbr_of_deme() < 2)
         {
-            if (data_plane_vec.nbr_of_deme() < 2)
+            throw std::logic_error("Can't calculate eta. Only one deme. I quit.");
+        }
+
+        if (data_plane_vec.nbr_of_indiv() != data_plane_vec.nbr_of_deme())
+        {
+            if (data_plane_vec.get_Ploidy() == 2)
             {
-                std::cerr << "Can't calculate eta. Only one deme. I pass." << std::endl;
+                eta = calc_eta_diploide(data_plane_vec);
             }
             else
             {
-
-                if (data_plane_vec.nbr_of_indiv() != data_plane_vec.nbr_of_deme())
-                {
-                    if (data_plane_vec.get_Ploidy() == 2)
-                    {
-                        eta = calc_eta_diploide(data_plane_vec);
-                    }
-                    else
-                    {
-                        eta = calc_eta_haploid(data_plane_vec);
-                    }
-                }
-                else
-                {
-                    eta = calc_eta_1_indiv_deme_v(data_plane_vec);
-                }
-                std::string str(selector.Generic_data_filename + "_Eta.txt");
-                output_eta_stat_files(eta, str);
-                //output_exp_regr_eta_stat_files(eta);
+                eta = calc_eta_haploid(data_plane_vec);
             }
         }
+        else
+        {
+            eta = calc_eta_1_indiv_deme_v(data_plane_vec);
+        }
+        std::string str(selector.Generic_data_filename + "_Eta.txt");
+        output_eta_stat_files(eta, str);
+        //output_exp_regr_eta_stat_files(eta);
     }
 
     if (stat)
