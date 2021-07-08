@@ -92,6 +92,11 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             Generic_data_filename = line_pair_key_value[1];
             continue;
         }
+        if (stat_name == "echooutput")
+        {
+            Echo_output = gss::convert_str_bool(line_pair_key_value[1]);
+            continue;
+        }
         if (stat_name == "ploidy")
         {
             Ploidy = std::stoi(line_pair_key_value[1]);

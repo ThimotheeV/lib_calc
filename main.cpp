@@ -8,14 +8,12 @@
 
 std::string const datestring = __DATE__;
 std::string const timestring = __TIME__;
-std::string const version = "0.9 (Built on " + datestring + " at " + timestring + ")";
+std::string const version = "1.2 (Built on " + datestring + " at " + timestring + ")";
 
 int main(int argc, char *argv[])
 {
     //Allow to approximately calculate run-time duration
     auto debut = std::chrono::high_resolution_clock::now();
-
-    std::cout << "************Begin run************" << std::endl;
     std::string file_selector;
 
     if (argc == 1)

@@ -6,7 +6,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
     bool stat = false;
     if (selector.Hobs)
     {
-        std::cout << "\n######Hobs calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Hobs calculation ############" << std::endl;
+        }
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double Hobs_mean = 0;
@@ -29,7 +32,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Hexp)
     {
-        std::cout << "\n######Hexp calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Hexp calculation ############" << std::endl;
+        }
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double Hexp_mean = 0;
@@ -52,7 +58,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Var)
     {
-        std::cout << "\n######Var calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Var calculation #############" << std::endl;
+        }
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double var_mean = 0;
@@ -74,7 +83,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Nb_allele)
     {
-        std::cout << "\n######Nb_allele calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Nb_allele calculation ######" << std::endl;
+        }
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double nb_allele_mean = 0;
@@ -97,7 +109,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.MGW)
     {
-        std::cout << "\n######MGW calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### MGW calculation #############" << std::endl;
+        }
         stat = true;
         std::vector<double> Vec_value(data_plane_vec.nbr_locus());
         double MGW_mean = 0;
@@ -119,7 +134,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.AFS)
     {
-        std::cout << "\n######AFS calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### AFS calculation #############" << std::endl;
+        }
         if (selector.min_gene_for_AFS < 0)
         {
             throw std::logic_error("( Can't calculate afs if min_gene not set. I exit. )");
@@ -148,7 +166,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.F_stat)
     {
-        std::cout << "\n######F_stat calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### F_stat calculation ##########" << std::endl;
+        }
         stat = true;
         //Fis or Fst
 
@@ -161,7 +182,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Qr)
     {
-        std::cout << "\n######Qr calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Qr calculation ##############" << std::endl;
+        }
         if (selector.Geo_dist_class_nbr < 1)
         {
             throw std::logic_error("( Can't calculate Qr if Geo_dist_class_nbr is not set. I exit. )");
@@ -174,7 +198,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Ar)
     {
-        std::cout << "\n######Ar calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Ar calculation ##############" << std::endl;
+        }
         stat = true;
         auto Ar = ar_by_pair(data_plane_vec);
         result.Ar_reg = linear_regres_X_Y(Ar);
@@ -184,7 +211,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Er)
     {
-        std::cout << "\n######Er calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Er calculation ##############" << std::endl;
+        }
         stat = true;
         auto er = er_by_pair(data_plane_vec);
         result.Er_reg = linear_regres_X_Y(er);
@@ -194,7 +224,10 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
 
     if (selector.Eta)
     {
-        std::cout << "\n######Eta calculation######" << std::endl;
+        if (selector.Echo_output)
+        {
+            std::cout << "########### Eta calculation #############" << std::endl;
+        }
         std::vector<std::array<double, 5>> eta;
 
         if (data_plane_vec.nbr_locus() == data_plane_vec.nbr_of_chr())
