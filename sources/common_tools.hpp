@@ -18,7 +18,7 @@ template <typename value>
 double calc_r2(double a, double b, std::vector<value> const &X_vec, std::vector<value> const &Y_vec, double meanY);
 
 template <typename value>
-std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const &X_Y_vec);
+std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const &X_Y_vec, bool log);
 
 template <typename value>
 value min(value x1, value x2);

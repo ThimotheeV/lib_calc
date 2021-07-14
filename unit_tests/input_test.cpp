@@ -284,6 +284,7 @@ TEST_CASE("selector_input_test")
         REQUIRE(setting.F_stat == true);
         // REQUIRE(setting.Q_stat == false);
 
+        REQUIRE(setting.Log == true);
         REQUIRE(setting.Qr == true);
         REQUIRE(setting.Ar == false);
         REQUIRE(setting.Er == false);

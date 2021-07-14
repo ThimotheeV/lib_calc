@@ -3,6 +3,7 @@ Qr = true
 Hobs = true
 Hexp = true
 
+Log = T
 F_stat = true
 
 Geo_dist_class_nbr = 100

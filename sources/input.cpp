@@ -148,6 +148,11 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
         //     Q_stat = gss::convert_str_bool(line_pair_key_value[1]);
         //     continue;
         // }
+        if (stat_name == "log")
+        {
+            Log = gss::convert_str_bool(line_pair_key_value[1]);
+            continue;
+        }
         if (stat_name == "qr")
         {
             Qr = gss::convert_str_bool(line_pair_key_value[1]);

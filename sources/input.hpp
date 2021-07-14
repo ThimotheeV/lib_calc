@@ -69,6 +69,7 @@ struct selector_input_c
     bool F_stat{false};
     // bool Q_stat{false};
 
+    bool Log{false};
     bool Qr{false};
     bool Lin_Fst{false};
     bool Ar{false};

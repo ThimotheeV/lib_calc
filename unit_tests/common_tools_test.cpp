@@ -119,7 +119,7 @@ TEST_CASE("regr_r2_test")
             val = {*vec_i_itr++, *vec_d_itr++};
         }
 
-        auto res = linear_regres_X_Y(vec_i_d);
+        auto res = linear_regres_X_Y(vec_i_d, false);
         REQUIRE(res.at(0) == Approx(-0.0001936).margin(0.0000001));
         REQUIRE(res.at(1) == Approx(0.7083889).margin(0.0000001));
         REQUIRE(res.at(2) == Approx(0.0473379).margin(0.0000001));

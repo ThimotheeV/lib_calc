@@ -204,7 +204,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         }
         stat = true;
         auto lin_Fst = lin_Fst_by_deme_pair(data_plane_vec);
-        result.Lin_Fst_reg = linear_regres_X_Y(lin_Fst);
+        result.Lin_Fst_reg = linear_regres_X_Y(lin_Fst, selector.Log);
     }
 
     /*******************************************/
@@ -217,7 +217,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         }
         stat = true;
         auto Ar = ar_by_indiv_pair(data_plane_vec);
-        result.Ar_reg = linear_regres_X_Y(Ar);
+        result.Ar_reg = linear_regres_X_Y(Ar, selector.Log);
     }
 
     /*******************************************/
@@ -230,7 +230,7 @@ result_c run(selector_input_c const &selector, data_plane_vec_c const &data_plan
         }
         stat = true;
         auto er = er_by_indiv_pair(data_plane_vec);
-        result.Er_reg = linear_regres_X_Y(er);
+        result.Er_reg = linear_regres_X_Y(er, selector.Log);
     }
 
     /*******************************************/
