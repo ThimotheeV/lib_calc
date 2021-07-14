@@ -320,7 +320,7 @@ TEST_CASE("ar_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{0, -0.1538}, {1, -0.1538}, {1, 0.3076}, {2, -0.1538}, {2, 0.3076}, {1, -0.2692}, {1, 0.0769}, {2, -0.5}, {2, -0.1538}, {0, -0.1538}, {1, -0.2692}, {1, 0.0769}, {1, 0.0769}, {1, -0.2692}, {0, -0.1538}};
 
-        auto result = ar_by_pair(data_plane_vec);
+        auto result = ar_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -344,7 +344,7 @@ TEST_CASE("ar_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{0, -0.125}, {0, 1.75}, {0, 1.25}, {0, 0.25}, {0, 0}, {0, 1.375}};
 
-        auto result = ar_by_pair(data_plane_vec);
+        auto result = ar_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -372,7 +372,7 @@ TEST_CASE("er_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{1, -0.25}, {2, 1.25}, {1, -0.25}};
 
-        auto result = er_by_pair(data_plane_vec);
+        auto result = er_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -399,7 +399,7 @@ TEST_CASE("er_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{1, -0.033334}, {2, 0.383333}, {3, -0.283334}, {1, -0.116667}, {2, -0.116667}, {1, 0.633333}};
 
-        auto result = er_by_pair(data_plane_vec);
+        auto result = er_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -424,7 +424,7 @@ TEST_CASE("er_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{0, 0.1224}, {1, 0.2117}, {1, -0.1454}, {2, 0.0688}, {2, -0.1454}, {1, -0.1454}, {1, 0.1403}, {2, -0.0739}, {2, 0.1403}, {0, 0.1224}, {1, -0.0918}, {1, 0.1224}, {1, 0.0867}, {1, -0.1275}, {0, 0.0867}};
 
-        auto result = er_by_pair(data_plane_vec);
+        auto result = er_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -448,7 +448,7 @@ TEST_CASE("er_calc_stat_test")
 
         std::vector<std::array<double, 2>> expectation = {{0, -0.0625}, {0, 0.5}, {0, 0.625}, {0, -0.25}, {0, -0.125}, {0, 0.375}};
 
-        auto result = er_by_pair(data_plane_vec);
+        auto result = er_by_indiv_pair(data_plane_vec);
         auto result_itr = result.begin();
         for (auto const &exp_value : expectation)
         {
@@ -733,6 +733,125 @@ TEST_CASE("AFS")
         for (auto const &pair : map_state)
         {
             REQUIRE(pair.second == Approx(*target_itr).margin(0.001));
+            ++target_itr;
+        }
+    }
+}
+
+TEST_CASE("lin_Fst")
+{
+    SECTION("lin_Fst diploide without missing value")
+    {
+        genepop_input_c<2> genepop_input;
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
+                                           {1, 0, 1},
+                                           {2, 1, 0}};
+
+        //3 deme, 4 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {
+            {{{1, 2}, {2, 2}, {1, 1}}, {{1, 2}, {1, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
+            {{{1, 3}, {2, 2}, {1, 3}}, {{2, 3}, {4, 3}, {2, 3}}, {{1, 3}, {4, 3}, {1, 3}}, {{1, 3}, {1, 1}, {1, 3}}},
+            {{{2, 3}, {1, 2}, {2, 3}}, {{3, 4}, {3, 1}, {4, 3}}, {{1, 2}, {2, 5}, {5, 4}}, {{1, 1}, {4, 5}, {1, 1}}}};
+
+        data_plane_vec_c data_plane_vec(genepop_input);
+
+        auto result = lin_Fst_by_deme_pair(data_plane_vec);
+
+        //See lint_Fst in golden master file
+        std::vector<std::array<double, 2>> target{{1, 0.051470588235294}, {2, -0.014705882352941}, {1, -0.073529411764706}};
+
+        auto target_itr = target.begin();
+
+        for (auto const &value : result)
+        {
+            REQUIRE(value.at(1) == Approx(target_itr->at(1)).margin(0.0000001));
+            ++target_itr;
+        }
+    }
+
+    SECTION("lin_Fst haploide without missing value")
+    {
+        genepop_input_c<1> genepop_input;
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
+                                           {1, 0, 1},
+                                           {2, 1, 0}};
+
+        //3 deme, 4 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {
+            {{{1}, {2}, {1}}, {{1}, {1}, {1}}, {{1}, {1}, {1}}, {{1}, {2}, {3}}},
+            {{{1}, {2}, {1}}, {{2}, {4}, {2}}, {{1}, {4}, {1}}, {{1}, {1}, {1}}},
+            {{{2}, {1}, {2}}, {{3}, {3}, {4}}, {{1}, {2}, {5}}, {{1}, {4}, {1}}}};
+
+        data_plane_vec_c data_plane_vec(genepop_input);
+
+        auto result = lin_Fst_by_deme_pair(data_plane_vec);
+
+        //See lint_Fst in golden master file
+        std::vector<std::array<double, 2>> target{{1, 0.260714285714286}, {2, -0.060714285714286}, {1, -0.060714285714286}};
+
+        auto target_itr = target.begin();
+
+        for (auto const &value : result)
+        {
+            REQUIRE(value.at(1) == Approx(target_itr->at(1)).margin(0.0000001));
+            ++target_itr;
+        }
+    }
+
+    SECTION("lin_Fst diploide with missing value")
+    {
+        genepop_input_c<2> genepop_input;
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
+                                           {1, 0, 1},
+                                           {2, 1, 0}};
+
+        //3 deme, 4 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {
+            {{{0, 2}, {2, 2}, {1, 1}}, {{1, 2}, {0, 2}, {1, 3}}, {{1, 1}, {1, 1}, {1, 1}}, {{1, 1}, {2, 2}, {3, 3}}},
+            {{{1, 3}, {2, 2}, {1, 3}}, {{2, 3}, {4, 3}, {2, 3}}, {{1, 3}, {4, 3}, {0, 3}}, {{1, 3}, {1, 1}, {1, 3}}},
+            {{{2, 3}, {1, 2}, {2, 3}}, {{0, 4}, {3, 1}, {4, 3}}, {{1, 2}, {2, 5}, {5, 4}}, {{1, 1}, {4, 5}, {1, 1}}}};
+
+        data_plane_vec_c data_plane_vec(genepop_input);
+
+        auto result = lin_Fst_by_deme_pair(data_plane_vec);
+
+        //See lint_Fst in golden master file
+        std::vector<std::array<double, 2>> target{{1, 0.039888682745826}, {2, 0.012456930824278}, {1, -0.081168831168831}};
+
+        auto target_itr = target.begin();
+
+        for (auto const &value : result)
+        {
+            REQUIRE(value.at(1) == Approx(target_itr->at(1)).margin(0.0000001));
+            ++target_itr;
+        }
+    }
+
+    SECTION("lin_Fst haploide with missing value")
+    {
+        genepop_input_c<1> genepop_input;
+        genepop_input.Geo_dist_btw_deme = {{0, 1, 2},
+                                           {1, 0, 1},
+                                           {2, 1, 0}};
+
+        //3 deme, 4 indiv, 3 locus, 3 chr
+        genepop_input.Genotype = {
+            {{{0}, {2}, {1}}, {{1}, {0}, {1}}, {{1}, {1}, {1}}, {{1}, {2}, {3}}},
+            {{{1}, {2}, {1}}, {{2}, {4}, {2}}, {{1}, {4}, {0}}, {{1}, {1}, {1}}},
+            {{{2}, {1}, {2}}, {{0}, {3}, {4}}, {{1}, {2}, {5}}, {{1}, {4}, {1}}}};
+
+        data_plane_vec_c data_plane_vec(genepop_input);
+
+        auto result = lin_Fst_by_deme_pair(data_plane_vec);
+
+        //See lint_Fst in golden master file
+        std::vector<std::array<double, 2>> target{{1, 0.228571428571429}, {2, 0.025}, {1, 0.014285714285714}};
+
+        auto target_itr = target.begin();
+
+        for (auto const &value : result)
+        {
+            REQUIRE(value.at(1) == Approx(target_itr->at(1)).margin(0.0000001));
             ++target_itr;
         }
     }

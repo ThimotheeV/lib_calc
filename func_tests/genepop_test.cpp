@@ -55,7 +55,7 @@ TEST_CASE("haplo_genepop_input_test")
         genepop_input_c<2> input("test_ar.txt");
         data_plane_vec_c data_plane_vec(input);
 
-        auto ar = ar_by_pair(data_plane_vec);
+        auto ar = ar_by_indiv_pair(data_plane_vec);
         auto regr_ar_loc = linear_regres_X_Y(ar);
 
         REQUIRE(Approx(regr_ar_loc.at(0)).margin(0.000001) == -0.0184381);
@@ -67,7 +67,7 @@ TEST_CASE("haplo_genepop_input_test")
         genepop_input_c<2> input("test_ar_mv.txt");
         data_plane_vec_c data_plane_vec(input);
 
-        auto ar = ar_by_pair(data_plane_vec);
+        auto ar = ar_by_indiv_pair(data_plane_vec);
         auto regr_ar_loc = linear_regres_X_Y(ar);
 
         REQUIRE(Approx(regr_ar_loc.at(0)).margin(0.000001) == -0.0130383);
@@ -194,13 +194,13 @@ TEST_CASE("func_test")
         /*******************************************/
 
         std::cout << "\n######Ar calculation######" << std::endl;
-        auto Ar = ar_by_pair(data_plane_vec);
+        auto Ar = ar_by_indiv_pair(data_plane_vec);
         result.Ar_reg = linear_regres_X_Y(Ar);
 
         /*******************************************/
 
         std::cout << "\n######Er calculation######" << std::endl;
-        auto er = er_by_pair(data_plane_vec);
+        auto er = er_by_indiv_pair(data_plane_vec);
         result.Er_reg = linear_regres_X_Y(er);
 
         /*******************************************/

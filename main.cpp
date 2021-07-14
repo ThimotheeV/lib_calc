@@ -8,7 +8,7 @@
 
 std::string const datestring = __DATE__;
 std::string const timestring = __TIME__;
-std::string const version = "1.2 (Built on " + datestring + " at " + timestring + ")";
+std::string const version = "1.3 (Built on " + datestring + " at " + timestring + ")";
 
 int main(int argc, char *argv[])
 {

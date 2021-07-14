@@ -19,7 +19,7 @@ TEST_CASE("haploid_data_plane_vec_test")
         // {{{{1}, {2}}, {{1}, {2}}, {{2}, {2}}}},
         // {{{{1}, {3}}, {{3}, {2}}, {{3}, {2}}}}};
         REQUIRE(plane_3d_vec.nbr_of_deme() == 3);
-        REQUIRE(plane_3d_vec.nbr_of_indiv_per_deme(0) == 2);
+        REQUIRE(plane_3d_vec.nbr_of_indiv(0) == 2);
         REQUIRE(plane_3d_vec.nbr_locus() == 3);
         REQUIRE(plane_3d_vec.nbr_of_gene_per_loc() == 6);
         REQUIRE(plane_3d_vec.nbr_of_indiv() == 6);
@@ -303,7 +303,7 @@ TEST_CASE("diploid_data_plane_vec_test")
         // {{{1, 1}, {1, 2}}, {{1, 3}, {2, 3}}, {{1, 2}, {2, 2}}},
         // {{{1, 1}, {1, 3}}, {{1, 3}, {2, 3}}, {{1, 3}, {2, 3}}}};
         REQUIRE(plane_3d_vec.nbr_of_deme() == 3);
-        REQUIRE(plane_3d_vec.nbr_of_indiv_per_deme(0) == 2);
+        REQUIRE(plane_3d_vec.nbr_of_indiv(0) == 2);
         REQUIRE(plane_3d_vec.nbr_locus() == 3);
         REQUIRE(plane_3d_vec.nbr_of_gene_per_loc() == 12);
         REQUIRE(plane_3d_vec.nbr_of_indiv() == 6);

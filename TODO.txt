@@ -23,4 +23,5 @@ Différencie les gene à index relatif et les gene à index absolu
 map nom de chr/index dans la lib calc
 Nomiss data test à transformer
 Implémenter la gestion de la ploidy
+Implémenter le lin_Fst
 

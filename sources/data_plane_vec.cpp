@@ -48,7 +48,7 @@ int data_plane_vec_c::nbr_of_indiv() const
 {
     return Nbr_of_indiv_tot;
 }
-int data_plane_vec_c::nbr_of_indiv_per_deme(int nbr_of_deme) const
+int data_plane_vec_c::nbr_of_indiv(int nbr_of_deme) const
 {
     return Nbr_of_indiv_per_deme[nbr_of_deme];
 }

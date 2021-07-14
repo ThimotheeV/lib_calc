@@ -55,7 +55,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
         auto expect_itr = expect.begin();
         int debug = 0;
 
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(0); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(0); ++indiv)
         {
             int locus_i_indiv1_gene1 = data_plane_vec(0, 0, 0, indiv, 0);
             int locus_i_indiv1_gene2 = data_plane_vec(0, 0, 0, indiv, 1);
@@ -63,7 +63,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
             int locus_j_indiv1_gene1 = data_plane_vec(1, 0, 0, indiv, 0);
             int locus_j_indiv1_gene2 = data_plane_vec(1, 0, 0, indiv, 1);
 
-            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(1); ++indiv_other_deme)
+            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv(1); ++indiv_other_deme)
             {
                 int locus_i_indiv2_gene1 = data_plane_vec(0, 0, 1, indiv_other_deme, 0);
                 int locus_i_indiv2_gene2 = data_plane_vec(0, 0, 1, indiv_other_deme, 1);
@@ -81,7 +81,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
         expect_itr = expect.begin();
         debug = 0;
 
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(0); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(0); ++indiv)
         {
             int locus_i_indiv1_gene1 = data_plane_vec(1, 0, 0, indiv, 0);
             int locus_i_indiv1_gene2 = data_plane_vec(1, 0, 0, indiv, 1);
@@ -89,7 +89,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
             int locus_j_indiv1_gene1 = data_plane_vec(2, 0, 0, indiv, 0);
             int locus_j_indiv1_gene2 = data_plane_vec(2, 0, 0, indiv, 1);
 
-            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(1); ++indiv_other_deme)
+            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv(1); ++indiv_other_deme)
             {
                 int locus_i_indiv2_gene1 = data_plane_vec(1, 0, 1, indiv_other_deme, 0);
                 int locus_i_indiv2_gene2 = data_plane_vec(1, 0, 1, indiv_other_deme, 1);
@@ -107,7 +107,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
         expect_itr = expect.begin();
         debug = 0;
 
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(0); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(0); ++indiv)
         {
             int locus_i_indiv1_gene1 = data_plane_vec(0, 0, 0, indiv, 0);
             int locus_i_indiv1_gene2 = data_plane_vec(0, 0, 0, indiv, 1);
@@ -115,7 +115,7 @@ TEST_CASE("calc_phi_calc_stat_dl")
             int locus_j_indiv1_gene1 = data_plane_vec(2, 0, 0, indiv, 0);
             int locus_j_indiv1_gene2 = data_plane_vec(2, 0, 0, indiv, 1);
 
-            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(1); ++indiv_other_deme)
+            for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv(1); ++indiv_other_deme)
             {
                 int locus_i_indiv2_gene1 = data_plane_vec(0, 0, 1, indiv_other_deme, 0);
                 int locus_i_indiv2_gene2 = data_plane_vec(0, 0, 1, indiv_other_deme, 1);

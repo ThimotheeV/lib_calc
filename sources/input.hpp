@@ -70,6 +70,7 @@ struct selector_input_c
     // bool Q_stat{false};
 
     bool Qr{false};
+    bool Lin_Fst{false};
     bool Ar{false};
     bool Er{false};
 
@@ -107,6 +108,7 @@ struct result_c
 
     std::vector<double> Qr;
 
+    std::array<double, 3> Lin_Fst_reg{-1};
     std::array<double, 3> Ar_reg{-1};
     std::array<double, 3> Er_reg{-1};
 };

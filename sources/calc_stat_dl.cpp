@@ -81,7 +81,7 @@ std::array<double, 3> calc_eta_ij_per_deme_pair_xy(data_plane_vec_c const &data_
     double div = 0;
     if (data_plane_vec.get_Ploidy() == 2)
     {
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme_x); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(deme_x); ++indiv)
         {
             int locus_i_indiv1_gene1 = data_plane_vec(chr, locus_i, deme_x, indiv, 0);
             int locus_i_indiv1_gene2 = data_plane_vec(chr, locus_i, deme_x, indiv, 1);
@@ -91,7 +91,7 @@ std::array<double, 3> calc_eta_ij_per_deme_pair_xy(data_plane_vec_c const &data_
             //In AAaaBBbb if A&B missing => phi = 0, etc
             if (((locus_i_indiv1_gene1 != 0) || (locus_i_indiv1_gene2 != 0)) && ((locus_j_indiv1_gene1 != 0) || (locus_j_indiv1_gene2 != 0)))
             {
-                for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(deme_y); ++indiv_other_deme)
+                for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv(deme_y); ++indiv_other_deme)
                 {
                     int locus_i_indiv2_gene1 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 0);
                     int locus_i_indiv2_gene2 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 1);
@@ -155,13 +155,13 @@ std::array<double, 3> calc_eta_ij_per_deme_pair_xy(data_plane_vec_c const &data_
     }
     else
     {
-        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv_per_deme(deme_x); ++indiv)
+        for (int indiv = 0; indiv < data_plane_vec.nbr_of_indiv(deme_x); ++indiv)
         {
             int locus_i_indiv1 = data_plane_vec(chr, locus_i, deme_x, indiv, 0);
             int locus_j_indiv1 = data_plane_vec(chr, locus_j, deme_x, indiv, 0);
             if ((locus_i_indiv1 != 0) && (locus_j_indiv1 != 0))
             {
-                for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv_per_deme(deme_y); ++indiv_other_deme)
+                for (int indiv_other_deme = 0; indiv_other_deme < data_plane_vec.nbr_of_indiv(deme_y); ++indiv_other_deme)
                 {
                     int locus_i_indiv2 = data_plane_vec(chr, locus_i, deme_y, indiv_other_deme, 0);
                     int locus_j_indiv2 = data_plane_vec(chr, locus_j, deme_y, indiv_other_deme, 0);

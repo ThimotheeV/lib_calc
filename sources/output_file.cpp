@@ -73,6 +73,12 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
         }
     }
 
+    if (selec.Lin_Fst)
+    {
+        head.emplace_back("lin_Fst_slop");
+        head.emplace_back("lin_Fst_intersec");
+    }
+
     if (selec.Ar)
     {
         head.emplace_back("Ar_slop");
@@ -154,6 +160,12 @@ void output_stat_files(selector_input_c const &selec, result_c const &result, st
         }
     }
 
+    if (selec.Lin_Fst)
+    {
+        stats_run.emplace_back(result.Lin_Fst_reg.at(0));
+        stats_run.emplace_back(result.Lin_Fst_reg.at(1));
+    }
+
     if (selec.Ar)
     {
         stats_run.emplace_back(result.Ar_reg.at(0));
@@ -225,7 +237,7 @@ void output_eta_stat_files(std::vector<std::array<double, 5>> result, std::strin
         }
         else
         {
-            auto etha = (phi - q1_join)/eta_denum;
+            auto etha = (phi - q1_join) / eta_denum;
             gss::print_output<double>(path_to_output_file, {dist_geo, dist_chr, etha, phi, q1_join, eta_denum, num_pt},
                                       "app");
             dist_geo = values.at(0);

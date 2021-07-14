@@ -30,8 +30,10 @@ std::vector<double> calc_qr_per_chr_by_loc(data_plane_vec_c const &data_plane_ve
 // std::vector<qr>
 std::vector<double> calc_qr(data_plane_vec_c const &data_plane_vec);
 
-std::vector<std::array<double, 2>> ar_by_pair(data_plane_vec_c const &data_plane_vec);
-std::vector<std::array<double, 2>> er_by_pair(data_plane_vec_c const &data_plane_vec);
+// pas taper ^^
+std::vector<std::array<double, 2>> lin_Fst_by_deme_pair(data_plane_vec_c const &data_plane_vec);
+std::vector<std::array<double, 2>> ar_by_indiv_pair(data_plane_vec_c const &data_plane_vec);
+std::vector<std::array<double, 2>> er_by_indiv_pair(data_plane_vec_c const &data_plane_vec);
 //esti Fis, Fst, Fit
 //WARNING : Not valid if missing value or indiv_per_deme < 2 but more efficient for big data
 std::array<std::array<double, 2>, 2> Fstat_per_chr_by_loc_with_probid(data_plane_vec_c const &data_plane_vec, int chr, int locus);

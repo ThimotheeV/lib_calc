@@ -76,7 +76,7 @@ public:
     int nbr_of_gene_per_loc() const;
     int nbr_of_chr() const;
     int nbr_of_indiv() const;
-    int nbr_of_indiv_per_deme(int nbr_of_deme) const; //deme size
+    int nbr_of_indiv(int nbr_of_deme) const; //deme size
     std::vector<int> const &cumul_nbr_of_indiv_per_deme() const;
 
     int get_indiv(int gene) const;

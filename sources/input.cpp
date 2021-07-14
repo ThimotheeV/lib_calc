@@ -153,6 +153,11 @@ selector_input_c::selector_input_c(std::string path_to_settings_file)
             Qr = gss::convert_str_bool(line_pair_key_value[1]);
             continue;
         }
+        if (stat_name == "linfst")
+        {
+            Lin_Fst = gss::convert_str_bool(line_pair_key_value[1]);
+            continue;
+        }
         if (stat_name == "ar")
         {
             Ar = gss::convert_str_bool(line_pair_key_value[1]);
