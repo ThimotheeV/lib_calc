@@ -65,18 +65,19 @@ double calc_r2(double a, double b, std::vector<value> const &X_vec, std::vector<
     return 1 - (SSE / SST);
 }
 
+#include <iostream>
 template <typename value>
 std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const &X_Y_vec, bool log)
 {
-    std::vector<value> X_vec;
+    std::vector<double> X_vec;
     X_vec.reserve(X_Y_vec.size());
-    std::vector<value> Y_vec;
+    std::vector<double> Y_vec;
     Y_vec.reserve(X_Y_vec.size());
 
     for (auto const &val : X_Y_vec)
     {
-        value temp = val.at(0);
-        if (log)
+        double temp = val.at(0);
+        if (log && temp != 0)
         {
             temp = std::log(temp);
         }
@@ -97,7 +98,7 @@ std::array<double, 3> linear_regres_X_Y(std::vector<std::array<value, 2>> const 
 template <typename value>
 value min(value x1, value x2)
 {
-    if(x1 <= x2)
+    if (x1 <= x2)
     {
         return x1;
     }
@@ -110,7 +111,7 @@ value min(value x1, value x2)
 template <typename value>
 value max(value x1, value x2)
 {
-    if(x1 >= x2)
+    if (x1 >= x2)
     {
         return x1;
     }
